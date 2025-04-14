@@ -6,9 +6,11 @@
 
 :root {
   --theme-orange: #FFA115;
+  --theme-hover-orange: #FF8C00
+  ;
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: #000000;
+  --foreground: #ffffff;
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -41,6 +43,7 @@
 }
 
 @theme inline {
+  --color-theme-hover-orange: var(--theme-hover-orange);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-theme-orange: var(--theme-orange);
@@ -141,4 +144,8 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.text-shadow-orange {
+  text-shadow: 2px 2px 4px var(--color-theme-orange);
 }
