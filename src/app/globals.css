@@ -7,6 +7,8 @@
 :root {
   --theme-orange: #FFA115;
   --theme-hover-orange: #FF8C00;
+  --correct-green: #0ead69;
+  --wrong-red: #ff0054;
   --card-bg: #212529;
   --radius: 0.625rem;
   --background: #000000;
@@ -43,6 +45,8 @@
 }
 
 @theme inline {
+  --color-correct-green: var(--correct-green);
+  --color-wrong-red: var(--wrong-red);
   --color-card-bg: var(--card-bg);
   --color-theme-hover-orange: var(--theme-hover-orange);
   --color-background: var(--background);

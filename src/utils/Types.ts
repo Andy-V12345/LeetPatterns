@@ -1,0 +1,1 @@
+export type ProblemCardState = "default" | "correct" | "wrong"
