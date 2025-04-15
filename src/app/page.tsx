@@ -1,24 +1,8 @@
 import { Marquee } from "@/components/magicui/marquee";
+import { patterns } from "@/utils/Consts";
+import Link from "next/link";
 
 export default function Home() {
-
-	const patterns = [
-		"Arrays / Strings",
-		"BFS",
-		"Backtracking",
-		"Binary Search",
-		"DFS",
-		"Dynamic Programming",
-		"Greedy",
-		"Hashing",
-		"Heaps",
-		"Sliding Window",
-		"Stacks",
-		"Topological Sort",
-		"Two Pointers",
-		"Union-Find"
-	]
-
 	return (
 		<div className="bg-background overflow-hidden h-[100vh] flex flex-col justify-between items-center px-3">
 			<Marquee>
@@ -41,9 +25,9 @@ export default function Home() {
 					Want to land your dream software engineering role? Learn how to identify common LeetCode patterns to ace your next interview!
 				</p>
 
-				<button className="hover:bg-theme-hover-orange transition-colors py-7 px-9 mt-7 font-bold text-2xl bg-theme-orange rounded-lg">
+				<Link href="/onboarding" className="hover:bg-theme-hover-orange transition-colors py-7 px-9 mt-7 font-bold text-2xl bg-theme-orange rounded-lg">
 					Get Started - It's All Free
-				</button>
+				</Link>
 			</div>
 
 			<Marquee>
