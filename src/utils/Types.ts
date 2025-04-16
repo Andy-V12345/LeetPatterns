@@ -1,1 +1,1 @@
-export type ProblemCardState = "default" | "correct" | "wrong"
+export type ProblemCardState = "default" | "correct" | "wrong" | "loading"

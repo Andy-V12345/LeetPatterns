@@ -2,6 +2,7 @@
 
 import ProblemArea from '@/components/ProblemArea';
 import Problem from '@/interfaces/Problem';
+import { generateProblem } from '@/utils/GeminiFunctions';
 import { getFocusedPatterns } from '@/utils/UserFunctions';
 import { useEffect, useState } from 'react';
 
@@ -17,7 +18,7 @@ const mockProblem: Problem = {
 };
 
 export default function PracticePage() {
-	const [focusedPatterns, setFocusedPatterns] = useState<string[]>([]) // This should be dynamic later
+	const [focusedPatterns, setFocusedPatterns] = useState<string[] | null>()
 
 	useEffect(() => {
 		const tmp = getFocusedPatterns()
@@ -25,10 +26,10 @@ export default function PracticePage() {
 	}, [])
 
   return (
-    <div className="mx-auto overflow-scroll gap-8 p-6 max-w-3xl flex flex-col items-center">
+    <div className="mx-auto overflow-scroll gap-8 p-6 w-full md:w-4/5 max-h-full flex flex-col items-center">
 
         {/* Focused Patterns Bar */}
-        {focusedPatterns.length > 0 && 
+        {focusedPatterns != null  && focusedPatterns.length > 0 && 
 			<div className='flex flex-col gap-2 font-semibold text-lg self-start '>
 				<h3>Focused patterns: </h3>
 				<div className="flex flex-wrap gap-2 text-sm text-foreground font-medium">
@@ -42,7 +43,7 @@ export default function PracticePage() {
         }
 
 		{/* Problem Area */}
-		<ProblemArea problem={mockProblem} />
+		<ProblemArea focusedPatterns={focusedPatterns} />
 
 		
     </div>

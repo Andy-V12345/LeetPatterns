@@ -2,6 +2,8 @@ import Problem from "@/interfaces/Problem"
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProblemCardState } from "@/utils/Types";
+import ReactMarkdown from 'react-markdown';
+
 
 interface ProblemCardProps {
     problem: Problem,
@@ -17,7 +19,7 @@ const overlayVariants = {
     exit: { 
         opacity: 0, 
         scale: 0.9, 
-        transition: { duration: 1.3 } 
+        transition: { duration: 1.25 } 
     },
 };
 
@@ -51,39 +53,53 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
     };
 
     const cardStateToColor: { [k: string]: string } = {
-        "default": "--foreground",
+        "default": "",
         "correct": "--correct-green",
         "wrong": "--wrong-red",
     };
 
     return(
         <div 
-            className="relative flex flex-col gap-4 bg-card-bg rounded-md p-6 w-fit h-fit" 
+            className="relative flex flex-col bg-card-bg rounded-md self-stretch w-[70%] overflow-x-hidden" 
             style={{
                 boxShadow: `0px 0px 10px 3px var(${cardStateToColor[cardState]})`
             }}
         >
-            <p className="text-lg font-medium">{problem.prompt}</p>
 
-            <p className="text-theme-orange font-medium text-lg">Which approach should you use?</p>
-
-            <div className="grid grid-cols-2 gap-4">
-                {problem.options.map((option) => (
-                    <button
-                        key={option}
-                        disabled={cardState != "default"}
-                        onClick={() => handleSelect(option)}
-                        className={`py-2 px-4 rounded border hover:opacity-65 transition-all`}
-                        style={{
-                            color: `${selected === option ? `var(${cardStateToColor[cardState]})` : ""}`,
-                            borderColor: `${selected === option ? `var(${cardStateToColor[cardState]})` : ""}`
-                        }}
-                    >
-                        {option}
-                    </button>
-                ))}
+            <div className="bg-[#363535] p-3 rounded-t-md">
+                <p className="text-theme-orange font-bold text-sm">Problem</p>
             </div>
 
+            <div className="relative flex flex-col gap-4 h-full justify-between px-6 pb-6">
+
+                <div className="self-stretch font-sans h-[350px] pr-5 overflow-y-scroll overflow-x-hidden">
+                    <div className="prose prose-invert max-h-full max-w-full markdown">
+                        <ReactMarkdown>{problem.prompt}</ReactMarkdown>
+                    </div>
+                </div>
+
+                <div className="flex flex-col gap-6">
+                    <p className="text-theme-orange font-medium text-lg">Which approach should you use?</p>
+
+                    <div className="grid grid-cols-2 gap-4">
+                        {problem.options.map((option) => (
+                            <button
+                                key={option}
+                                disabled={cardState != "default"}
+                                onClick={() => handleSelect(option)}
+                                className={`py-2 px-4 rounded border hover:opacity-65 transition-all`}
+                                style={{
+                                    color: `${selected === option ? `var(${cardStateToColor[cardState]})` : ""}`,
+                                    borderColor: `${selected === option ? `var(${cardStateToColor[cardState]})` : ""}`
+                                }}
+                            >
+                                {option}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        
             <AnimatePresence>
                 {cardState !== "default" && !showAnswer && (
                     <motion.div 

@@ -1,8 +1,11 @@
 import { Answer } from "@/interfaces/Answer";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
 
 interface ProblemAnswerProps {
     answer: Answer
+    createNewProblem: () => Promise<void>
+    showAnswer: boolean
 }
 
 const LeetcodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -13,34 +16,47 @@ const LeetcodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-export default function ProblemAnswer({ answer }: ProblemAnswerProps) {
+export default function ProblemAnswer({ answer, createNewProblem, showAnswer }: ProblemAnswerProps) {
+    const handleNextQuestion = () => {
+        createNewProblem()
+    }
+
     return (
-        <div className="flex flex-col gap-4">
-            <h3 className="text-xl font-bold text-theme-orange">Explanation</h3>
+        <div className="flex flex-col w-[30%] self-stretch bg-card-bg rounded-md">
+            <div className="bg-[#363535] p-3 rounded-t-md">
+                <p className="text-theme-orange font-bold text-sm">Explanation</p>
+            </div>
 
-            {/* Explanation text */}
-            <p>{answer.explanation}</p>
+            <div className="flex flex-col justify-between h-full gap-4 px-6 pb-6">
+                {!showAnswer ? 
+                    <i className="text-sm self-center my-auto text-center">Answer the question before seeing the explanation!</i>
+                :
+                    <>
+                        {/* Explanation text */}
+                        <div className="self-stretch font-sans max-h-[400px] pr-5 overflow-y-scroll overflow-x-hidden">
+                            <div className="prose prose-invert h-fit max-w-full markdown">
+                                <ReactMarkdown>{answer.explanation}</ReactMarkdown>
+                            </div>
+                        </div>
 
-            <div className="h-[20px] w-1" />
+                        {/* Leetcode Problem Link */}
+                        <Link href={answer.leetcodeUrl} target="_blank" className="flex flex-col gap-0 hover:opacity-50 transition-all w-fit">
+                            <p className="text-[#B3B3B3] text-sm">{`Practice ${answer.correct}:`}</p>
 
-            {/* Button Bar */}
-            <div className="flex justify-between items-center">
-                {/* Leetcode Problem Link */}
-                <Link href={answer.leetcodeUrl} target="_blank" className="flex flex-col gap-1 hover:opacity-50 transition-all w-fit">
-                    <p className="text-[#B3B3B3] text-sm">{`Practice ${answer.correct}:`}</p>
+                            <div className="flex gap-1 items-center">
+                                {/* Leetcode Icon */}
+                                <LeetcodeIcon />
 
-                    <div className="flex gap-1 items-center">
-                        {/* Leetcode Icon */}
-                        <LeetcodeIcon />
+                                <p className="text-sm font-semibold">{answer.leetcodeTitle}</p>
+                            </div>
+                        </Link>
 
-                        <p className="text-sm font-semibold">{answer.leetcodeTitle}</p>
-                    </div>
-                </Link>
-
-                {/* Next Question Button */}
-                <button className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-4 py-2 rounded-lg">
-                    Next Question
-                </button>
+                        {/* Next Question Button */}
+                        <button onClick={handleNextQuestion} className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-4 py-2 rounded-lg">
+                            Next Question
+                        </button>
+                    </>
+                }
             </div>
         </div>
     )

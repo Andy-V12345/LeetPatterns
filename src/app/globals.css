@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
+/* @plugin "@tailwindcss/typography"; */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -9,7 +10,7 @@
   --theme-hover-orange: #FF8C00;
   --correct-green: #0ead69;
   --wrong-red: #ff0054;
-  --card-bg: #212529;
+  --card-bg: #262626;
   --radius: 0.625rem;
   --background: #000000;
   --foreground: #ffffff;
@@ -153,4 +154,26 @@
 
 .text-shadow-orange {
   text-shadow: 2px 2px 4px var(--color-theme-orange);
+}
+
+.markdown > * {
+  all: revert;
+}
+
+
+.prose code {
+  background-color: #363535;
+  padding: 3px 5px;
+  border-radius: 0.25rem;
+  font-size: 0.8em;
+  font-family: Menlo, Monaco, 'Courier New', monospace;
+  white-space: break-spaces;
+  word-break: break-word;
+}
+
+/* Override for multi-line blocks inside triple backticks */
+.prose pre code {
+  background-color: #363535; /* Let pre handle it */
+  padding: 3px 5px;
+  border-radius: 0;
 }
