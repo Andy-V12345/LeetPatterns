@@ -1,6 +1,7 @@
 import { LeetcodeSample } from "@/interfaces/LeetcodeSample"
+import { Pattern } from "./Types";
 
-export const patterns = [
+export const patterns: Pattern[] = [
     "Arrays / Strings",
     "BFS",
     "Backtracking",
@@ -16,6 +17,24 @@ export const patterns = [
     "Two Pointers",
     "Union-Find"
 ]
+
+export const patternColors: Record<Pattern, string> = {
+	"Arrays / Strings": "#F97316",        // vivid orange
+	"BFS": "#06B6D4",                     // cyan
+	"Backtracking": "#EC4899",           // pink
+	"Binary Search": "#0EA5E9",          // sky blue
+	"DFS": "#3B82F6",                    // classic blue
+	"Dynamic Programming": "#8B5CF6",    // violet
+	"Greedy": "#F59E0B",                 // amber/gold
+	"Hashing": "#10B981",                // emerald
+	"Heaps": "#EF4444",                  // red
+	"Sliding Window": "#22C55E",         // green
+	"Stacks": "#A855F7",                 // purple
+	"Topological Sort": "#EAB308",       // yellow
+	"Two Pointers": "#14B8A6",           // teal
+	"Union-Find": "#FB7185",             // rose
+};
+
 
 export const gemini_system_intructions = `
 You are an AI assistant embedded in a learning platform that helps users identify solution patterns in coding problems. Your task is to generate original LeetCode-style problems that test for specific solution patterns — but framed in fresh, real-world, or creatively abstracted contexts. You must also provide explanations for why that pattern is the best fit. The user will not solve the problem; they will only identify which solution pattern applies. Your outputs must be clear, concise, and logically aligned with the selected pattern.

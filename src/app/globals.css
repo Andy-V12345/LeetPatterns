@@ -6,6 +6,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --card-fg: #363535;
   --theme-orange: #FFA115;
   --theme-hover-orange: #FF8C00;
   --correct-green: #0ead69;
@@ -46,6 +47,7 @@
 }
 
 @theme inline {
+  --color-card-fg: var(--card-fg);
   --color-correct-green: var(--correct-green);
   --color-wrong-red: var(--wrong-red);
   --color-card-bg: var(--card-bg);

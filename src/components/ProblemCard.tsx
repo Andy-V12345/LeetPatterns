@@ -106,7 +106,7 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
 
 
 
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4">
                     {problem != null && cardState != "loading" ?
                         <p className="text-theme-orange font-medium text-lg">Which approach should you use?</p>
                     :

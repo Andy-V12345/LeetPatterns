@@ -36,7 +36,7 @@ export default function ProblemAnswer({ answer, createNewProblem, showAnswer, ca
                 :
                     <>
                         {/* Explanation text */}
-                        <div className="self-stretch font-sans h-[300px] overflow-y-scroll overflow-x-hidden">
+                        <div className="self-stretch h-[300px] overflow-y-scroll overflow-x-hidden">
                             {answer != null && cardState != "loading" ? 
                                 <div className="prose prose-invert pr-5 max-h-full max-w-full markdown">
                                     <ReactMarkdown>{answer.explanation}</ReactMarkdown>
@@ -64,7 +64,7 @@ export default function ProblemAnswer({ answer, createNewProblem, showAnswer, ca
 
                         {/* Leetcode Problem Link */}
                         {(answer != null && cardState != "loading") &&
-                            <>
+                            <div className="flex flex-col gap-4">
                                 <Link href={answer.leetcodeUrl} target="_blank" className="flex flex-col gap-0 hover:opacity-50 transition-all w-fit">
                                     <p className="text-[#B3B3B3] text-sm">{`Practice ${answer.correct}:`}</p>
 
@@ -80,7 +80,7 @@ export default function ProblemAnswer({ answer, createNewProblem, showAnswer, ca
                                 <button onClick={handleNextQuestion} className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-4 py-2 rounded-lg">
                                     Next Question
                                 </button>
-                            </>
+                            </div>
                         }
                     </>
                 }
