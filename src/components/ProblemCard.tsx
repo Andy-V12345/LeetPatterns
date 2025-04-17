@@ -3,10 +3,11 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProblemCardState } from "@/utils/Types";
 import ReactMarkdown from 'react-markdown';
+import { Skeleton } from "./ui/skeleton";
 
 
 interface ProblemCardProps {
-    problem: Problem,
+    problem: Problem | null | undefined,
     cardState: ProblemCardState,
     setCardState: React.Dispatch<React.SetStateAction<ProblemCardState>>
     showAnswer: boolean,
@@ -39,6 +40,10 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
     const [selected, setSelected] = useState<string | null>(null);
 
     const handleSelect = (option: string) => {
+        if (problem == null) {
+            return
+        }
+
         setSelected(option);
 
         if(option === problem.answer.correct) {
@@ -56,13 +61,14 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
         "default": "",
         "correct": "--correct-green",
         "wrong": "--wrong-red",
+        "loading": ""
     };
 
     return(
         <div 
             className="relative flex flex-col bg-card-bg rounded-md self-stretch w-[70%] overflow-x-hidden" 
             style={{
-                boxShadow: `0px 0px 10px 3px var(${cardStateToColor[cardState]})`
+                boxShadow: `${cardState != "loading" ? `0px 0px 10px 3px var(${cardStateToColor[cardState]})` : ""}`
             }}
         >
 
@@ -72,36 +78,77 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
 
             <div className="relative flex flex-col gap-4 h-full justify-between px-6 pb-6">
 
-                <div className="self-stretch font-sans h-[350px] pr-5 overflow-y-scroll overflow-x-hidden">
-                    <div className="prose prose-invert max-h-full max-w-full markdown">
-                        <ReactMarkdown>{problem.prompt}</ReactMarkdown>
-                    </div>
+                <div className="self-stretch font-sans h-[300px] overflow-y-scroll overflow-x-hidden">
+                    {problem != null && cardState != "loading" ? 
+                        <div className="prose prose-invert pr-5 max-h-full max-w-full markdown">
+                            <ReactMarkdown>{problem.prompt}</ReactMarkdown>
+                        </div>
+                    :
+                        <div className="max-h-full max-w-full">
+                            <Skeleton className="w-full mt-6 bg-[#3C3C3C] text-transparent rounded-sm">
+                                hello
+                            </Skeleton>
+                            <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+                                hello
+                            </Skeleton>
+                            <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+                                hello
+                            </Skeleton>
+                            <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+                                hello
+                            </Skeleton>
+                            <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+                                hello
+                            </Skeleton>
+                        </div>
+                    }
                 </div>
 
+
+
                 <div className="flex flex-col gap-6">
-                    <p className="text-theme-orange font-medium text-lg">Which approach should you use?</p>
+                    {problem != null && cardState != "loading" ?
+                        <p className="text-theme-orange font-medium text-lg">Which approach should you use?</p>
+                    :
+                        <Skeleton className="text-lg font-medium text-transparent w-full bg-[#3C3C3C] rounded-sm">
+                            Which approach should you use?
+                        </Skeleton>
+                    }
 
                     <div className="grid grid-cols-2 gap-4">
-                        {problem.options.map((option) => (
-                            <button
-                                key={option}
-                                disabled={cardState != "default"}
-                                onClick={() => handleSelect(option)}
-                                className={`py-2 px-4 rounded border hover:opacity-65 transition-all`}
-                                style={{
-                                    color: `${selected === option ? `var(${cardStateToColor[cardState]})` : ""}`,
-                                    borderColor: `${selected === option ? `var(${cardStateToColor[cardState]})` : ""}`
-                                }}
-                            >
-                                {option}
-                            </button>
-                        ))}
+                        {problem != null && cardState != "loading" ?
+                            problem.options.map((option) => (
+                                <button
+                                    key={option}
+                                    disabled={cardState != "default"}
+                                    onClick={() => handleSelect(option)}
+                                    className={`py-2 px-4 rounded border hover:opacity-65 transition-all`}
+                                    style={{
+                                        color: `${selected === option ? `var(${cardStateToColor[cardState]})` : ""}`,
+                                        borderColor: `${selected === option ? `var(${cardStateToColor[cardState]})` : ""}`
+                                    }}
+                                >
+                                    {option}
+                                </button>
+                            ))
+                        :
+                            <>
+                                <Skeleton className="w-full text-transparent py-2 bg-[#3C3C3C] rounded">
+                                    hello
+                                </Skeleton>
+                                <Skeleton className="w-full bg-[#3C3C3C] rounded" />
+                                <Skeleton className="w-full py-2 text-transparent bg-[#3C3C3C] rounded">
+                                    hello
+                                </Skeleton>
+                                <Skeleton className="w-full bg-[#3C3C3C] rounded" />
+                            </>
+                        }
                     </div>
                 </div>
             </div>
         
             <AnimatePresence>
-                {cardState !== "default" && !showAnswer && (
+                {cardState !== "default" && cardState !== "loading" && !showAnswer && (
                     <motion.div 
                         key="overlay"
                         variants={overlayVariants}

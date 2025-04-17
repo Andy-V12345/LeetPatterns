@@ -1,11 +1,14 @@
 import { Answer } from "@/interfaces/Answer";
+import { ProblemCardState } from "@/utils/Types";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { Skeleton } from "./ui/skeleton";
 
 interface ProblemAnswerProps {
-    answer: Answer
+    answer: Answer | null | undefined
     createNewProblem: () => Promise<void>
-    showAnswer: boolean
+    showAnswer: boolean,
+    cardState: ProblemCardState
 }
 
 const LeetcodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -16,7 +19,7 @@ const LeetcodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-export default function ProblemAnswer({ answer, createNewProblem, showAnswer }: ProblemAnswerProps) {
+export default function ProblemAnswer({ answer, createNewProblem, showAnswer, cardState }: ProblemAnswerProps) {
     const handleNextQuestion = () => {
         createNewProblem()
     }
@@ -28,33 +31,57 @@ export default function ProblemAnswer({ answer, createNewProblem, showAnswer }: 
             </div>
 
             <div className="flex flex-col justify-between h-full gap-4 px-6 pb-6">
-                {!showAnswer ? 
+                {!showAnswer && cardState != "loading" ? 
                     <i className="text-sm self-center my-auto text-center">Answer the question before seeing the explanation!</i>
                 :
                     <>
                         {/* Explanation text */}
-                        <div className="self-stretch font-sans max-h-[400px] pr-5 overflow-y-scroll overflow-x-hidden">
-                            <div className="prose prose-invert h-fit max-w-full markdown">
-                                <ReactMarkdown>{answer.explanation}</ReactMarkdown>
-                            </div>
+                        <div className="self-stretch font-sans h-[300px] overflow-y-scroll overflow-x-hidden">
+                            {answer != null && cardState != "loading" ? 
+                                <div className="prose prose-invert pr-5 max-h-full max-w-full markdown">
+                                    <ReactMarkdown>{answer.explanation}</ReactMarkdown>
+                                </div>
+                            :
+                                <div className="max-h-full max-w-full">
+                                    <Skeleton className="w-full mt-6 bg-[#3C3C3C] text-transparent rounded-sm">
+                                        hello
+                                    </Skeleton>
+                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+                                        hello
+                                    </Skeleton>
+                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+                                        hello
+                                    </Skeleton>
+                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+                                        hello
+                                    </Skeleton>
+                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+                                        hello
+                                    </Skeleton>
+                                </div>
+                            }
                         </div>
 
                         {/* Leetcode Problem Link */}
-                        <Link href={answer.leetcodeUrl} target="_blank" className="flex flex-col gap-0 hover:opacity-50 transition-all w-fit">
-                            <p className="text-[#B3B3B3] text-sm">{`Practice ${answer.correct}:`}</p>
+                        {(answer != null && cardState != "loading") &&
+                            <>
+                                <Link href={answer.leetcodeUrl} target="_blank" className="flex flex-col gap-0 hover:opacity-50 transition-all w-fit">
+                                    <p className="text-[#B3B3B3] text-sm">{`Practice ${answer.correct}:`}</p>
 
-                            <div className="flex gap-1 items-center">
-                                {/* Leetcode Icon */}
-                                <LeetcodeIcon />
+                                    <div className="flex gap-1 items-center">
+                                        {/* Leetcode Icon */}
+                                        <LeetcodeIcon />
 
-                                <p className="text-sm font-semibold">{answer.leetcodeTitle}</p>
-                            </div>
-                        </Link>
+                                        <p className="text-sm font-semibold">{answer.leetcodeTitle}</p>
+                                    </div>
+                                </Link>
 
-                        {/* Next Question Button */}
-                        <button onClick={handleNextQuestion} className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-4 py-2 rounded-lg">
-                            Next Question
-                        </button>
+                                {/* Next Question Button */}
+                                <button onClick={handleNextQuestion} className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-4 py-2 rounded-lg">
+                                    Next Question
+                                </button>
+                            </>
+                        }
                     </>
                 }
             </div>

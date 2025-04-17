@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { ProblemCardState } from "@/utils/Types"
 import ProblemAnswer from "./ProblemAnswer"
 import { generateProblem } from "@/utils/GeminiFunctions"
+import { Answer } from "@/interfaces/Answer"
 
 interface ProblemAreaProps {
     focusedPatterns: string[] | undefined | null
@@ -13,15 +14,15 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 
     const [cardState, setCardState] = useState<ProblemCardState>("default")
     const [showAnswer, setShowAnswer] = useState(false)
-    const [problem, setProblem] = useState<Problem>()
+    const [problem, setProblem] = useState<Problem | null>()
 
     const createNewProblem = useCallback(async () => {
         if (focusedPatterns != null) {
+            setCardState("loading")
             const res = await generateProblem(focusedPatterns as string[])
             setProblem(res) 
             setShowAnswer(false)
             setCardState("default")
-            console.log(res.prompt)
         }
         else {
             console.error("focusedPatterns undefined")
@@ -36,12 +37,12 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 
     return(
         <div className="flex gap-5 self-stretch">
-            {problem != null && 
+            {(problem != null || cardState == "loading") && 
                 <ProblemCard problem={problem} cardState={cardState} setCardState={setCardState} showAnswer={showAnswer} setShowAnswer={setShowAnswer} />
             }
 
-            {problem != null && 
-                <ProblemAnswer showAnswer={showAnswer} answer={problem.answer} createNewProblem={createNewProblem} />
+            {(problem != null || cardState == "loading") && 
+                <ProblemAnswer showAnswer={showAnswer} cardState={cardState} answer={problem?.answer ?? null} createNewProblem={createNewProblem} />
             }
         </div>
     )
