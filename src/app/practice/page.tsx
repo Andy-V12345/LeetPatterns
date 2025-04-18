@@ -26,7 +26,7 @@ export default function PracticePage() {
 	}, [])
 
   return (
-    <div className="mx-auto overflow-scroll gap-8 p-6 w-full md:w-4/5 flex flex-col items-center">
+    <div className="mx-auto overflow-y-scroll overflow-x-hidden gap-8 p-6 w-full md:w-11/12 xl:w-4/5 flex h-[100svh] flex-col items-center">
 
         {/* Focused Patterns Bar */}
         {focusedPatterns != null  && focusedPatterns.length > 0 && 

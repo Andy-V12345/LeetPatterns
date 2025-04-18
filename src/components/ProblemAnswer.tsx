@@ -30,59 +30,49 @@ export default function ProblemAnswer({ answer, createNewProblem, showAnswer, ca
                 <p className="text-theme-orange font-bold text-sm">Explanation</p>
             </div>
 
-            <div className="flex flex-col justify-between h-full gap-4 px-6 pb-6">
+            <div className="flex flex-col h-full max-h-full overflow-scroll px-6 pb-6">
                 {!showAnswer && cardState != "loading" ? 
-                    <i className="text-sm self-center my-auto text-center">Answer the question before seeing the explanation!</i>
+                    <i className="text-sm self-center my-auto text-center">
+                        Answer the question before seeing the explanation!
+                    </i>
                 :
-                    <>
-                        {/* Explanation text */}
-                        <div className="self-stretch h-[300px] overflow-y-scroll overflow-x-hidden">
+                    <div className="flex flex-col gap-6 max-h-full">
+                        {/* Explanation text takes up available space */}
+                        <div className="flex-1 overflow-y-auto overflow-x-hidden">
                             {answer != null && cardState != "loading" ? 
                                 <div className="prose prose-invert pr-5 max-h-full max-w-full markdown">
                                     <ReactMarkdown>{answer.explanation}</ReactMarkdown>
                                 </div>
                             :
                                 <div className="max-h-full max-w-full">
-                                    <Skeleton className="w-full mt-6 bg-[#3C3C3C] text-transparent rounded-sm">
-                                        hello
-                                    </Skeleton>
-                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
-                                        hello
-                                    </Skeleton>
-                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
-                                        hello
-                                    </Skeleton>
-                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
-                                        hello
-                                    </Skeleton>
-                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
-                                        hello
-                                    </Skeleton>
+                                    <Skeleton className="w-full mt-6 bg-[#3C3C3C] text-transparent rounded-sm">hello</Skeleton>
+                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">hello</Skeleton>
+                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">hello</Skeleton>
+                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">hello</Skeleton>
+                                    <Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">hello</Skeleton>
                                 </div>
                             }
                         </div>
 
-                        {/* Leetcode Problem Link */}
+                        {/* Leetcode Problem Link and Next Question Button (does not grow) */}
                         {(answer != null && cardState != "loading") &&
                             <div className="flex flex-col gap-4">
                                 <Link href={answer.leetcodeUrl} target="_blank" className="flex flex-col gap-0 hover:opacity-50 transition-all w-fit">
                                     <p className="text-[#B3B3B3] text-sm">{`Practice ${answer.correct}:`}</p>
-
                                     <div className="flex gap-1 items-center">
-                                        {/* Leetcode Icon */}
                                         <LeetcodeIcon />
-
                                         <p className="text-sm font-semibold">{answer.leetcodeTitle}</p>
                                     </div>
                                 </Link>
-
-                                {/* Next Question Button */}
-                                <button onClick={handleNextQuestion} className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-4 py-2 rounded-lg">
+                                <button 
+                                    onClick={handleNextQuestion} 
+                                    className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-4 py-2 rounded-lg"
+                                >
                                     Next Question
                                 </button>
                             </div>
                         }
-                    </>
+                    </div>
                 }
             </div>
         </div>

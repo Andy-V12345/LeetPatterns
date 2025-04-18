@@ -1,10 +1,11 @@
 import Problem from "@/interfaces/Problem"
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ProblemCardState } from "@/utils/Types";
+import { Pattern, ProblemCardState } from "@/utils/Types";
 import ReactMarkdown from 'react-markdown';
 import { Skeleton } from "./ui/skeleton";
 
+const drawSpeed = 0.15
 
 interface ProblemCardProps {
     problem: Problem | null | undefined,
@@ -12,31 +13,48 @@ interface ProblemCardProps {
     setCardState: React.Dispatch<React.SetStateAction<ProblemCardState>>
     showAnswer: boolean,
     setShowAnswer: React.Dispatch<React.SetStateAction<boolean>>
+    updatePatternStats: (pattern: Pattern, isCorrect: boolean) => void
 }
 
 const overlayVariants = {
     initial: { opacity: 0, scale: 0.9 },
-    animate: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+    animate: { opacity: 1, scale: 1, transition: { duration: 0.3 } },
     exit: { 
         opacity: 0, 
         scale: 0.9, 
-        transition: { duration: 1.25 } 
+        transition: {
+            when: "afterChildren",
+            delay: drawSpeed * 2,
+            duration: 0.3
+        } 
     },
 };
 
+const xMarkLine1Variant = {
+    initial: { pathLength: 0 },
+    animate: { pathLength: 1, transition: { duration: drawSpeed, ease: "easeInOut" } },
+    exit: { pathLength: 0, transition: { duration: drawSpeed, delay: drawSpeed, ease: "easeInOut" } }
+}
+
+const xMarkLine2Variant = {
+    initial: { pathLength: 0 },
+    animate: { pathLength: 1, transition: { duration: drawSpeed, delay: drawSpeed, ease: "easeInOut" } },
+    exit: { pathLength: 0, transition: { duration: drawSpeed, ease: "easeInOut" } }
+}
+
 const checkmarkLine1Variant = {
     initial: { pathLength: 0 },
-    animate: { pathLength: 1, transition: { duration: 0.3, ease: "easeInOut" } },
-    exit: { pathLength: 0, transition: { duration: 0.3, delay: 0.3, ease: "easeInOut" }}
+    animate: { pathLength: 1, transition: { duration: drawSpeed, ease: "easeInOut" } },
+    exit: { pathLength: 0, transition: { duration: drawSpeed, delay: drawSpeed, ease: "easeInOut" }}
 }
 
 const checkmarkLine2Variant = {
     initial: { pathLength: 0 },
-    animate: { pathLength: 1, transition: { duration: 0.3, delay: 0.3, ease: "easeInOut" } },
-    exit: { pathLength: 0, transition: { duration: 0.3, ease: "easeInOut" }}
+    animate: { pathLength: 1, transition: { duration: drawSpeed, delay: drawSpeed, ease: "easeInOut" } },
+    exit: { pathLength: 0, transition: { duration: drawSpeed, ease: "easeInOut" }}
 }
 
-export default function ProblemCard({ problem, cardState, setCardState, showAnswer, setShowAnswer }: ProblemCardProps) {
+export default function ProblemCard({ problem, cardState, setCardState, showAnswer, setShowAnswer, updatePatternStats }: ProblemCardProps) {
     const [selected, setSelected] = useState<string | null>(null);
 
     const handleSelect = (option: string) => {
@@ -48,13 +66,15 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
 
         if(option === problem.answer.correct) {
             setCardState("correct");
+            updatePatternStats(problem.answer.correct, true)
         } else {
             setCardState("wrong");
+            updatePatternStats(problem.answer.correct, false)
         }
 
         setTimeout(() => {
             setShowAnswer(true);
-        }, 2000);
+        }, 1000);
     };
 
     const cardStateToColor: { [k: string]: string } = {
@@ -66,7 +86,7 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
 
     return(
         <div 
-            className="relative flex flex-col bg-card-bg rounded-md self-stretch w-[70%] overflow-x-hidden" 
+            className="relative z-20 flex flex-col bg-card-bg rounded-md self-stretch w-[70%] overflow-x-hidden" 
             style={{
                 boxShadow: `${cardState != "loading" ? `0px 0px 10px 3px var(${cardStateToColor[cardState]})` : ""}`
             }}
@@ -76,9 +96,9 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
                 <p className="text-theme-orange font-bold text-sm">Problem</p>
             </div>
 
-            <div className="relative flex flex-col gap-4 h-full justify-between px-6 pb-6">
+            <div className="flex flex-col h-full max-h-full overflow-scroll gap-6 px-6 pb-6">
 
-                <div className="self-stretch font-sans h-[300px] overflow-y-scroll overflow-x-hidden">
+                <div className="w-full flex-1 overflow-y-scroll overflow-x-hidden">
                     {problem != null && cardState != "loading" ? 
                         <div className="prose prose-invert pr-5 max-h-full max-w-full markdown">
                             <ReactMarkdown>{problem.prompt}</ReactMarkdown>
@@ -103,8 +123,6 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
                         </div>
                     }
                 </div>
-
-
 
                 <div className="flex flex-col gap-4">
                     {problem != null && cardState != "loading" ?
@@ -159,25 +177,25 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
                         style={{ backgroundColor: "rgba(33, 37, 41, 0.8)" }}
                     >
                         <motion.svg width="100" height="100" viewBox="0 0 100 100">
-                            {cardState === "wrong" ? 
+                            {cardState === "wrong" && !showAnswer ? 
                                 <>
                                     <motion.line 
-                                        x1="20" y1="20" x2="80" y2="80" 
+                                        x1="20" y1="20" x2="80" y2="80"
+                                        variants={xMarkLine1Variant}
                                         stroke="var(--wrong-red)" 
                                         strokeWidth="8"
-                                        initial={{ pathLength: 0 }}
-                                        animate={{ pathLength: 1 }}
-                                        exit={{ pathLength: 0 }}
-                                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                                        initial="initial"
+                                        animate="animate"
+                                        exit="exit"
                                     />
                                     <motion.line 
                                         x1="80" y1="20" x2="20" y2="80" 
+                                        variants={xMarkLine2Variant}
                                         stroke="var(--wrong-red)" 
                                         strokeWidth="8"
-                                        initial={{ pathLength: 0 }}
-                                        animate={{ pathLength: 1 }}
-                                        exit={{ pathLength: 0 }}
-                                        transition={{ duration: 0.3, delay: 0.3, ease: "easeInOut" }}
+                                        initial="initial"
+                                        animate="animate"
+                                        exit="exit"
                                     />
                                 </>
                             :
@@ -204,7 +222,9 @@ export default function ProblemCard({ problem, cardState, setCardState, showAnsw
                             }
                         </motion.svg>
 
-                        <p className={`${cardState === "wrong" ? "text-wrong-red" : "text-correct-green"} text-lg font-semibold`}>{cardState === "correct" ? "Correct Answer" : "Incorrect Answer"}</p>
+                        <p className={`${cardState === "wrong" ? "text-wrong-red" : "text-correct-green"} text-lg font-semibold`}>
+                            {cardState === "correct" ? "Correct Answer" : "Incorrect Answer"}
+                        </p>
                     </motion.div>
                 )}
             </AnimatePresence>

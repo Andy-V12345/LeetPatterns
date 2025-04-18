@@ -5,6 +5,7 @@ import { gemini_system_intructions, leetcode_practice_problems, patterns } from 
 import Problem from "@/interfaces/Problem";
 import { shuffle } from "./UtilFunctions";
 import { LeetcodeSample } from "@/interfaces/LeetcodeSample";
+import { Pattern } from "./Types";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
@@ -13,8 +14,8 @@ function generateRandomNum(max: number): number {
 }
 
 export async function generateProblem(focusedPatterns: string[]): Promise<Problem> {
-    const randomNum = generateRandomNum(4)
-    const useFocused = (randomNum < 3)
+    const randomNum = generateRandomNum(2)
+    const useFocused = (randomNum < 1)
     let pattern: string;
 
     if (useFocused && focusedPatterns.length > 0) {
@@ -75,7 +76,7 @@ export async function generateProblem(focusedPatterns: string[]): Promise<Proble
 
     const problem: Problem = {
         prompt: resObj.problem,
-        options: options,
+        options: options as Pattern[],
         answer: {
             correct: resObj.correctPattern,
             explanation: resObj.explanation,
