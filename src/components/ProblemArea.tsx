@@ -9,7 +9,13 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { PatternStat } from '@/interfaces/PatternStat'
 
 interface ProblemAreaProps {
-	focusedPatterns: string[] | undefined | null
+	focusedPatterns: Pattern[] | undefined | null
+}
+
+const cardTransition = {
+	type: 'spring',
+	bounce: 0.2,
+	visualDuration: 0.4,
 }
 
 export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
@@ -19,25 +25,40 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const [questionCount, setQuestionCount] = useState(0)
 	const [showRecap, setShowRecap] = useState(false)
 	const [patternStats, setPatternStats] = useState<PatternStat[]>([])
+	const [problemQ, setProblemQ] = useState<Problem[]>([])
+
+	const preloadProblems = useCallback(async () => {
+		if (focusedPatterns && problemQ.length < 2) {
+			const next = await generateProblem(focusedPatterns, patternStats)
+			setProblemQ((prev) => [...prev, next])
+		}
+	}, [focusedPatterns, problemQ, patternStats])
 
 	const createNewProblem = useCallback(async () => {
 		if (focusedPatterns != null && !showRecap) {
-			if (questionCount > 0 && questionCount % 1 == 0) {
+			if (questionCount > 0 && questionCount % 5 == 0) {
 				setShowRecap(true)
 			} else {
 				setCardState('loading')
 
-				const res = await generateProblem(
-					focusedPatterns as Pattern[],
-					patternStats
-				)
+				let nextProblem = problemQ[0]
 
-				setProblem(res)
+				if (nextProblem) {
+					setProblem(nextProblem)
+					setProblemQ((prev) => prev.slice(1))
+				} else {
+					nextProblem = await generateProblem(
+						focusedPatterns as Pattern[],
+						patternStats
+					)
+					setProblem(nextProblem)
+				}
+
 				setShowAnswer(false)
 				setQuestionCount((prev) => {
 					return prev + 1
 				})
-				setCardState('default')
+				preloadProblems()
 			}
 		} else if (focusedPatterns == null) {
 			console.error('focusedPatterns undefined')
@@ -45,19 +66,33 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 			setShowRecap(false)
 			setCardState('loading')
 
-			const res = await generateProblem(
-				focusedPatterns as Pattern[],
-				patternStats
-			)
+			let nextProblem = problemQ[0]
 
-			setProblem(res)
+			if (nextProblem) {
+				setProblem(nextProblem)
+				setProblemQ((prev) => prev.slice(1))
+			} else {
+				nextProblem = await generateProblem(
+					focusedPatterns as Pattern[],
+					patternStats
+				)
+				setProblem(nextProblem)
+			}
+
 			setShowAnswer(false)
 			setQuestionCount((prev) => {
 				return prev + 1
 			})
-			setCardState('default')
+			preloadProblems()
 		}
-	}, [focusedPatterns, showRecap, questionCount])
+	}, [
+		focusedPatterns,
+		showRecap,
+		questionCount,
+		problemQ,
+		patternStats,
+		preloadProblems,
+	])
 
 	const updatePatternStats = useCallback(
 		(pattern: Pattern, isCorrect: boolean) => {
@@ -93,9 +128,16 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 
 	useEffect(() => {
 		if (focusedPatterns != null) {
+			preloadProblems()
 			createNewProblem()
 		}
 	}, [focusedPatterns])
+
+	useEffect(() => {
+		if (problem) {
+			setCardState('default')
+		}
+	}, [problem])
 
 	return (
 		<div className="flex gap-5 self-stretch h-4/5 max-h-[600px] relative">
@@ -106,7 +148,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 						initial={{ x: '100%', opacity: 0 }}
 						animate={{ x: 0, opacity: 1 }}
 						exit={{ x: '-100%', opacity: 0 }}
-						transition={{ duration: 0.4 }}
+						transition={cardTransition}
 						className="w-full h-full"
 					>
 						<RecapCard
@@ -117,12 +159,13 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				)}
 
 				{!showRecap && (
+					// <AnimatePresence mode="wait">
 					<motion.div
-						key="problem"
-						initial={{ x: '100%', opacity: 1 }}
+						key={`problem-${questionCount}`}
+						initial={{ x: '100%', opacity: 0 }}
 						animate={{ x: 0, opacity: 1 }}
 						exit={{ x: '-100%', opacity: 0 }}
-						transition={{ duration: 0.4 }}
+						transition={cardTransition}
 						className="flex max-h-full self-stretch w-full gap-5"
 					>
 						{(problem != null || cardState === 'loading') && (
@@ -144,6 +187,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							</>
 						)}
 					</motion.div>
+					// </AnimatePresence>
 				)}
 			</AnimatePresence>
 		</div>
