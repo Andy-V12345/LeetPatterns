@@ -7,6 +7,7 @@ import { generateProblem } from '@/utils/GeminiFunctions'
 import RecapCard from './RecapCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PatternStat } from '@/interfaces/PatternStat'
+import SyncLoader from 'react-spinners/SyncLoader'
 
 interface ProblemAreaProps {
 	focusedPatterns: Pattern[] | undefined | null
@@ -26,6 +27,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const [showRecap, setShowRecap] = useState(false)
 	const [patternStats, setPatternStats] = useState<PatternStat[]>([])
 	const [problemQ, setProblemQ] = useState<Problem[]>([])
+	const [firstLoad, setFirstLoad] = useState(true)
 
 	const preloadProblems = useCallback(async () => {
 		if (focusedPatterns && problemQ.length < 2) {
@@ -136,12 +138,14 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	useEffect(() => {
 		if (problem) {
 			setCardState('default')
+			setFirstLoad(false)
 		}
 	}, [problem])
 
 	return (
 		<div className="flex gap-5 self-stretch h-4/5 max-h-[600px] relative">
 			<AnimatePresence mode="wait">
+				{/* Recap Card */}
 				{showRecap && (
 					<motion.div
 						key="recap"
@@ -158,8 +162,29 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 					</motion.div>
 				)}
 
-				{!showRecap && (
-					// <AnimatePresence mode="wait">
+				{/* Initial Loading */}
+				{firstLoad && (
+					<motion.div
+						className="w-full h-full flex flex-col items-center justify-center gap-6"
+						initial={{ opacity: 1 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.4 }}
+					>
+						<SyncLoader
+							loading={firstLoad}
+							color="var(--theme-orange)"
+							size={11}
+						/>
+
+						<p className="text-foreground font-medium text-base">
+							Generating problems...
+						</p>
+					</motion.div>
+				)}
+
+				{/* Problem Card */}
+				{!showRecap && !firstLoad && (
 					<motion.div
 						key={`problem-${questionCount}`}
 						initial={{ x: '100%', opacity: 0 }}
@@ -187,7 +212,6 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							</>
 						)}
 					</motion.div>
-					// </AnimatePresence>
 				)}
 			</AnimatePresence>
 		</div>
