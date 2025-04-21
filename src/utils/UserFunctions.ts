@@ -1,28 +1,28 @@
+'use server'
+
 import { redirect } from 'next/navigation'
 import { Pattern } from './Types'
+import {
+	getFocusedPatternsFirestore,
+	saveFocusedPatternsFirestore,
+} from './FirebaseFunctions'
 
-export function saveFocusedPatterns(focusedPatterns: {
+const test_uid = process.env.TEST_USER_ID as string
+
+export async function saveFocusedPatterns(focusedPatterns: {
 	[k: string]: boolean
-}): void {
-	// for now save to local storage
-	if (typeof window !== 'undefined') {
-		localStorage.setItem('focusedPatterns', JSON.stringify(focusedPatterns))
-
-		redirect('/practice')
-	}
+}): Promise<void> {
+	await saveFocusedPatternsFirestore(test_uid, focusedPatterns)
+	redirect('/practice')
 }
 
-export function getFocusedPatterns(): Pattern[] {
-	// for now pull from local storage
-	if (typeof window !== 'undefined') {
-		const storedFocusedPatterns = localStorage.getItem('focusedPatterns')
+export async function getFocusedPatterns(): Promise<Pattern[]> {
+	const focusedPatterns = await getFocusedPatternsFirestore(test_uid)
 
-		if (storedFocusedPatterns) {
-			const focusedPatterns = JSON.parse(storedFocusedPatterns)
-			return Object.keys(focusedPatterns).filter(
-				(pattern) => focusedPatterns[pattern]
-			) as Pattern[]
-		}
+	if (focusedPatterns != null) {
+		return Object.keys(focusedPatterns).filter(
+			(pattern) => focusedPatterns[pattern]
+		) as Pattern[]
 	}
 
 	return []

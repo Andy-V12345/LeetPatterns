@@ -1,6 +1,6 @@
 import Problem from '@/interfaces/Problem'
 import ProblemCard from './ProblemCard'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Pattern, ProblemCardState } from '@/utils/Types'
 import ProblemAnswer from './ProblemAnswer'
 import { generateProblem } from '@/utils/GeminiFunctions'
@@ -20,6 +20,7 @@ const cardTransition = {
 }
 
 export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
+	const hasCreatedInitialProblem = useRef(false)
 	const [cardState, setCardState] = useState<ProblemCardState>('default')
 	const [showAnswer, setShowAnswer] = useState(false)
 	const [problem, setProblem] = useState<Problem | null>()
@@ -129,11 +130,16 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	)
 
 	useEffect(() => {
-		if (focusedPatterns != null) {
+		if (
+			focusedPatterns != null &&
+			!problem &&
+			!hasCreatedInitialProblem.current
+		) {
+			hasCreatedInitialProblem.current = true
 			preloadProblems()
 			createNewProblem()
 		}
-	}, [focusedPatterns])
+	}, [focusedPatterns, problem])
 
 	useEffect(() => {
 		if (problem) {
