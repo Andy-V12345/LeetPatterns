@@ -1,13 +1,24 @@
 'use client'
 
+import { useAuth, useProtectedRoute } from '@/components/AuthContext'
 import { patterns } from '@/utils/Consts'
 import { saveFocusedPatterns } from '@/utils/UserFunctions'
+import { redirect } from 'next/navigation'
 import { useState } from 'react'
 
 export default function OnboardingPage() {
+	const { user } = useAuth()
+
 	const [patternsSelected, setPatternsSelected] = useState(
 		Object.fromEntries(patterns.map((pattern) => [pattern, false]))
 	)
+
+	useProtectedRoute()
+
+	const handleContinue = async () => {
+		await user!.saveFocusedPatterns(patternsSelected)
+		redirect('/practice')
+	}
 
 	return (
 		<div className="bg-background overflow-hidden h-[100vh] flex flex-col justify-center items-center px-5">
@@ -33,9 +44,7 @@ export default function OnboardingPage() {
 				</div>
 
 				<button
-					onClick={async () =>
-						await saveFocusedPatterns(patternsSelected)
-					}
+					onClick={handleContinue}
 					className="self-end mt-auto font-medium bg-theme-orange hover:bg-theme-hover-orange transition-colors px-5 py-3 text-base rounded-4xl"
 				>
 					Continue

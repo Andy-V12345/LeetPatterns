@@ -3,7 +3,7 @@ import { Pattern } from '@/utils/Types'
 import { redirect } from 'next/navigation'
 
 export class LocalUser implements AppUser {
-	async getFocusedPatterns(): Promise<Pattern[]> {
+	async getFocusedPatterns(): Promise<Pattern[] | null> {
 		if (typeof window !== 'undefined') {
 			const storedFocusedPatterns =
 				localStorage.getItem('focusedPatterns')
@@ -16,7 +16,7 @@ export class LocalUser implements AppUser {
 			}
 		}
 
-		return []
+		return null
 	}
 
 	async saveFocusedPatterns(focusedPatterns: {

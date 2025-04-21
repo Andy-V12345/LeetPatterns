@@ -28,7 +28,7 @@ export default function Home() {
 				</p>
 
 				<Link
-					href="/login"
+					href="/signup"
 					className="hover:bg-theme-hover-orange transition-colors py-7 px-9 mt-7 font-bold text-2xl bg-theme-orange rounded-lg"
 				>
 					Get Started - It's All Free

@@ -1,3 +1,15 @@
+'use client'
+
+import { useAuth, useProtectedRoute } from '@/components/AuthContext'
+
 export default function DashboardPage() {
-	return <div>dashboard</div>
+	const { logout } = useAuth()
+
+	useProtectedRoute()
+
+	return (
+		<div>
+			<button onClick={logout}>dashboard</button>
+		</div>
+	)
 }

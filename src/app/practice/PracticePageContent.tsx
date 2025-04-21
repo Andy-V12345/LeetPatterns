@@ -1,5 +1,6 @@
 'use client'
 
+import { useProtectedRoute } from '@/components/AuthContext'
 import ProblemArea from '@/components/ProblemArea'
 import { Pattern } from '@/utils/Types'
 import Link from 'next/link'
@@ -12,6 +13,8 @@ interface PracticePageContentProps {
 export default function PracticePageContent({
 	asyncFocusedPatterns,
 }: PracticePageContentProps) {
+	useProtectedRoute()
+
 	const focusedPatterns = use(asyncFocusedPatterns)
 
 	return (

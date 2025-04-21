@@ -8,12 +8,16 @@ import { redirect } from 'next/navigation'
 
 export class FirebaseUser implements AppUser {
 	private uid = process.env.TEST_USER_ID as string
+	private firstName: string
+	private lastName: string
 
-	constructor(uid: string) {
+	constructor(uid: string, firstName: string, lastName: string) {
 		this.uid = uid
+		this.firstName = firstName
+		this.lastName = lastName
 	}
 
-	async getFocusedPatterns(): Promise<Pattern[]> {
+	async getFocusedPatterns(): Promise<Pattern[] | null> {
 		const focusedPatterns = await getFocusedPatternsFirestore(this.uid)
 
 		if (focusedPatterns != null) {
@@ -22,7 +26,7 @@ export class FirebaseUser implements AppUser {
 			) as Pattern[]
 		}
 
-		return []
+		return null
 	}
 
 	async saveFocusedPatterns(focusedPatterns: {

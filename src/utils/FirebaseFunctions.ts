@@ -1,7 +1,9 @@
 import { addDoc, doc, getDoc, setDoc } from 'firebase/firestore'
 import { db } from './FirebaseConfig'
+import { FirebaseUser } from '@/classes/FirebaseUser'
 
 const FOCUSED_PATTERNS_COLLECTION = 'focusedPatterns'
+const USER_INFO_COLLECTION = 'users'
 
 /**
  * Gets the focused patterns of a user
@@ -32,4 +34,31 @@ export async function saveFocusedPatternsFirestore(
 	await setDoc(doc(db, FOCUSED_PATTERNS_COLLECTION, uid), focusedPatterns, {
 		merge: true,
 	})
+}
+
+export async function saveUserInfo(
+	uid: string,
+	firstName: string,
+	lastName: string
+) {
+	await setDoc(
+		doc(db, USER_INFO_COLLECTION, uid),
+		{
+			firstName: firstName,
+			lastName: lastName,
+		},
+		{ merge: true }
+	)
+}
+
+export async function getUserInfo(uid: string): Promise<FirebaseUser | null> {
+	const docRef = doc(db, USER_INFO_COLLECTION, uid)
+	const docSnap = await getDoc(docRef)
+
+	if (docSnap.exists()) {
+		const data = docSnap.data()
+		return new FirebaseUser(uid, data.firstName, data.lastName)
+	}
+
+	return null
 }
