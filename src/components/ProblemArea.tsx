@@ -32,6 +32,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 
 	const preloadProblems = useCallback(async () => {
 		if (focusedPatterns && problemQ.length < 2) {
+			console.log('focused:', focusedPatterns)
 			const next = await generateProblem(focusedPatterns, patternStats)
 			setProblemQ((prev) => [...prev, next])
 		}
@@ -149,7 +150,9 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	}, [problem])
 
 	return (
-		<div className="flex gap-5 self-stretch h-4/5 max-h-[600px] relative">
+		<div
+			className={`flex gap-5 self-stretch ${firstLoad ? 'h-full' : 'h-4/5 max-h-[600px]'} relative`}
+		>
 			<AnimatePresence mode="wait">
 				{/* Recap Card */}
 				{showRecap && (

@@ -1,13 +1,10 @@
-import { getFocusedPatterns } from '@/utils/UserFunctions'
-import { Suspense } from 'react'
+'use client'
+
 import PracticePageContent from './PracticePageContent'
+import { useProtectedRoute } from '@/components/AuthContext'
 
 export default function PracticePage() {
-	const focusedPatterns = getFocusedPatterns()
+	useProtectedRoute()
 
-	return (
-		<Suspense>
-			<PracticePageContent asyncFocusedPatterns={focusedPatterns} />
-		</Suspense>
-	)
+	return <PracticePageContent />
 }
