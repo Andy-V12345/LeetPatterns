@@ -1,40 +1,39 @@
-import { LeetcodeSample } from "@/interfaces/LeetcodeSample"
-import { Pattern } from "./Types";
+import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
+import { Pattern } from './Types'
 
 export const patterns: Pattern[] = [
-    "Arrays / Strings",
-    "BFS",
-    "Backtracking",
-    "Binary Search",
-    "DFS",
-    "Dynamic Programming",
-    "Greedy",
-    "Hashing",
-    "Heaps",
-    "Sliding Window",
-    "Stacks",
-    "Topological Sort",
-    "Two Pointers",
-    "Union-Find"
+	'Arrays and Strings',
+	'BFS',
+	'Backtracking',
+	'Binary Search',
+	'DFS',
+	'Dynamic Programming',
+	'Greedy',
+	'Hashing',
+	'Heaps',
+	'Sliding Window',
+	'Stacks',
+	'Topological Sort',
+	'Two Pointers',
+	'Union-Find',
 ]
 
 export const patternColors: Record<Pattern, string> = {
-	"Arrays / Strings": "#F97316",        // vivid orange
-	"BFS": "#06B6D4",                     // cyan
-	"Backtracking": "#EC4899",           // pink
-	"Binary Search": "#0EA5E9",          // sky blue
-	"DFS": "#3B82F6",                    // classic blue
-	"Dynamic Programming": "#8B5CF6",    // violet
-	"Greedy": "#F59E0B",                 // amber/gold
-	"Hashing": "#10B981",                // emerald
-	"Heaps": "#EF4444",                  // red
-	"Sliding Window": "#22C55E",         // green
-	"Stacks": "#A855F7",                 // purple
-	"Topological Sort": "#EAB308",       // yellow
-	"Two Pointers": "#14B8A6",           // teal
-	"Union-Find": "#FB7185",             // rose
-};
-
+	'Arrays and Strings': '#F97316', // vivid orange
+	BFS: '#06B6D4', // cyan
+	Backtracking: '#EC4899', // pink
+	'Binary Search': '#0EA5E9', // sky blue
+	DFS: '#3B82F6', // classic blue
+	'Dynamic Programming': '#8B5CF6', // violet
+	Greedy: '#F59E0B', // amber/gold
+	Hashing: '#10B981', // emerald
+	Heaps: '#EF4444', // red
+	'Sliding Window': '#22C55E', // green
+	Stacks: '#A855F7', // purple
+	'Topological Sort': '#EAB308', // yellow
+	'Two Pointers': '#14B8A6', // teal
+	'Union-Find': '#FB7185', // rose
+}
 
 export const gemini_system_intructions = `
 You are an AI assistant embedded in a learning platform that helps users identify solution patterns in coding problems. Your task is to generate original LeetCode-style problems that test for specific solution patterns — but framed in fresh, real-world, or creatively abstracted contexts. You must also provide explanations for why that pattern is the best fit. The user will not solve the problem; they will only identify which solution pattern applies. Your outputs must be clear, concise, and logically aligned with the selected pattern.
@@ -79,7 +78,7 @@ Text format for the "problem" and "explanation" fields:
 	•	Avoid extremely unrelated patterns (e.g., don’t offer Bit Manipulation for a graph traversal).
 
 Patterns you may use: [
-    "Arrays / Strings",
+    "Arrays and Strings",
     "BFS",
     "Backtracking",
     "Binary Search",
@@ -101,201 +100,201 @@ Patterns you may use: [
 	•	Blend multiple patterns unless explicitly required (stick to one core pattern)
 `
 
-export const leetcode_practice_problems: {[key: string]: LeetcodeSample[]} = {
-	"Arrays / Strings": [
+export const leetcode_practice_problems: { [key: string]: LeetcodeSample[] } = {
+	'Arrays and Strings': [
 		{
-			"title": "Rotate Array",
-			"url": "https://leetcode.com/problems/rotate-array/"
+			title: 'Rotate Array',
+			url: 'https://leetcode.com/problems/rotate-array/',
 		},
 		{
-			"title": "Longest Common Prefix",
-			"url": "https://leetcode.com/problems/longest-common-prefix/"
+			title: 'Longest Common Prefix',
+			url: 'https://leetcode.com/problems/longest-common-prefix/',
 		},
 		{
-			"title": "Spiral Matrix",
-			"url": "https://leetcode.com/problems/spiral-matrix/"
-		}
+			title: 'Spiral Matrix',
+			url: 'https://leetcode.com/problems/spiral-matrix/',
+		},
 	],
-	"BFS": [
+	BFS: [
 		{
-			"title": "Word Ladder",
-			"url": "https://leetcode.com/problems/word-ladder/"
+			title: 'Word Ladder',
+			url: 'https://leetcode.com/problems/word-ladder/',
 		},
 		{
-			"title": "Open the Lock",
-			"url": "https://leetcode.com/problems/open-the-lock/"
+			title: 'Open the Lock',
+			url: 'https://leetcode.com/problems/open-the-lock/',
 		},
 		{
-			"title": "Rotting Oranges",
-			"url": "https://leetcode.com/problems/rotting-oranges/"
-		}
+			title: 'Rotting Oranges',
+			url: 'https://leetcode.com/problems/rotting-oranges/',
+		},
 	],
-	"Backtracking": [
+	Backtracking: [
 		{
-			"title": "Letter Combinations of a Phone Number",
-			"url": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/"
+			title: 'Letter Combinations of a Phone Number',
+			url: 'https://leetcode.com/problems/letter-combinations-of-a-phone-number/',
 		},
 		{
-			"title": "Subsets",
-			"url": "https://leetcode.com/problems/subsets/"
+			title: 'Subsets',
+			url: 'https://leetcode.com/problems/subsets/',
 		},
 		{
-			"title": "Word Search",
-			"url": "https://leetcode.com/problems/word-search/"
-		}
+			title: 'Word Search',
+			url: 'https://leetcode.com/problems/word-search/',
+		},
 	],
-	"Binary Search": [
+	'Binary Search': [
 		{
-			"title": "Search in Rotated Sorted Array",
-			"url": "https://leetcode.com/problems/search-in-rotated-sorted-array/"
+			title: 'Search in Rotated Sorted Array',
+			url: 'https://leetcode.com/problems/search-in-rotated-sorted-array/',
 		},
 		{
-			"title": "Find Minimum in Rotated Sorted Array",
-			"url": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/"
+			title: 'Find Minimum in Rotated Sorted Array',
+			url: 'https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/',
 		},
 		{
-			"title": "Median of Two Sorted Arrays",
-			"url": "https://leetcode.com/problems/median-of-two-sorted-arrays/"
-		}
+			title: 'Median of Two Sorted Arrays',
+			url: 'https://leetcode.com/problems/median-of-two-sorted-arrays/',
+		},
 	],
-	"DFS": [
+	DFS: [
 		{
-			"title": "Number of Islands",
-			"url": "https://leetcode.com/problems/number-of-islands/"
+			title: 'Number of Islands',
+			url: 'https://leetcode.com/problems/number-of-islands/',
 		},
 		{
-			"title": "Clone Graph",
-			"url": "https://leetcode.com/problems/clone-graph/"
+			title: 'Clone Graph',
+			url: 'https://leetcode.com/problems/clone-graph/',
 		},
 		{
-			"title": "Surrounded Regions",
-			"url": "https://leetcode.com/problems/surrounded-regions/"
-		}
+			title: 'Surrounded Regions',
+			url: 'https://leetcode.com/problems/surrounded-regions/',
+		},
 	],
-	"Dynamic Programming": [
+	'Dynamic Programming': [
 		{
-			"title": "House Robber",
-			"url": "https://leetcode.com/problems/house-robber/"
+			title: 'House Robber',
+			url: 'https://leetcode.com/problems/house-robber/',
 		},
 		{
-			"title": "Coin Change",
-			"url": "https://leetcode.com/problems/coin-change/"
+			title: 'Coin Change',
+			url: 'https://leetcode.com/problems/coin-change/',
 		},
 		{
-			"title": "Longest Palindromic Substring",
-			"url": "https://leetcode.com/problems/longest-palindromic-substring/"
-		}
+			title: 'Longest Palindromic Substring',
+			url: 'https://leetcode.com/problems/longest-palindromic-substring/',
+		},
 	],
-	"Greedy": [
+	Greedy: [
 		{
-			"title": "Jump Game",
-			"url": "https://leetcode.com/problems/jump-game/"
+			title: 'Jump Game',
+			url: 'https://leetcode.com/problems/jump-game/',
 		},
 		{
-			"title": "Partition Labels",
-			"url": "https://leetcode.com/problems/partition-labels/"
+			title: 'Partition Labels',
+			url: 'https://leetcode.com/problems/partition-labels/',
 		},
 		{
-			"title": "Candy",
-			"url": "https://leetcode.com/problems/candy/"
-		}
+			title: 'Candy',
+			url: 'https://leetcode.com/problems/candy/',
+		},
 	],
-	"Hashing": [
+	Hashing: [
 		{
-			"title": "Group Anagrams",
-			"url": "https://leetcode.com/problems/group-anagrams/"
+			title: 'Group Anagrams',
+			url: 'https://leetcode.com/problems/group-anagrams/',
 		},
 		{
-			"title": "Valid Anagram",
-			"url": "https://leetcode.com/problems/valid-anagram/"
+			title: 'Valid Anagram',
+			url: 'https://leetcode.com/problems/valid-anagram/',
 		},
 		{
-			"title": "Top K Frequent Elements",
-			"url": "https://leetcode.com/problems/top-k-frequent-elements/"
-		}
+			title: 'Top K Frequent Elements',
+			url: 'https://leetcode.com/problems/top-k-frequent-elements/',
+		},
 	],
-	"Heaps": [
+	Heaps: [
 		{
-			"title": "Top K Frequent Words",
-			"url": "https://leetcode.com/problems/top-k-frequent-words/"
+			title: 'Top K Frequent Words',
+			url: 'https://leetcode.com/problems/top-k-frequent-words/',
 		},
 		{
-			"title": "Merge K Sorted Lists",
-			"url": "https://leetcode.com/problems/merge-k-sorted-lists/"
+			title: 'Merge K Sorted Lists',
+			url: 'https://leetcode.com/problems/merge-k-sorted-lists/',
 		},
 		{
-			"title": "Find Median from Data Stream",
-			"url": "https://leetcode.com/problems/find-median-from-data-stream/"
-		}
+			title: 'Find Median from Data Stream',
+			url: 'https://leetcode.com/problems/find-median-from-data-stream/',
+		},
 	],
-	"Sliding Window": [
+	'Sliding Window': [
 		{
-			"title": "Minimum Size Subarray Sum",
-			"url": "https://leetcode.com/problems/minimum-size-subarray-sum/"
+			title: 'Minimum Size Subarray Sum',
+			url: 'https://leetcode.com/problems/minimum-size-subarray-sum/',
 		},
 		{
-			"title": "Longest Substring Without Repeating Characters",
-			"url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/"
+			title: 'Longest Substring Without Repeating Characters',
+			url: 'https://leetcode.com/problems/longest-substring-without-repeating-characters/',
 		},
 		{
-			"title": "Maximum Average Subarray I",
-			"url": "https://leetcode.com/problems/maximum-average-subarray-i/"
-		}
+			title: 'Maximum Average Subarray I',
+			url: 'https://leetcode.com/problems/maximum-average-subarray-i/',
+		},
 	],
-	"Stacks": [
+	Stacks: [
 		{
-			"title": "Valid Parentheses",
-			"url": "https://leetcode.com/problems/valid-parentheses/"
+			title: 'Valid Parentheses',
+			url: 'https://leetcode.com/problems/valid-parentheses/',
 		},
 		{
-			"title": "Daily Temperatures",
-			"url": "https://leetcode.com/problems/daily-temperatures/"
+			title: 'Daily Temperatures',
+			url: 'https://leetcode.com/problems/daily-temperatures/',
 		},
 		{
-			"title": "Min Stack",
-			"url": "https://leetcode.com/problems/min-stack/"
-		}
+			title: 'Min Stack',
+			url: 'https://leetcode.com/problems/min-stack/',
+		},
 	],
-	"Topological Sort": [
+	'Topological Sort': [
 		{
-			"title": "Course Schedule",
-			"url": "https://leetcode.com/problems/course-schedule/"
+			title: 'Course Schedule',
+			url: 'https://leetcode.com/problems/course-schedule/',
 		},
 		{
-			"title": "Alien Dictionary",
-			"url": "https://leetcode.com/problems/alien-dictionary/"
+			title: 'Alien Dictionary',
+			url: 'https://leetcode.com/problems/alien-dictionary/',
 		},
 		{
-			"title": "Course Schedule II",
-			"url": "https://leetcode.com/problems/course-schedule-ii/"
-		}
+			title: 'Course Schedule II',
+			url: 'https://leetcode.com/problems/course-schedule-ii/',
+		},
 	],
-	"Two Pointers": [
+	'Two Pointers': [
 		{
-			"title": "Two Sum II - Input Array Is Sorted",
-			"url": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/"
+			title: 'Two Sum II - Input Array Is Sorted',
+			url: 'https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/',
 		},
 		{
-			"title": "3Sum",
-			"url": "https://leetcode.com/problems/3sum/"
+			title: '3Sum',
+			url: 'https://leetcode.com/problems/3sum/',
 		},
 		{
-			"title": "Remove Duplicates from Sorted Array",
-			"url": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/"
-		}
+			title: 'Remove Duplicates from Sorted Array',
+			url: 'https://leetcode.com/problems/remove-duplicates-from-sorted-array/',
+		},
 	],
-	"Union-Find": [
+	'Union-Find': [
 		{
-			"title": "Number of Provinces",
-			"url": "https://leetcode.com/problems/number-of-provinces/"
+			title: 'Number of Provinces',
+			url: 'https://leetcode.com/problems/number-of-provinces/',
 		},
 		{
-			"title": "Accounts Merge",
-			"url": "https://leetcode.com/problems/accounts-merge/"
+			title: 'Accounts Merge',
+			url: 'https://leetcode.com/problems/accounts-merge/',
 		},
 		{
-			"title": "Redundant Connection",
-			"url": "https://leetcode.com/problems/redundant-connection/"
-		}
-	]
+			title: 'Redundant Connection',
+			url: 'https://leetcode.com/problems/redundant-connection/',
+		},
+	],
 }

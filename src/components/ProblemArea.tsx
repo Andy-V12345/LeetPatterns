@@ -8,6 +8,7 @@ import RecapCard from './RecapCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PatternStat } from '@/interfaces/PatternStat'
 import SyncLoader from 'react-spinners/SyncLoader'
+import { useAuth } from './AuthContext'
 
 interface ProblemAreaProps {
 	focusedPatterns: Pattern[] | undefined | null
@@ -29,6 +30,8 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const [patternStats, setPatternStats] = useState<PatternStat[]>([])
 	const [problemQ, setProblemQ] = useState<Problem[]>([])
 	const [firstLoad, setFirstLoad] = useState(true)
+
+	const { user } = useAuth()
 
 	const preloadProblems = useCallback(async () => {
 		if (focusedPatterns && problemQ.length < 2) {
@@ -99,35 +102,35 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	])
 
 	const updatePatternStats = useCallback(
-		(pattern: Pattern, isCorrect: boolean) => {
-			setPatternStats((prevStats) => {
-				const existingIndex = prevStats.findIndex(
-					(stat) => stat.pattern === pattern
-				)
+		async (pattern: Pattern, isCorrect: boolean) => {
+			const updatedStats = patternStats
 
-				if (existingIndex !== -1) {
-					const updated = [...prevStats]
-					const stat = updated[existingIndex]
-					updated[existingIndex] = {
-						...stat,
-						correct: stat.correct + (isCorrect ? 1 : 0),
-						attempts: stat.attempts + 1,
-					}
+			const existingIndex = updatedStats.findIndex(
+				(stat) => stat.pattern === pattern
+			)
 
-					return updated
-				} else {
-					return [
-						...prevStats,
-						{
-							pattern,
-							correct: isCorrect ? 1 : 0,
-							attempts: 1,
-						},
-					]
+			if (existingIndex !== -1) {
+				const stat = updatedStats[existingIndex]
+				updatedStats[existingIndex] = {
+					...stat,
+					correct: stat.correct + (isCorrect ? 1 : 0),
+					attempts: stat.attempts + 1,
 				}
-			})
+			} else {
+				updatedStats.push({
+					pattern,
+					correct: isCorrect ? 1 : 0,
+					attempts: 1,
+				})
+			}
+
+			if (user) {
+				await user!.updatePatternStats(pattern, isCorrect)
+			}
+
+			setPatternStats(updatedStats)
 		},
-		[]
+		[user]
 	)
 
 	useEffect(() => {
@@ -150,78 +153,86 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	}, [problem])
 
 	return (
-		<div
-			className={`flex gap-5 self-stretch ${firstLoad ? 'h-full' : 'h-4/5 max-h-[600px]'} relative`}
-		>
+		<div className={`self-stretch h-full relative`}>
 			<AnimatePresence mode="wait">
-				{/* Recap Card */}
-				{showRecap && (
-					<motion.div
-						key="recap"
-						initial={{ x: '100%', opacity: 0 }}
-						animate={{ x: 0, opacity: 1 }}
-						exit={{ x: '-100%', opacity: 0 }}
-						transition={cardTransition}
-						className="w-full h-full"
-					>
-						<RecapCard
-							patternStats={patternStats}
-							createNewProblem={createNewProblem}
-						/>
-					</motion.div>
-				)}
-
 				{/* Initial Loading */}
 				{firstLoad && (
-					<motion.div
-						className="w-full h-full flex flex-col items-center justify-center gap-6"
-						initial={{ opacity: 1 }}
-						animate={{ opacity: 1 }}
-						exit={{ opacity: 0 }}
-						transition={{ duration: 0.4 }}
+					<div
+						key="load-div"
+						className={`flex gap-5 self-stretch h-full relative`}
 					>
-						<SyncLoader
-							loading={firstLoad}
-							color="var(--theme-orange)"
-							size={11}
-						/>
+						<motion.div
+							className="w-full h-full flex flex-col items-center justify-center gap-6"
+							initial={{ opacity: 1 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ duration: 0.4 }}
+						>
+							<SyncLoader
+								loading={firstLoad}
+								color="var(--theme-orange)"
+								size={11}
+							/>
 
-						<p className="text-foreground font-medium text-base">
-							Generating problems...
-						</p>
-					</motion.div>
+							<p className="text-foreground font-medium text-base">
+								Generating problems...
+							</p>
+						</motion.div>
+					</div>
 				)}
 
-				{/* Problem Card */}
-				{!showRecap && !firstLoad && (
-					<motion.div
-						key={`problem-${questionCount}`}
-						initial={{ x: '100%', opacity: 0 }}
-						animate={{ x: 0, opacity: 1 }}
-						exit={{ x: '-100%', opacity: 0 }}
-						transition={cardTransition}
-						className="flex max-h-full self-stretch w-full gap-5"
-					>
-						{(problem != null || cardState === 'loading') && (
-							<>
-								<ProblemCard
-									problem={problem}
-									cardState={cardState}
-									setCardState={setCardState}
-									showAnswer={showAnswer}
-									setShowAnswer={setShowAnswer}
-									updatePatternStats={updatePatternStats}
-								/>
-								<ProblemAnswer
-									showAnswer={showAnswer}
-									cardState={cardState}
-									answer={problem?.answer ?? null}
-									createNewProblem={createNewProblem}
-								/>
-							</>
-						)}
-					</motion.div>
-				)}
+				<div
+					key="problem-div"
+					className={`flex gap-5 self-stretch h-4/5 max-h-[600px] relative`}
+				>
+					{/* Problem Card */}
+					{!showRecap && !firstLoad && (
+						<motion.div
+							key={`problem-${questionCount}`}
+							initial={{ x: '100%', opacity: 0 }}
+							animate={{ x: 0, opacity: 1 }}
+							exit={{ x: '-100%', opacity: 0 }}
+							transition={cardTransition}
+							className="flex max-h-full self-stretch w-full gap-5"
+						>
+							{(problem != null || cardState === 'loading') && (
+								<>
+									<ProblemCard
+										problem={problem}
+										cardState={cardState}
+										setCardState={setCardState}
+										showAnswer={showAnswer}
+										setShowAnswer={setShowAnswer}
+										updatePatternStats={updatePatternStats}
+									/>
+									<ProblemAnswer
+										showAnswer={showAnswer}
+										cardState={cardState}
+										answer={problem?.answer ?? null}
+										createNewProblem={createNewProblem}
+									/>
+								</>
+							)}
+						</motion.div>
+					)}
+
+					{/* Recap Card */}
+					{showRecap && (
+						<motion.div
+							key="recap"
+							initial={{ x: '100%', opacity: 0 }}
+							animate={{ x: 0, opacity: 1 }}
+							exit={{ x: '-100%', opacity: 0 }}
+							transition={cardTransition}
+							className="w-full h-full"
+						>
+							<RecapCard
+								patternStats={patternStats}
+								createNewProblem={createNewProblem}
+							/>
+						</motion.div>
+					)}
+				</div>
 			</AnimatePresence>
 		</div>
 	)

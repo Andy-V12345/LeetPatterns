@@ -1,7 +1,9 @@
 import { AppUser } from '@/interfaces/AppUser'
+import { PatternStat } from '@/interfaces/PatternStat'
 import {
 	getFocusedPatternsFirestore,
 	saveFocusedPatternsFirestore,
+	updatePatternStatsFirestore,
 } from '@/utils/FirebaseFunctions'
 import { Pattern } from '@/utils/Types'
 import { redirect } from 'next/navigation'
@@ -15,6 +17,13 @@ export class FirebaseUser implements AppUser {
 		this.uid = uid
 		this.firstName = firstName
 		this.lastName = lastName
+	}
+
+	async updatePatternStats(
+		pattern: Pattern,
+		isCorrect: boolean
+	): Promise<void> {
+		await updatePatternStatsFirestore(this.uid, pattern, isCorrect)
 	}
 
 	async getFocusedPatterns(): Promise<Pattern[] | null> {

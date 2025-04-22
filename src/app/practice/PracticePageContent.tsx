@@ -2,13 +2,9 @@ import { useAuth } from '@/components/AuthContext'
 import ProblemArea from '@/components/ProblemArea'
 import { Pattern, UIState } from '@/utils/Types'
 import Link from 'next/link'
-import { use, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import SyncLoader from 'react-spinners/SyncLoader'
-
-interface PracticePageContentProps {
-	asyncFocusedPatterns: Promise<Pattern[]>
-}
 
 export default function PracticePageContent() {
 	const { user, isLoading } = useAuth()

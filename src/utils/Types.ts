@@ -1,7 +1,7 @@
 export type ProblemCardState = 'default' | 'correct' | 'wrong' | 'loading'
 
 export type Pattern =
-	| 'Arrays / Strings'
+	| 'Arrays and Strings'
 	| 'BFS'
 	| 'Backtracking'
 	| 'Binary Search'

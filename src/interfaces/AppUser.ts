@@ -5,4 +5,5 @@ export interface AppUser {
 	saveFocusedPatterns(focusedPatterns: {
 		[k: string]: boolean
 	}): Promise<void>
+	updatePatternStats(pattern: Pattern, isCorrect: boolean): Promise<void>
 }

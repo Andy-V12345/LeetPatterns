@@ -1,9 +1,13 @@
-import { addDoc, doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { increment } from 'firebase/firestore'
 import { db } from './FirebaseConfig'
 import { FirebaseUser } from '@/classes/FirebaseUser'
+import { PatternStat } from '@/interfaces/PatternStat'
+import { Pattern } from './Types'
 
 const FOCUSED_PATTERNS_COLLECTION = 'focusedPatterns'
 const USER_INFO_COLLECTION = 'users'
+const PATTERN_STATS_COLLECTION = 'patternStats'
 
 /**
  * Gets the focused patterns of a user
@@ -61,4 +65,51 @@ export async function getUserInfo(uid: string): Promise<FirebaseUser | null> {
 	}
 
 	return null
+}
+
+export async function updatePatternStatsFirestore(
+	uid: string,
+	pattern: Pattern,
+	isCorrect: boolean
+) {
+	const docRef = doc(db, PATTERN_STATS_COLLECTION, uid)
+	const docSnap = await getDoc(docRef)
+
+	if (!docSnap.exists()) {
+		await setDoc(docRef, {
+			[`${pattern}`]: {
+				correct: isCorrect ? 1 : 0,
+				attempts: 1,
+			},
+		})
+		return
+	}
+
+	await updateDoc(docRef, {
+		[`${pattern as string}.correct`]: increment(isCorrect ? 1 : 0),
+		[`${pattern as string}.attempts`]: increment(1),
+	})
+}
+
+export async function getPatternStatsFirestore(
+	uid: string
+): Promise<PatternStat[]> {
+	const docRef = doc(db, PATTERN_STATS_COLLECTION, uid)
+	const docSnap = await getDoc(docRef)
+
+	if (!docSnap.exists()) {
+		return []
+	}
+
+	const data = docSnap.data()
+	const patternStats: PatternStat[] = Object.entries(data).map(
+		([pattern, stats]) =>
+			({
+				pattern,
+				correct: stats.correct ?? 0,
+				attempts: stats.attempts ?? 0,
+			}) as PatternStat
+	)
+
+	return patternStats
 }
