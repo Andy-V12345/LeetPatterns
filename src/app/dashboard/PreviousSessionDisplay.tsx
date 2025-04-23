@@ -11,7 +11,6 @@ import { redirect } from 'next/navigation'
 import BeatLoader from 'react-spinners/BeatLoader'
 
 interface PreviousSessionDisplayProps {
-	uiState: UIState
 	prevSession: PrevSession | null
 }
 
@@ -24,7 +23,6 @@ function calculateTotalAttempts(patternStats: PatternStat[]): number {
 }
 
 export default function PreviousSessionDisplay({
-	uiState,
 	prevSession,
 }: PreviousSessionDisplayProps) {
 	const { user } = useAuth()

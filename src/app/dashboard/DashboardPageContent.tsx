@@ -7,6 +7,7 @@ import { PrevSession } from '@/interfaces/PrevSession'
 import PreviousSessionDisplay from './PreviousSessionDisplay'
 import PatternStatsGrid from './PatternStatsGrid'
 import SyncLoader from 'react-spinners/SyncLoader'
+import { SidebarTrigger } from '@/components/ui/sidebar'
 
 export default function DashboardPageContent() {
 	const { user, isLoading } = useAuth()
@@ -55,7 +56,13 @@ export default function DashboardPageContent() {
 
 	return (
 		<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] overflow-scroll">
-			<h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
+			<div className="flex items-center gap-5">
+				<SidebarTrigger className="" />
+
+				<h1 className="text-3xl font-bold text-foreground">
+					Dashboard
+				</h1>
+			</div>
 
 			{uiState == 'loading' ? (
 				<div className="mx-auto my-auto flex flex-col gap-6 justify-center items-center">
@@ -71,10 +78,7 @@ export default function DashboardPageContent() {
 				</div>
 			) : (
 				<>
-					<PreviousSessionDisplay
-						uiState={uiState}
-						prevSession={prevSession}
-					/>
+					<PreviousSessionDisplay prevSession={prevSession} />
 
 					<PatternStatsGrid
 						patternStats={patternStats}
