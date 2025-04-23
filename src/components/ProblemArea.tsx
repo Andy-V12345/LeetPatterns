@@ -145,6 +145,20 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 		}
 	}, [focusedPatterns, problem])
 
+	const saveSession = useCallback(async () => {
+		if (user && focusedPatterns) {
+			await user.savePrevSession(focusedPatterns, patternStats)
+		}
+	}, [focusedPatterns, user, patternStats])
+
+	useEffect(() => {
+		return () => {
+			if (user) {
+				saveSession()
+			}
+		}
+	}, [user, focusedPatterns])
+
 	useEffect(() => {
 		if (problem) {
 			setCardState('default')

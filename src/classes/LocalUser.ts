@@ -1,9 +1,56 @@
 import { AppUser } from '@/interfaces/AppUser'
 import { PatternStat } from '@/interfaces/PatternStat'
+import { PrevSession } from '@/interfaces/PrevSession'
 import { Pattern } from '@/utils/Types'
+import { getWeakPatterns } from '@/utils/UtilFunctions'
 import { redirect } from 'next/navigation'
 
 export class LocalUser implements AppUser {
+	async savePrevSession(
+		focusedPatterns: Pattern[],
+		patternStats: PatternStat[]
+	): Promise<void> {
+		if (typeof window !== 'undefined') {
+			const weakPatterns = getWeakPatterns(patternStats)
+			const prevSession: PrevSession = {
+				focusedPatterns,
+				weakPatterns,
+				patternStats,
+			}
+			localStorage.setItem('prevSession', JSON.stringify(prevSession))
+		}
+	}
+
+	async getPrevSession(): Promise<PrevSession | null> {
+		if (typeof window !== 'undefined') {
+			const storedSession = localStorage.getItem('prevSession')
+			if (storedSession) {
+				try {
+					const prevSession: PrevSession = JSON.parse(storedSession)
+
+					return prevSession
+				} catch (error) {
+					return null
+				}
+			}
+		}
+
+		return null
+	}
+
+	async getPatternStats(): Promise<PatternStat[] | null> {
+		if (typeof window !== 'undefined') {
+			const stored = localStorage.getItem('localPatternStats')
+			const existingStats: PatternStat[] = stored
+				? JSON.parse(stored)
+				: []
+
+			return existingStats
+		}
+
+		return null
+	}
+
 	async updatePatternStats(
 		pattern: Pattern,
 		isCorrect: boolean

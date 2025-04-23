@@ -1,8 +1,12 @@
 import { AppUser } from '@/interfaces/AppUser'
 import { PatternStat } from '@/interfaces/PatternStat'
+import { PrevSession } from '@/interfaces/PrevSession'
 import {
 	getFocusedPatternsFirestore,
+	getPatternStatsFirestore,
+	getPrevSessionFirestore,
 	saveFocusedPatternsFirestore,
+	setPrevSession,
 	updatePatternStatsFirestore,
 } from '@/utils/FirebaseFunctions'
 import { Pattern } from '@/utils/Types'
@@ -17,6 +21,20 @@ export class FirebaseUser implements AppUser {
 		this.uid = uid
 		this.firstName = firstName
 		this.lastName = lastName
+	}
+	async savePrevSession(
+		focusedPatterns: Pattern[],
+		patternStats: PatternStat[]
+	): Promise<void> {
+		await setPrevSession(this.uid, focusedPatterns, patternStats)
+	}
+
+	async getPrevSession(): Promise<PrevSession | null> {
+		return await getPrevSessionFirestore(this.uid)
+	}
+
+	async getPatternStats(): Promise<PatternStat[] | null> {
+		return await getPatternStatsFirestore(this.uid)
 	}
 
 	async updatePatternStats(

@@ -14,7 +14,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body className={`text-foreground font-poppins antialiased`}>
+			<body
+				className={`text-foreground font-poppins antialiased bg-background`}
+			>
 				<AuthProvider>{children}</AuthProvider>
 			</body>
 		</html>

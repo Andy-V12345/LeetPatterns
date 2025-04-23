@@ -4,10 +4,13 @@ import { db } from './FirebaseConfig'
 import { FirebaseUser } from '@/classes/FirebaseUser'
 import { PatternStat } from '@/interfaces/PatternStat'
 import { Pattern } from './Types'
+import { PrevSession } from '@/interfaces/PrevSession'
+import { getWeakPatterns } from './UtilFunctions'
 
 const FOCUSED_PATTERNS_COLLECTION = 'focusedPatterns'
 const USER_INFO_COLLECTION = 'users'
 const PATTERN_STATS_COLLECTION = 'patternStats'
+const PREV_SESSION_COLLECTION = 'prevSessions'
 
 /**
  * Gets the focused patterns of a user
@@ -112,4 +115,43 @@ export async function getPatternStatsFirestore(
 	)
 
 	return patternStats
+}
+
+export async function getPrevSessionFirestore(
+	uid: string
+): Promise<PrevSession | null> {
+	const docRef = doc(db, PREV_SESSION_COLLECTION, uid)
+	const docSnap = await getDoc(docRef)
+
+	if (docSnap.exists()) {
+		const data = docSnap.data()
+		const prevSession: PrevSession = {
+			patternStats: data.patternStats,
+			weakPatterns: data.weakPatterns,
+			focusedPatterns: data.focusedPatterns,
+		}
+
+		return prevSession
+	}
+
+	return null
+}
+
+export async function setPrevSession(
+	uid: string,
+	focusedPatterns: Pattern[],
+	patternStats: PatternStat[]
+) {
+	const docRef = doc(db, PREV_SESSION_COLLECTION, uid)
+	await setDoc(
+		docRef,
+		{
+			weakPatterns: getWeakPatterns(patternStats),
+			patternStats: patternStats,
+			focusedPatterns: focusedPatterns,
+		},
+		{
+			merge: true,
+		}
+	)
 }

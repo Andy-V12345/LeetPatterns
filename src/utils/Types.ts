@@ -17,3 +17,10 @@ export type Pattern =
 	| 'Union-Find'
 
 export type UIState = 'default' | 'loading' | 'error'
+
+export type PatternSummary = {
+	name: string
+	description: string
+	howToIdentify: string
+	learnMore: string
+}

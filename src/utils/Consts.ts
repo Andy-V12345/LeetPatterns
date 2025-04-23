@@ -1,5 +1,5 @@
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
-import { Pattern } from './Types'
+import { Pattern, PatternSummary } from './Types'
 
 export const patterns: Pattern[] = [
 	'Arrays and Strings',
@@ -17,6 +17,124 @@ export const patterns: Pattern[] = [
 	'Two Pointers',
 	'Union-Find',
 ]
+
+export const patternSummaries: Record<Pattern, PatternSummary> = {
+	'Arrays and Strings': {
+		name: 'Arrays and Strings',
+		description:
+			'Problems involving sequential data structures where manipulation, traversal, or searching within arrays or strings is key.',
+		howToIdentify:
+			'Look for operations like sliding, reversing, comparing, or filtering elements in a list or sequence.',
+		learnMore: 'https://leetcode.com/tag/array/',
+	},
+	BFS: {
+		name: 'BFS',
+		description:
+			'Breadth-First Search explores neighbors level by level. Common in shortest path, graph traversal, and tree problems.',
+		howToIdentify:
+			'Use when exploring all nodes closest to a root or origin first. Typically uses a queue.',
+		learnMore:
+			'https://leetcode.com/explore/learn/card/graph/619/breadth-first-search-in-graph/',
+	},
+	Backtracking: {
+		name: 'Backtracking',
+		description:
+			'Recursive exploration technique used to build candidates incrementally and backtrack when constraints are violated.',
+		howToIdentify:
+			'Often used in permutations, combinations, or puzzle-like problems. Look for "try all possibilities" logic.',
+		learnMore:
+			'https://leetcode.com/explore/featured/card/recursion-i/251/scenario-i-recurrence-relation/3233/',
+	},
+	'Binary Search': {
+		name: 'Binary Search',
+		description:
+			'An efficient algorithm for finding an element in a sorted structure by repeatedly dividing the search space.',
+		howToIdentify:
+			'Look for sorted arrays, monotonic functions, or “minimum/maximum” in a range.',
+		learnMore: 'https://leetcode.com/explore/learn/card/binary-search/',
+	},
+	DFS: {
+		name: 'DFS',
+		description:
+			'Depth-First Search explores as far as possible along a branch before backtracking. Used in trees, graphs, and pathfinding.',
+		howToIdentify:
+			'Use when you want to explore deep paths, especially recursively. Stack or recursion are commonly used.',
+		learnMore:
+			'https://leetcode.com/explore/learn/card/graph/618/disjoint-set/3840/',
+	},
+	'Dynamic Programming': {
+		name: 'Dynamic Programming',
+		description:
+			'Solving problems by breaking them down into overlapping subproblems and caching the results.',
+		howToIdentify:
+			'Look for optimal substructure and overlapping subproblems. Often involves 1D or 2D memoization.',
+		learnMore: 'https://leetcode.com/tag/dynamic-programming/',
+	},
+	Greedy: {
+		name: 'Greedy',
+		description:
+			'Greedy algorithms make locally optimal choices at each step, hoping to reach a global optimum.',
+		howToIdentify:
+			'Use when problems ask for maximum/minimum and you can safely choose the best option at each step.',
+		learnMore: 'https://leetcode.com/tag/greedy/',
+	},
+	Hashing: {
+		name: 'Hashing',
+		description:
+			'Using hash maps or sets to store data for fast access, often to track frequency or detect duplicates.',
+		howToIdentify:
+			'Useful when constant time lookup is needed, especially for checking existence or frequency.',
+		learnMore: 'https://leetcode.com/tag/hash-table/',
+	},
+	Heaps: {
+		name: 'Heaps',
+		description:
+			'A binary heap is a tree-based structure used to efficiently get the min or max element.',
+		howToIdentify:
+			'Look for problems asking for top K elements, streaming data, or real-time min/max access.',
+		learnMore: 'https://leetcode.com/tag/heap-priority-queue/',
+	},
+	'Sliding Window': {
+		name: 'Sliding Window',
+		description:
+			'A technique to efficiently calculate values over a subset (window) of data as it moves through an array or string.',
+		howToIdentify:
+			'Use when working with subarrays/substrings and optimizing over a fixed or variable window.',
+		learnMore: 'https://leetcode.com/tag/sliding-window/',
+	},
+	Stacks: {
+		name: 'Stacks',
+		description:
+			'LIFO structure used to track previous states, reverse sequences, or simulate function calls.',
+		howToIdentify:
+			'Useful for matching parentheses, parsing expressions, or reversing order.',
+		learnMore: 'https://leetcode.com/tag/stack/',
+	},
+	'Topological Sort': {
+		name: 'Topological Sort',
+		description:
+			'Ordering of nodes in a directed acyclic graph (DAG) such that each node appears before its dependencies.',
+		howToIdentify:
+			'Use for dependency resolution problems. Common in scheduling and build systems.',
+		learnMore: 'https://leetcode.com/problems/course-schedule/',
+	},
+	'Two Pointers': {
+		name: 'Two Pointers',
+		description:
+			'Two indices used to scan a structure in a coordinated way — often from both ends or to find a pair.',
+		howToIdentify:
+			'Use in sorted arrays, merging, or when tracking relative positions in a sequence.',
+		learnMore: 'https://leetcode.com/tag/two-pointers/',
+	},
+	'Union-Find': {
+		name: 'Union-Find',
+		description:
+			'Also known as Disjoint Set Union (DSU), used to track connected components in a graph efficiently.',
+		howToIdentify:
+			'Look for problems involving connectivity, cycle detection, or merging groups.',
+		learnMore: 'https://leetcode.com/tag/union-find/',
+	},
+}
 
 export const patternColors: Record<Pattern, string> = {
 	'Arrays and Strings': '#F97316', // vivid orange

@@ -1,3 +1,6 @@
+import { PatternStat } from '@/interfaces/PatternStat'
+import { Pattern } from './Types'
+
 export function shuffle<T>(array: T[]): T[] {
 	const result = [...array] // optional: copy if you don't want to mutate
 	for (let i = result.length - 1; i > 0; i--) {
@@ -5,6 +8,16 @@ export function shuffle<T>(array: T[]): T[] {
 		;[result[i], result[j]] = [result[j], result[i]]
 	}
 	return result
+}
+
+export function getWeakPatterns(patternStats: PatternStat[]): Pattern[] {
+	const weakPatterns: Pattern[] = patternStats
+		.filter(
+			(stat) => stat.attempts >= 2 && stat.correct / stat.attempts < 0.4
+		)
+		.map((stat) => stat.pattern)
+
+	return weakPatterns
 }
 
 export function checkIsGuest(): boolean {

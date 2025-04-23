@@ -7,7 +7,7 @@ import {
 	patterns,
 } from './Consts'
 import Problem from '@/interfaces/Problem'
-import { shuffle } from './UtilFunctions'
+import { getWeakPatterns, shuffle } from './UtilFunctions'
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
 import { Pattern } from './Types'
 import { PatternStat } from '@/interfaces/PatternStat'
@@ -47,9 +47,7 @@ export async function generateProblem(
 	patternStats: PatternStat[]
 ): Promise<Problem> {
 	// any pattern with a less than 40% accuracy is weak
-	const weakPatterns: Pattern[] = patternStats
-		.filter((stat) => stat.correct / stat.attempts < 0.4)
-		.map((stat) => stat.pattern)
+	const weakPatterns: Pattern[] = getWeakPatterns(patternStats)
 
 	const pattern = selectPattern(focusedPatterns, weakPatterns)
 
