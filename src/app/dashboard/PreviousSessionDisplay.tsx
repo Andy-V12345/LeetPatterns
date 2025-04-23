@@ -202,19 +202,22 @@ export default function PreviousSessionDisplay({
 							</div>
 
 							{/* Button Options */}
-							<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col w-full col-span-full md:col-span-3 lg:col-span-2 gap-4">
+							<div
+								className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col w-full col-span-full md:col-span-3 lg:col-span-2 gap-3"
+								style={{
+									boxShadow:
+										'0px 0px 5px 3px var(--theme-orange)',
+								}}
+							>
 								<h3 className="font-semibold text-theme-orange text-lg">
 									Start a Session
 								</h3>
+
 								{prevSession.weakPatterns.length > 0 && (
 									<button
 										disabled={loading}
 										onClick={handleWorkOnWeakPatterns}
 										className={`flex items-center justify-between bg-card-fg font-semibold text-sm rounded-md text-left p-4 ${loading ? '' : 'hover:opacity-80'} transition-all gap-3`}
-										style={{
-											boxShadow:
-												'0px 0px 6px 1px var(--theme-orange)',
-										}}
 									>
 										{loading ? (
 											<BeatLoader
@@ -242,10 +245,6 @@ export default function PreviousSessionDisplay({
 								<Link
 									href="/onboarding"
 									className={`flex items-center justify-between bg-card-fg font-semibold text-sm rounded-md text-left ${loading ? 'pointer-events-none' : 'hover:opacity-80'} p-4 transition-all gap-3`}
-									style={{
-										boxShadow:
-											'0px 0px 6px 1px var(--theme-orange)',
-									}}
 								>
 									<div className="flex gap-3 items-center">
 										<p>🧠</p>
@@ -257,10 +256,6 @@ export default function PreviousSessionDisplay({
 								<Link
 									href="/practice"
 									className={`flex items-center justify-between bg-card-fg font-semibold text-sm rounded-md text-left ${loading ? 'pointer-events-none' : 'hover:opacity-80'} p-4 transition-all gap-3`}
-									style={{
-										boxShadow:
-											'0px 0px 6px 1px var(--theme-orange)',
-									}}
 								>
 									<div className="flex gap-3 items-center">
 										<p>🏃</p>

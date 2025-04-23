@@ -2,9 +2,10 @@
 
 import { useAuth, useProtectedRoute } from '@/components/AuthContext'
 import { patterns } from '@/utils/Consts'
-import { saveFocusedPatterns } from '@/utils/UserFunctions'
+import { UIState } from '@/utils/Types'
 import { redirect } from 'next/navigation'
 import { useState } from 'react'
+import BeatLoader from 'react-spinners/BeatLoader'
 
 export default function OnboardingPage() {
 	const { user } = useAuth()
@@ -13,11 +14,16 @@ export default function OnboardingPage() {
 		Object.fromEntries(patterns.map((pattern) => [pattern, false]))
 	)
 
+	const [uiState, setUiState] = useState<UIState>('default')
+
 	useProtectedRoute()
 
 	const handleContinue = async () => {
-		await user!.saveFocusedPatterns(patternsSelected)
-		redirect('/practice')
+		setUiState('loading')
+		if (user) {
+			await user.saveFocusedPatterns(patternsSelected)
+			redirect('/practice')
+		}
 	}
 
 	return (
@@ -30,13 +36,14 @@ export default function OnboardingPage() {
 				<div className="flex flex-wrap gap-3 gap-y-3">
 					{patterns.map((pattern) => (
 						<button
+							disabled={uiState == 'loading'}
 							onClick={() => {
 								const tmp = { ...patternsSelected }
 								tmp[pattern] = !tmp[pattern]
 								setPatternsSelected(tmp)
 							}}
 							key={pattern}
-							className={`${patternsSelected[pattern] ? 'bg-theme-orange hover:bg-theme-hover-orange' : 'bg-transparent hover:opacity-75'} font-medium transition-all  text-sm border-theme-orange border-1 py-2 px-4 rounded-full`}
+							className={`${patternsSelected[pattern] ? 'bg-theme-orange hover:bg-theme-hover-orange' : 'bg-transparent hover:opacity-75'} font-medium transition-all text-sm border-theme-orange border-1 py-2 px-4 rounded-full`}
 						>
 							{pattern}
 						</button>
@@ -44,10 +51,20 @@ export default function OnboardingPage() {
 				</div>
 
 				<button
+					disabled={uiState == 'loading'}
 					onClick={handleContinue}
-					className="self-end mt-auto font-medium bg-theme-orange hover:bg-theme-hover-orange transition-colors px-5 py-3 text-base rounded-4xl"
+					className={`self-end mt-auto font-medium bg-theme-orange ${uiState == 'loading' ? '' : 'hover:bg-theme-hover-orange'} transition-colors px-5 py-3 text-base rounded-4xl`}
 				>
-					Continue
+					{uiState == 'loading' ? (
+						<BeatLoader
+							className="mx-auto"
+							loading={uiState == 'loading'}
+							color="var(--foreground)"
+							size={6}
+						/>
+					) : (
+						<p>Continue</p>
+					)}
 				</button>
 			</div>
 		</div>
