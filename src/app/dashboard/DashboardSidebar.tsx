@@ -12,15 +12,27 @@ import {
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
 import { House, User } from 'lucide-react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DashboardTypes, UIState } from '@/utils/Types'
 import { useAuth } from '@/components/AuthContext'
 import BeatLoader from 'react-spinners/BeatLoader'
+import { usePathname } from 'next/navigation'
 
 export default function DashboardSidebar() {
-	const [selection, setSelection] = useState<DashboardTypes>('dashboard')
+	const pathname = usePathname()
+	const [selection, setSelection] = useState<DashboardTypes>(
+		pathname.includes('/dashboard/profile') ? 'profile' : 'dashboard'
+	)
 	const [uiState, setUiState] = useState<UIState>('default')
 	const { logout } = useAuth()
+
+	useEffect(() => {
+		if (pathname.includes('/dashboard/profile')) {
+			setSelection('profile')
+		} else {
+			setSelection('dashboard')
+		}
+	}, [pathname])
 
 	const handleLogOut = async () => {
 		setUiState('loading')
@@ -101,28 +113,6 @@ export default function DashboardSidebar() {
 								</span>
 							)}
 						</SidebarMenuButton>
-						{/* <DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<SidebarMenuButton>
-									<User2 /> Username
-									<ChevronUp className="ml-auto" />
-								</SidebarMenuButton>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								side="top"
-								className="w-[--radix-popper-anchor-width]"
-							>
-								<DropdownMenuItem>
-									<span>Account</span>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<span>Billing</span>
-								</DropdownMenuItem>
-								<DropdownMenuItem>
-									<span>Sign out</span>
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu> */}
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarFooter>

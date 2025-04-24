@@ -49,6 +49,10 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				setCardState('loading')
 
 				let nextProblem = problemQ[0]
+				setShowAnswer(false)
+				setQuestionCount((prev) => {
+					return prev + 1
+				})
 
 				if (nextProblem) {
 					setProblem(nextProblem)
@@ -61,10 +65,6 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 					setProblem(nextProblem)
 				}
 
-				setShowAnswer(false)
-				setQuestionCount((prev) => {
-					return prev + 1
-				})
 				preloadProblems()
 			}
 		} else if (focusedPatterns == null) {
@@ -74,6 +74,10 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 			setCardState('loading')
 
 			let nextProblem = problemQ[0]
+			setQuestionCount((prev) => {
+				return prev + 1
+			})
+			setShowAnswer(false)
 
 			if (nextProblem) {
 				setProblem(nextProblem)
@@ -86,10 +90,6 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				setProblem(nextProblem)
 			}
 
-			setShowAnswer(false)
-			setQuestionCount((prev) => {
-				return prev + 1
-			})
 			preloadProblems()
 		}
 	}, [
