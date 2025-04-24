@@ -13,10 +13,20 @@ import {
 import Link from 'next/link'
 import { House, User } from 'lucide-react'
 import { useState } from 'react'
-import { DashboardTypes } from '@/utils/Types'
+import { DashboardTypes, UIState } from '@/utils/Types'
+import { useAuth } from '@/components/AuthContext'
+import BeatLoader from 'react-spinners/BeatLoader'
 
 export default function DashboardSidebar() {
 	const [selection, setSelection] = useState<DashboardTypes>('dashboard')
+	const [uiState, setUiState] = useState<UIState>('default')
+	const { logout } = useAuth()
+
+	const handleLogOut = async () => {
+		setUiState('loading')
+		await logout()
+		setUiState('default')
+	}
 
 	return (
 		<Sidebar>
@@ -72,7 +82,50 @@ export default function DashboardSidebar() {
 					</SidebarMenu>
 				</SidebarGroupContent>
 			</SidebarContent>
-			<SidebarFooter />
+			<SidebarFooter className="p-3">
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							onClick={handleLogOut}
+							className={`py-5 px-3 flex justify-center items-center gap-3 bg-card-fg ${uiState == 'loading' ? '' : 'hover:opacity-80'} transition-all`}
+						>
+							{uiState == 'loading' ? (
+								<BeatLoader
+									loading={uiState == 'loading'}
+									size={5}
+									color="var(--color-red-400)"
+								/>
+							) : (
+								<span className="text-red-400 font-bold">
+									Sign Out
+								</span>
+							)}
+						</SidebarMenuButton>
+						{/* <DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<SidebarMenuButton>
+									<User2 /> Username
+									<ChevronUp className="ml-auto" />
+								</SidebarMenuButton>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent
+								side="top"
+								className="w-[--radix-popper-anchor-width]"
+							>
+								<DropdownMenuItem>
+									<span>Account</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<span>Billing</span>
+								</DropdownMenuItem>
+								<DropdownMenuItem>
+									<span>Sign out</span>
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu> */}
+					</SidebarMenuItem>
+				</SidebarMenu>
+			</SidebarFooter>
 		</Sidebar>
 	)
 }

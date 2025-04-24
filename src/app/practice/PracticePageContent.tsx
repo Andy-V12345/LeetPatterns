@@ -52,7 +52,7 @@ export default function PracticePageContent() {
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.4 }}
-						className="mx-auto overflow-y-scroll overflow-x-hidden gap-6 p-6 w-full md:w-11/12 xl:w-4/5 flex h-[100svh] flex-col items-center"
+						className="mx-auto overflow-y-hidden overflow-x-hidden gap-6 p-6 w-full md:w-11/12 xl:w-4/5 flex h-[100svh] flex-col items-center"
 					>
 						<div className="flex gap-2 justify-between items-center w-full self-start">
 							{/* Focused Patterns Bar */}

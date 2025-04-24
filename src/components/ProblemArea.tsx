@@ -173,7 +173,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				{firstLoad && (
 					<div
 						key="load-div"
-						className={`flex gap-5 self-stretch h-full relative`}
+						className={`flex gap-5 h-full relative`}
 					>
 						<motion.div
 							className="w-full h-full flex flex-col items-center justify-center gap-6"
@@ -189,7 +189,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							/>
 
 							<p className="text-foreground font-medium text-base">
-								Generating problems...
+								Generating some questions...
 							</p>
 						</motion.div>
 					</div>

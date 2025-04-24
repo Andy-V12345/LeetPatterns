@@ -23,6 +23,7 @@ import { checkIsGuest, setIsGuest } from '@/utils/UtilFunctions'
 import { getUserInfo, saveUserInfo } from '@/utils/FirebaseFunctions'
 import { redirect, useRouter } from 'next/navigation'
 import { UIState } from '@/utils/Types'
+import { error } from 'console'
 
 type AuthContextType = {
 	user: AppUser | null
@@ -47,11 +48,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [user, setUser] = useState<AppUser | null>(null)
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 
+	const router = useRouter()
+
 	useEffect(() => {
 		const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
 			setIsLoading(true)
 			if (firebaseUser) {
 				const appUser = await getUserInfo(firebaseUser.uid)
+				appUser!.setFirebaseUser(firebaseUser)
+				console.log('user', appUser)
 				setUser(appUser)
 			} else {
 				if (checkIsGuest()) {
@@ -95,7 +100,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 				password
 			)
 			const firebaseUser = await getUserInfo(userDetails.user.uid)
-
 			const focusedPatterns = await firebaseUser!.getFocusedPatterns()
 
 			if (focusedPatterns != null) {
@@ -128,37 +132,45 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
 		setUiState('loading')
 
-		signInWithPopup(auth, provider).then(async (result) => {
-			const user = result.user
-			const additionalInfo = getAdditionalUserInfo(result)
-			let firstName: string = ''
-			let lastName: string = ''
+		signInWithPopup(auth, provider)
+			.then(async (result) => {
+				const user = result.user
+				const additionalInfo = getAdditionalUserInfo(result)
+				let firstName: string = ''
+				let lastName: string = ''
 
-			if (additionalInfo != null) {
-				if (additionalInfo.profile != null) {
-					if (additionalInfo.profile.given_name != undefined) {
-						firstName = additionalInfo.profile.given_name as string
-					}
+				if (additionalInfo != null) {
+					if (additionalInfo.profile != null) {
+						if (additionalInfo.profile.given_name != undefined) {
+							firstName = additionalInfo.profile
+								.given_name as string
+						}
 
-					if (additionalInfo.profile.last_name != undefined) {
-						lastName = additionalInfo.profile.last_name as string
+						if (additionalInfo.profile.last_name != undefined) {
+							lastName = additionalInfo.profile
+								.last_name as string
+						}
 					}
 				}
-			}
 
-			await saveUserInfo(user.uid, firstName, lastName)
-			const appUser = await getUserInfo(user.uid)
+				await saveUserInfo(user.uid, firstName, lastName)
+				const appUser = await getUserInfo(user.uid)
+				appUser!.setFirebaseUser(user)
 
-			setUser(appUser)
+				setUser(appUser)
 
-			const focusedPatterns = await appUser!.getFocusedPatterns()
+				const focusedPatterns = await appUser!.getFocusedPatterns()
 
-			if (focusedPatterns == null) {
-				redirect('/onboarding')
-			} else {
-				redirect('/dashboard')
-			}
-		})
+				if (focusedPatterns == null) {
+					router.push('/onboarding')
+				} else {
+					router.push('/dashboard')
+				}
+			})
+			.catch((error) => {
+				console.error('error', error)
+				setUiState('default')
+			})
 	}
 
 	return (

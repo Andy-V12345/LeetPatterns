@@ -1,6 +1,7 @@
 import { AppUser } from '@/interfaces/AppUser'
 import { PatternStat } from '@/interfaces/PatternStat'
 import { PrevSession } from '@/interfaces/PrevSession'
+import { ProfileInfo } from '@/interfaces/ProfileInfo'
 import {
 	getFocusedPatternsFirestore,
 	getPatternStatsFirestore,
@@ -10,18 +11,38 @@ import {
 	updatePatternStatsFirestore,
 } from '@/utils/FirebaseFunctions'
 import { Pattern } from '@/utils/Types'
+import { User } from 'firebase/auth'
 import { redirect } from 'next/navigation'
 
 export class FirebaseUser implements AppUser {
 	private uid = process.env.TEST_USER_ID as string
 	private firstName: string
 	private lastName: string
+	private firebaseUser: User | null = null
 
 	constructor(uid: string, firstName: string, lastName: string) {
 		this.uid = uid
 		this.firstName = firstName
 		this.lastName = lastName
 	}
+
+	setFirebaseUser(user: User) {
+		this.firebaseUser = user
+	}
+
+	getProfileInfo(): ProfileInfo | null {
+		if (this.firebaseUser) {
+			return {
+				firstName: this.firstName,
+				lastName: this.lastName,
+				email: this.firebaseUser.email,
+				photoUrl: this.firebaseUser.photoURL,
+			} as ProfileInfo
+		}
+
+		return null
+	}
+
 	async savePrevSession(
 		focusedPatterns: Pattern[],
 		patternStats: PatternStat[]

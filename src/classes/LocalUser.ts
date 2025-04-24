@@ -1,11 +1,16 @@
 import { AppUser } from '@/interfaces/AppUser'
 import { PatternStat } from '@/interfaces/PatternStat'
 import { PrevSession } from '@/interfaces/PrevSession'
+import { ProfileInfo } from '@/interfaces/ProfileInfo'
 import { Pattern } from '@/utils/Types'
 import { getWeakPatterns } from '@/utils/UtilFunctions'
 import { redirect } from 'next/navigation'
 
 export class LocalUser implements AppUser {
+	getProfileInfo(): ProfileInfo | null {
+		return null
+	}
+
 	async savePrevSession(
 		focusedPatterns: Pattern[],
 		patternStats: PatternStat[]

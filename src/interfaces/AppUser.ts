@@ -1,6 +1,7 @@
 import { Pattern } from '@/utils/Types'
 import { PatternStat } from './PatternStat'
 import { PrevSession } from './PrevSession'
+import { ProfileInfo } from './ProfileInfo'
 
 export interface AppUser {
 	getFocusedPatterns(): Promise<Pattern[] | null>
@@ -14,4 +15,5 @@ export interface AppUser {
 		patternStats: PatternStat[]
 	): Promise<void>
 	getPrevSession(): Promise<PrevSession | null>
+	getProfileInfo(): ProfileInfo | null
 }
