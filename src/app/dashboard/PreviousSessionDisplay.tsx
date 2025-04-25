@@ -68,7 +68,7 @@ export default function PreviousSessionDisplay({
 					<div className="flex flex-col gap-[10px] w-full">
 						<div className="w-full grid grid-cols-10 gap-[10px]">
 							{/* Focused Patterns Cell */}
-							<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col col-span-5 lg:col-span-3 gap-3">
+							<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col col-span-full md:col-span-5 lg:col-span-3 gap-3">
 								<h3 className="font-semibold text-lg">
 									Patterns You Focused On
 								</h3>
@@ -108,7 +108,7 @@ export default function PreviousSessionDisplay({
 							</div>
 
 							{/* Weakest Patterns Cell */}
-							<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col col-span-5 lg:col-span-3 gap-3">
+							<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col col-span-full md:col-span-5 lg:col-span-3 gap-3">
 								<h3 className="font-semibold text-lg ">
 									Weakest Patterns
 								</h3>

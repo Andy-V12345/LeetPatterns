@@ -2,6 +2,7 @@
 
 import { useAuth, useProtectedRoute } from '@/components/AuthContext'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { ProfileInfo } from '@/interfaces/ProfileInfo'
 import { UIState } from '@/utils/Types'
 import { UserCircle } from 'lucide-react'
@@ -18,6 +19,8 @@ export default function Profile() {
 	const [uiState, setUiState] = useState<UIState>('loading')
 	const [loading, setLoading] = useState(false)
 
+	const isMobile = useIsMobile()
+
 	useEffect(() => {
 		if (user && !isLoading) {
 			setUiState('loading')
@@ -33,14 +36,16 @@ export default function Profile() {
 	}
 
 	return (
-		<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] overflow-scroll">
+		<div className="flex flex-col gap-15 bg-background h-[100svh] p-[30px] overflow-scroll">
 			<div className="flex items-center gap-5">
 				<SidebarTrigger className="" />
 
 				<h1 className="text-3xl font-bold text-foreground">Profile</h1>
 			</div>
 
-			<div className="flex flex-col w-fit h-full self-center gap-8">
+			<div
+				className={`flex flex-col ${isMobile ? 'w-full' : 'w-fit'} h-full self-center gap-8`}
+			>
 				{uiState == 'loading' && (
 					<div className="my-auto flex flex-col gap-6 justify-center items-center">
 						<SyncLoader
@@ -111,24 +116,10 @@ export default function Profile() {
 								</>
 							)}
 
-							<div
-								className="flex items-center justify-between"
-								style={{
-									gap: 100,
-								}}
-							>
-								<div className="">
-									<p className="text-xl font-bold">
-										Sign Out
-									</p>
-									<p className="font-medium text-theme-orange">
-										Don't worry your stats will be saved.
-									</p>
-								</div>
-
+							{isMobile ? (
 								<button
 									onClick={handleLogout}
-									className={`w-40 bg-card-fg py-2 text-red-400 text-lg font-semibold rounded-md ${loading ? '' : 'hover:opacity-80'} transition-all`}
+									className={`bg-card-fg py-2 text-red-400 w-full text-lg font-semibold rounded-md ${loading ? '' : 'hover:opacity-80'} transition-all`}
 								>
 									{loading ? (
 										<BeatLoader
@@ -142,7 +133,41 @@ export default function Profile() {
 										</span>
 									)}
 								</button>
-							</div>
+							) : (
+								<div
+									className="flex items-center justify-between"
+									style={{
+										gap: 100,
+									}}
+								>
+									<div className="">
+										<p className="text-xl font-bold">
+											Sign Out
+										</p>
+										<p className="font-medium text-theme-orange">
+											Don't worry your stats will be
+											saved.
+										</p>
+									</div>
+
+									<button
+										onClick={handleLogout}
+										className={`w-40 bg-card-fg py-2 text-red-400 text-lg font-semibold rounded-md ${loading ? '' : 'hover:opacity-80'} transition-all`}
+									>
+										{loading ? (
+											<BeatLoader
+												loading={loading}
+												color="var(--color-red-400)"
+												size={6}
+											/>
+										) : (
+											<span className="text-lg">
+												Sign Out
+											</span>
+										)}
+									</button>
+								</div>
+							)}
 						</div>
 					</>
 				)}

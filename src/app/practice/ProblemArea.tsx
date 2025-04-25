@@ -213,7 +213,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							opacity: 0,
 						}}
 						transition={cardTransition}
-						className={`flex self-stretch w-full ${isMobile ? `flex-col ${cardState != 'loading' && cardState != 'default' ? 'p-2' : ''}` : 'h-4/5 max-h-[600px]'} gap-5 relative`}
+						className={`flex self-stretch w-full ${isMobile ? `flex-col p-2` : 'h-4/5 max-h-[600px]'} gap-5 relative`}
 					>
 						{(problem != null || cardState === 'loading') && (
 							<>
