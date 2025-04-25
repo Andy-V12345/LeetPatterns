@@ -46,17 +46,24 @@ export default function PreviousSessionDisplay({
 			</p>
 
 			<div
-				className={`${
-					prevSession == null ? 'bg-card-bg px-5 py-20' : ''
-				} rounded-md flex-col flex gap-4 justify-center items-center`}
+				className={`${prevSession == null ? 'bg-card-bg px-5 py-20' : ''} rounded-md flex-col flex gap-4 justify-center items-center`}
 			>
 				{prevSession == null ? (
-					<>
-						<i className="">You haven't practiced yet!</i>
-						<button className="py-3 text-sm px-4 bg-theme-orange font-semibold rounded-lg hover:bg-theme-hover-orange transition-all hover:scale-[1.05]">
-							Start a session
-						</button>
-					</>
+					<div className="flex flex-col justify-center items-center gap-5">
+						<p className="">You haven't practiced yet!</p>
+
+						<Link
+							href={'/practice'}
+							className="button-82-pushable mx-auto"
+							role="button"
+						>
+							<span className="button-82-shadow"></span>
+							<span className="button-82-edge"></span>
+							<span className="button-82-front text-lg font-bold">
+								Start a Session
+							</span>
+						</Link>
+					</div>
 				) : (
 					<div className="flex flex-col gap-[10px] w-full">
 						<div className="w-full grid grid-cols-10 gap-[10px]">

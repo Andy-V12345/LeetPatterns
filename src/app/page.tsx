@@ -80,13 +80,6 @@ export default function Home() {
 							ace your next interview!
 						</p>
 
-						{/* <Link
-					href="/signup"
-					className="home-button mt-4 font-bold text-xl"
-				>
-					Get Started - It's All Free
-				</Link> */}
-
 						<Link
 							href={user == null ? '/signup' : '/dashboard'}
 							className="button-82-pushable mt-5"
