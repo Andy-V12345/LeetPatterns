@@ -17,6 +17,7 @@ import { DashboardTypes, UIState } from '@/utils/Types'
 import { useAuth } from '@/components/AuthContext'
 import BeatLoader from 'react-spinners/BeatLoader'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 
 export default function DashboardSidebar() {
 	const pathname = usePathname()
@@ -43,14 +44,28 @@ export default function DashboardSidebar() {
 	return (
 		<Sidebar>
 			<SidebarHeader>
-				<h1
+				{/* <h1
 					className="text-theme-orange font-bold text-xl"
 					style={{
 						textShadow: '0px 2px 2px var(--theme-orange)',
 					}}
 				>
 					LeetPatterns.ai
-				</h1>
+				</h1> */}
+				<Link href="/dashboard" className="flex items-center gap-3">
+					<Image
+						src={'/leetpatterns_icon.png'}
+						alt={'logo'}
+						width={'15'}
+						height={'15'}
+					/>
+
+					<span className="font-medium text-lg">
+						<h1 className="text-white inline">leetpatterns</h1>
+						<h1 className="inline text-theme-orange">.</h1>
+						<h1 className="inline text-theme-orange">ai</h1>
+					</span>
+				</Link>
 			</SidebarHeader>
 			<SidebarContent className="px-3">
 				<SidebarGroupContent>
