@@ -2,7 +2,7 @@
 
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
-import { GoogleIcon } from '../signup/page'
+import GoogleIcon from '@/components/GoogleSvg'
 import { useAuth } from '@/components/AuthContext'
 import { redirect, useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -70,9 +70,9 @@ export default function LoginPage() {
 				<button
 					onClick={() => signInWithGoogle(setUiState)}
 					disabled={uiState == 'loading'}
-					className={`flex justify-center items-center bg-card-fg gap-5 py-3 rounded-lg ${uiState == 'loading' ? 'opacity-50' : 'hover:opacity-50'} transition-all`}
+					className={`flex justify-center items-center bg-card-fg gap-3 py-3 rounded-lg ${uiState == 'loading' ? 'opacity-50' : 'hover:opacity-50'} transition-all`}
 				>
-					<GoogleIcon />
+					<GoogleIcon className="mb-2" />
 					<p className="text-foreground font-semibold">
 						Continue with Google
 					</p>
