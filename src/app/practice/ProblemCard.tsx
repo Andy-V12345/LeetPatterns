@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Pattern, ProblemCardState } from '@/utils/Types'
 import ReactMarkdown from 'react-markdown'
 import { Skeleton } from '../../components/ui/skeleton'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 const drawSpeed = 0.15
 
@@ -131,9 +132,11 @@ export default function ProblemCard({
 		loading: '',
 	}
 
+	const isMobile = useIsMobile()
+
 	return (
 		<div
-			className="relative z-20 flex flex-col bg-card-bg rounded-md self-stretch w-[60%] overflow-x-hidden"
+			className={`relative z-20 flex flex-col bg-card-bg rounded-md ${isMobile ? 'z-20 w-full' : 'w-[60%] self-stretch overflow-x-hidden'} `}
 			style={{
 				boxShadow: `${cardState != 'loading' ? `0px 0px 10px 3px var(${cardStateToColor[cardState]})` : ''}`,
 			}}

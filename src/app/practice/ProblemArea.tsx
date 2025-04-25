@@ -10,6 +10,7 @@ import { PatternStat } from '@/interfaces/PatternStat'
 import SyncLoader from 'react-spinners/SyncLoader'
 import { useAuth } from '../../components/AuthContext'
 import { calculateTotalAttempts } from '@/utils/UtilFunctions'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface ProblemAreaProps {
 	focusedPatterns: Pattern[] | undefined | null
@@ -33,6 +34,8 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const [firstLoad, setFirstLoad] = useState(true)
 
 	const { user } = useAuth()
+
+	const isMobile = useIsMobile()
 
 	const preloadProblems = useCallback(async () => {
 		if (focusedPatterns && problemQ.length < 2) {
@@ -174,13 +177,15 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	}, [problem])
 
 	return (
-		<div className={`self-stretch h-full relative`}>
+		<div
+			className={`self-stretch h-full relative ${isMobile ? 'overflow-y-scroll' : ''}`}
+		>
 			<AnimatePresence mode="wait">
 				{/* Initial Loading */}
 				{firstLoad && (
 					<motion.div
 						key="load-div"
-						className="flex gap-5 h-full relative"
+						className="flex flex-col justify-center items-center gap-5 h-full relative"
 						initial={{ opacity: 1 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
@@ -208,7 +213,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							opacity: 0,
 						}}
 						transition={cardTransition}
-						className="flex self-stretch w-full gap-5 h-4/5 max-h-[600px] relative"
+						className={`flex self-stretch w-full ${isMobile ? `flex-col ${cardState != 'loading' && cardState != 'default' ? 'p-2' : ''}` : 'h-4/5 max-h-[600px]'} gap-5 relative`}
 					>
 						{(problem != null || cardState === 'loading') && (
 							<>

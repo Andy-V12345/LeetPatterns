@@ -3,6 +3,7 @@ import { ProblemCardState } from '@/utils/Types'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import { Skeleton } from '../../components/ui/skeleton'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface ProblemAnswerProps {
 	answer: Answer | null | undefined
@@ -55,8 +56,12 @@ export default function ProblemAnswer({
 		createNewProblem()
 	}
 
+	const isMobile = useIsMobile()
+
 	return (
-		<div className="flex flex-col w-[40%] self-stretch bg-card-bg rounded-md">
+		<div
+			className={`flex flex-col ${isMobile ? 'w-full' : 'w-[40%]'} self-stretch bg-card-bg rounded-md`}
+		>
 			<div className="bg-[#363535] p-3 rounded-t-md">
 				<p className="text-theme-orange font-bold text-sm">
 					Explanation
