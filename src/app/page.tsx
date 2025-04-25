@@ -33,7 +33,7 @@ export default function Home() {
 								height={'25'}
 							/>
 
-							<span className="font-medium text-lg">
+							<span className="font-medium text-xl">
 								<h1 className="text-white inline">
 									leetpatterns
 								</h1>
