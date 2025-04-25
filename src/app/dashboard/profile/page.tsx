@@ -1,6 +1,6 @@
 'use client'
 
-import { useAuth } from '@/components/AuthContext'
+import { useAuth, useProtectedRoute } from '@/components/AuthContext'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { ProfileInfo } from '@/interfaces/ProfileInfo'
 import { UIState } from '@/utils/Types'
@@ -11,6 +11,8 @@ import BeatLoader from 'react-spinners/BeatLoader'
 import SyncLoader from 'react-spinners/SyncLoader'
 
 export default function Profile() {
+	useProtectedRoute()
+
 	const { user, isLoading, logout } = useAuth()
 	const [profile, setProfile] = useState<ProfileInfo | null>(null)
 	const [uiState, setUiState] = useState<UIState>('loading')
