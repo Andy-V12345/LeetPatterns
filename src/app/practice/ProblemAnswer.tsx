@@ -2,7 +2,7 @@ import { Answer } from '@/interfaces/Answer'
 import { ProblemCardState } from '@/utils/Types'
 import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
-import { Skeleton } from './ui/skeleton'
+import { Skeleton } from '../../components/ui/skeleton'
 
 interface ProblemAnswerProps {
 	answer: Answer | null | undefined
@@ -56,7 +56,7 @@ export default function ProblemAnswer({
 	}
 
 	return (
-		<div className="flex flex-col w-[30%] self-stretch bg-card-bg rounded-md">
+		<div className="flex flex-col w-[40%] self-stretch bg-card-bg rounded-md">
 			<div className="bg-[#363535] p-3 rounded-t-md">
 				<p className="text-theme-orange font-bold text-sm">
 					Explanation
@@ -64,14 +64,14 @@ export default function ProblemAnswer({
 			</div>
 
 			<div
-				className={`flex flex-col h-full max-h-full overflow-scroll p-6`}
+				className={`flex flex-col justify-between h-full max-h-full overflow-scroll p-6`}
 			>
 				{!showAnswer && cardState != 'loading' ? (
 					<i className="text-sm self-center my-auto text-center">
 						Answer the question before seeing the explanation!
 					</i>
 				) : (
-					<div className="flex flex-col gap-6 max-h-full">
+					<div className="flex flex-col gap-6 h-full">
 						{/* Explanation text takes up available space */}
 						<div className="flex-1 overflow-y-auto overflow-x-hidden">
 							{answer != null && cardState != 'loading' ? (

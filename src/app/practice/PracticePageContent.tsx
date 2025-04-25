@@ -1,5 +1,5 @@
 import { useAuth } from '@/components/AuthContext'
-import ProblemArea from '@/components/ProblemArea'
+import ProblemArea from '@/app/practice/ProblemArea'
 import { Pattern, UIState } from '@/utils/Types'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -18,7 +18,15 @@ export default function PracticePageContent() {
 			const fetchFocusedPatterns = async () => {
 				setUiState('loading')
 				if (user != null) {
-					setFocusedPatterns(await user.getFocusedPatterns())
+					const streakPromise = user.updateStreak()
+					const focusedPatternsPromise = user.getFocusedPatterns()
+
+					const [_, patterns] = await Promise.all([
+						streakPromise,
+						focusedPatternsPromise,
+					])
+
+					setFocusedPatterns(patterns)
 				}
 				setUiState('default')
 			}
@@ -52,7 +60,7 @@ export default function PracticePageContent() {
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.4 }}
-						className="mx-auto overflow-y-hidden overflow-x-hidden gap-6 p-6 w-full md:w-11/12 xl:w-4/5 flex h-[100svh] flex-col items-center"
+						className="mx-auto overflow-y-hidden overflow-x-hidden gap-6 p-6 w-full md:w-11/12 flex h-[100svh] flex-col items-center"
 					>
 						<div className="flex gap-2 justify-between items-center w-full self-start">
 							{/* Focused Patterns Bar */}

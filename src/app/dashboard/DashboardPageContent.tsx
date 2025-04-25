@@ -13,6 +13,10 @@ export default function DashboardPageContent() {
 	const { user, isLoading } = useAuth()
 	const [uiState, setUiState] = useState<UIState>('loading')
 	const [prevSession, setPrevSession] = useState<PrevSession | null>(null)
+	const [streaks, setStreaks] = useState<{
+		longestStreak: number
+		curStreak: number
+	} | null>(null)
 
 	const [patternStats, setPatternStats] = useState<PatternStat[]>(
 		patterns.map((pattern) => ({
@@ -26,7 +30,15 @@ export default function DashboardPageContent() {
 		setUiState('loading')
 
 		if (user != null) {
-			const stats = await user.getPatternStats()
+			const statsPromise = user.getPatternStats()
+			const sessionPromise = user.getPrevSession()
+			const streaksPromise = user.getStreak()
+
+			const [stats, session, streaks] = await Promise.all([
+				statsPromise,
+				sessionPromise,
+				streaksPromise,
+			])
 
 			if (stats) {
 				const newPatternStats = patternStats
@@ -40,8 +52,7 @@ export default function DashboardPageContent() {
 
 				setPatternStats(newPatternStats)
 			}
-
-			const session = await user.getPrevSession()
+			setStreaks(streaks)
 			setPrevSession(session)
 		}
 
@@ -81,6 +92,7 @@ export default function DashboardPageContent() {
 					<PreviousSessionDisplay prevSession={prevSession} />
 
 					<PatternStatsGrid
+						streaks={streaks}
 						patternStats={patternStats}
 						uiState={uiState}
 					/>

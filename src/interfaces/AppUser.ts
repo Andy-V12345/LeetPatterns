@@ -16,4 +16,6 @@ export interface AppUser {
 	): Promise<void>
 	getPrevSession(): Promise<PrevSession | null>
 	getProfileInfo(): ProfileInfo | null
+	updateStreak(): Promise<void>
+	getStreak(): Promise<{ longestStreak: number; curStreak: number }>
 }

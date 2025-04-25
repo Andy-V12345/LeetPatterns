@@ -1,9 +1,13 @@
-import { LeetcodeIcon } from '@/components/ProblemAnswer'
+import { LeetcodeIcon } from '@/app/practice/ProblemAnswer'
 import StatCircle from '@/components/StatCircle'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PatternStat } from '@/interfaces/PatternStat'
 import { patternSummaries } from '@/utils/Consts'
 import { UIState } from '@/utils/Types'
+import {
+	calculateTotalAttempts,
+	calculateTotalCorrect,
+} from '@/utils/UtilFunctions'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -11,17 +15,50 @@ import { useState } from 'react'
 interface PatternStatsGridProps {
 	patternStats: PatternStat[]
 	uiState: UIState
+	streaks: { longestStreak: number; curStreak: number } | null
 }
 
 export default function PatternStatsGrid({
 	patternStats,
 	uiState,
+	streaks,
 }: PatternStatsGridProps) {
 	return (
-		<div className="space-y-2 mt-4">
+		<div className="space-y-[10px] mt-4">
 			<p className="text-theme-orange font-bold text-lg">
 				Your overall stats
 			</p>
+
+			<div className="grid grid-cols-6 gap-[10px]">
+				<div
+					className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col gap-2 col-span-full md:col-span-2"
+					style={{
+						boxShadow: '0px 0px 5px 3px var(--theme-orange)',
+					}}
+				>
+					<div className="flex gap-3 items-center text-lg font-semibold">
+						<p>Longest Streak</p>
+						<p>🔥</p>
+					</div>
+					<p className="text-4xl font-bold text-theme-orange">
+						{`${streaks!.longestStreak} ${streaks!.longestStreak == 1 ? 'day' : 'days'}`}
+					</p>
+				</div>
+
+				<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col gap-2 col-span-full md:col-span-2">
+					<h3 className="font-semibold text-lg">Total Correct</h3>
+					<p className="text-4xl font-bold text-theme-orange">
+						{calculateTotalCorrect(patternStats)}
+					</p>
+				</div>
+
+				<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col gap-2 col-span-full md:col-span-2">
+					<h3 className="font-semibold text-lg">Total Attempts</h3>
+					<p className="text-4xl font-bold text-theme-orange">
+						{calculateTotalAttempts(patternStats)}
+					</p>
+				</div>
+			</div>
 
 			<div
 				style={{

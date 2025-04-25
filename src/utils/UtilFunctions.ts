@@ -10,6 +10,26 @@ export function shuffle<T>(array: T[]): T[] {
 	return result
 }
 
+export function areConsecutiveDays(date1: Date, date2: Date): number {
+	// Normalize to midnight (ignore time-of-day differences)
+	const normalize = (d: Date) =>
+		new Date(d.getFullYear(), d.getMonth(), d.getDate())
+	const d1 = normalize(date1)
+	const d2 = normalize(date2)
+
+	// Calculate the absolute difference in milliseconds
+	const msPerDay = 1000 * 60 * 60 * 24
+	const diffInMs = Math.abs(d2.getTime() - d1.getTime())
+
+	if (diffInMs === 0) {
+		return 0
+	} else if (diffInMs === msPerDay) {
+		return 1
+	} else {
+		return -1
+	}
+}
+
 export function getWeakPatterns(patternStats: PatternStat[]): Pattern[] {
 	const weakPatterns: Pattern[] = patternStats
 		.filter(
@@ -37,4 +57,12 @@ export function setIsGuest(isGuest: boolean) {
 	if (typeof window !== 'undefined') {
 		localStorage.setItem('isGuest', JSON.stringify(isGuest))
 	}
+}
+
+export function calculateTotalCorrect(patternStats: PatternStat[]): number {
+	return patternStats.reduce((total, stat) => total + stat.correct, 0)
+}
+
+export function calculateTotalAttempts(patternStats: PatternStat[]): number {
+	return patternStats.reduce((total, stat) => total + stat.attempts, 0)
 }

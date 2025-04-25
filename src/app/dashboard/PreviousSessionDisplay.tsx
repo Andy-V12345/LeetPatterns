@@ -1,25 +1,19 @@
 import React, { useCallback, useState } from 'react'
 import { PrevSession } from '@/interfaces/PrevSession'
-import { UIState } from '@/utils/Types'
 import StatCircle from '@/components/StatCircle'
 import { patternColors, patterns } from '@/utils/Consts'
-import { PatternStat } from '@/interfaces/PatternStat'
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { useAuth } from '@/components/AuthContext'
 import { redirect } from 'next/navigation'
 import BeatLoader from 'react-spinners/BeatLoader'
+import {
+	calculateTotalCorrect,
+	calculateTotalAttempts,
+} from '@/utils/UtilFunctions'
 
 interface PreviousSessionDisplayProps {
 	prevSession: PrevSession | null
-}
-
-function calculateTotalCorrect(patternStats: PatternStat[]): number {
-	return patternStats.reduce((total, stat) => total + stat.correct, 0)
-}
-
-function calculateTotalAttempts(patternStats: PatternStat[]): number {
-	return patternStats.reduce((total, stat) => total + stat.attempts, 0)
 }
 
 export default function PreviousSessionDisplay({
@@ -148,7 +142,7 @@ export default function PreviousSessionDisplay({
 							{/* Total Correct Cell */}
 							<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col gap-2 col-span-5 lg:col-span-2">
 								<h3 className="font-semibold text-lg">
-									Total Correct
+									Correct
 								</h3>
 								<p className="text-4xl font-bold text-theme-orange">
 									{calculateTotalCorrect(
@@ -160,7 +154,7 @@ export default function PreviousSessionDisplay({
 							{/* Total Attempts Cell */}
 							<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col gap-2 col-span-5 lg:col-span-2">
 								<h3 className="font-semibold text-lg">
-									Total Attempts
+									Attempts
 								</h3>
 								<p className="text-4xl font-bold text-theme-orange">
 									{calculateTotalAttempts(
@@ -246,7 +240,7 @@ export default function PreviousSessionDisplay({
 								>
 									<div className="flex gap-3 items-center">
 										<p>🧠</p>
-										<p>Focus on new patterns</p>
+										<p>Practice new patterns</p>
 									</div>
 									<ChevronRight className="size-4" />
 								</Link>
@@ -257,9 +251,7 @@ export default function PreviousSessionDisplay({
 								>
 									<div className="flex gap-3 items-center">
 										<p>🏃</p>
-										<p>
-											Run it back with the same patterns
-										</p>
+										<p>Focus on the same stuff</p>
 									</div>
 									<ChevronRight className="size-4" />
 								</Link>

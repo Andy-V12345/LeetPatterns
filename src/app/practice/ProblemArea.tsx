@@ -8,7 +8,8 @@ import RecapCard from './RecapCard'
 import { motion, AnimatePresence } from 'framer-motion'
 import { PatternStat } from '@/interfaces/PatternStat'
 import SyncLoader from 'react-spinners/SyncLoader'
-import { useAuth } from './AuthContext'
+import { useAuth } from '../../components/AuthContext'
+import { calculateTotalAttempts } from '@/utils/UtilFunctions'
 
 interface ProblemAreaProps {
 	focusedPatterns: Pattern[] | undefined | null
@@ -35,7 +36,6 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 
 	const preloadProblems = useCallback(async () => {
 		if (focusedPatterns && problemQ.length < 2) {
-			console.log('focused:', focusedPatterns)
 			const next = await generateProblem(focusedPatterns, patternStats)
 			setProblemQ((prev) => [...prev, next])
 		}
@@ -47,17 +47,19 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				setShowRecap(true)
 			} else {
 				setCardState('loading')
-
 				let nextProblem = problemQ[0]
-				setShowAnswer(false)
-				setQuestionCount((prev) => {
-					return prev + 1
-				})
 
+				setShowAnswer(false)
 				if (nextProblem) {
 					setProblem(nextProblem)
 					setProblemQ((prev) => prev.slice(1))
+					setQuestionCount((prev) => {
+						return prev + 1
+					})
 				} else {
+					setQuestionCount((prev) => {
+						return prev + 1
+					})
 					nextProblem = await generateProblem(
 						focusedPatterns as Pattern[],
 						patternStats
@@ -70,19 +72,22 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 		} else if (focusedPatterns == null) {
 			console.error('focusedPatterns undefined')
 		} else if (showRecap) {
-			setShowRecap(false)
 			setCardState('loading')
+			setShowRecap(false)
 
 			let nextProblem = problemQ[0]
-			setQuestionCount((prev) => {
-				return prev + 1
-			})
 			setShowAnswer(false)
 
 			if (nextProblem) {
 				setProblem(nextProblem)
 				setProblemQ((prev) => prev.slice(1))
+				setQuestionCount((prev) => {
+					return prev + 1
+				})
 			} else {
+				setQuestionCount((prev) => {
+					return prev + 1
+				})
 				nextProblem = await generateProblem(
 					focusedPatterns as Pattern[],
 					patternStats
@@ -154,10 +159,12 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	useEffect(() => {
 		return () => {
 			if (user) {
-				saveSession()
+				if (calculateTotalAttempts(patternStats) > 0) {
+					saveSession()
+				}
 			}
 		}
-	}, [user, focusedPatterns])
+	}, [user, focusedPatterns, patternStats])
 
 	useEffect(() => {
 		if (problem) {
@@ -171,82 +178,75 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 			<AnimatePresence mode="wait">
 				{/* Initial Loading */}
 				{firstLoad && (
-					<div
+					<motion.div
 						key="load-div"
-						className={`flex gap-5 h-full relative`}
+						className="flex gap-5 h-full relative"
+						initial={{ opacity: 1 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.4 }}
 					>
-						<motion.div
-							className="w-full h-full flex flex-col items-center justify-center gap-6"
-							initial={{ opacity: 1 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							transition={{ duration: 0.4 }}
-						>
-							<SyncLoader
-								loading={firstLoad}
-								color="var(--theme-orange)"
-								size={11}
-							/>
-
-							<p className="text-foreground font-medium text-base">
-								Generating some questions...
-							</p>
-						</motion.div>
-					</div>
+						<SyncLoader
+							loading={firstLoad}
+							color="var(--theme-orange)"
+							size={11}
+						/>
+						<p className="text-foreground font-medium text-base">
+							Generating some questions...
+						</p>
+					</motion.div>
 				)}
 
-				<div
-					key="problem-div"
-					className={`flex gap-5 self-stretch h-4/5 max-h-[600px] relative`}
-				>
-					{/* Problem Card */}
-					{!showRecap && !firstLoad && (
-						<motion.div
-							key={`problem-${questionCount}`}
-							initial={{ x: '100%', opacity: 0 }}
-							animate={{ x: 0, opacity: 1 }}
-							exit={{ x: '-100%', opacity: 0 }}
-							transition={cardTransition}
-							className="flex max-h-full self-stretch w-full gap-5"
-						>
-							{(problem != null || cardState === 'loading') && (
-								<>
-									<ProblemCard
-										problem={problem}
-										cardState={cardState}
-										setCardState={setCardState}
-										showAnswer={showAnswer}
-										setShowAnswer={setShowAnswer}
-										updatePatternStats={updatePatternStats}
-									/>
-									<ProblemAnswer
-										showAnswer={showAnswer}
-										cardState={cardState}
-										answer={problem?.answer ?? null}
-										createNewProblem={createNewProblem}
-									/>
-								</>
-							)}
-						</motion.div>
-					)}
+				{/* Problem Card */}
+				{!firstLoad && !showRecap && (
+					<motion.div
+						key={`problem-${questionCount}`}
+						initial={{ x: '100%', opacity: 0 }}
+						animate={{ x: 0, opacity: 1 }}
+						exit={{
+							x: '-100%',
+							opacity: 0,
+						}}
+						transition={cardTransition}
+						className="flex self-stretch w-full gap-5 h-4/5 max-h-[600px] relative"
+					>
+						{(problem != null || cardState === 'loading') && (
+							<>
+								<ProblemCard
+									problem={problem}
+									cardState={cardState}
+									setCardState={setCardState}
+									showAnswer={showAnswer}
+									setShowAnswer={setShowAnswer}
+									updatePatternStats={updatePatternStats}
+								/>
+								<ProblemAnswer
+									showAnswer={showAnswer}
+									cardState={cardState}
+									answer={problem?.answer ?? null}
+									createNewProblem={createNewProblem}
+								/>
+							</>
+						)}
+					</motion.div>
+				)}
 
-					{/* Recap Card */}
-					{showRecap && (
-						<motion.div
-							key="recap"
-							initial={{ x: '100%', opacity: 0 }}
-							animate={{ x: 0, opacity: 1 }}
-							exit={{ x: '-100%', opacity: 0 }}
-							transition={cardTransition}
-							className="w-full h-full"
-						>
-							<RecapCard
-								patternStats={patternStats}
-								createNewProblem={createNewProblem}
-							/>
-						</motion.div>
-					)}
-				</div>
+				{/* Recap Card */}
+				{showRecap && (
+					<motion.div
+						key="recap"
+						initial={{ x: '100%', opacity: 0 }}
+						animate={{ x: 0, opacity: 1 }}
+						exit={{ x: '-100%', opacity: 0 }}
+						transition={cardTransition}
+						className="w-full h-full"
+					>
+						<RecapCard
+							patternStats={patternStats}
+							createNewProblem={createNewProblem}
+						/>
+					</motion.div>
+				)}
 			</AnimatePresence>
 		</div>
 	)

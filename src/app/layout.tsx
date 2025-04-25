@@ -5,6 +5,9 @@ import { AuthProvider } from '@/components/AuthContext'
 export const metadata: Metadata = {
 	title: 'LeetPatterns.ai',
 	description: 'Learn common LeetCode patterns',
+	icons: {
+		icon: '/favicon.ico',
+	},
 }
 
 export default function RootLayout({

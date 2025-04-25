@@ -6,8 +6,10 @@ import {
 	getFocusedPatternsFirestore,
 	getPatternStatsFirestore,
 	getPrevSessionFirestore,
+	getStreakFirestore,
 	saveFocusedPatternsFirestore,
 	setPrevSession,
+	setStreakFirestore,
 	updatePatternStatsFirestore,
 } from '@/utils/FirebaseFunctions'
 import { Pattern } from '@/utils/Types'
@@ -24,6 +26,14 @@ export class FirebaseUser implements AppUser {
 		this.uid = uid
 		this.firstName = firstName
 		this.lastName = lastName
+	}
+
+	async updateStreak(): Promise<void> {
+		const curDate = new Date()
+		await setStreakFirestore(this.uid, curDate.toISOString())
+	}
+	async getStreak(): Promise<{ longestStreak: number; curStreak: number }> {
+		return await getStreakFirestore(this.uid)
 	}
 
 	setFirebaseUser(user: User) {

@@ -5,12 +5,13 @@ import { FirebaseUser } from '@/classes/FirebaseUser'
 import { PatternStat } from '@/interfaces/PatternStat'
 import { Pattern } from './Types'
 import { PrevSession } from '@/interfaces/PrevSession'
-import { getWeakPatterns } from './UtilFunctions'
+import { areConsecutiveDays, getWeakPatterns } from './UtilFunctions'
 
 const FOCUSED_PATTERNS_COLLECTION = 'focusedPatterns'
 const USER_INFO_COLLECTION = 'users'
 const PATTERN_STATS_COLLECTION = 'patternStats'
 const PREV_SESSION_COLLECTION = 'prevSessions'
+const STREAKS_COLLECTION = 'streaks'
 
 /**
  * Gets the focused patterns of a user
@@ -154,4 +155,68 @@ export async function setPrevSession(
 			merge: true,
 		}
 	)
+}
+
+export async function setStreakFirestore(uid: string, date: string) {
+	const docRef = doc(db, STREAKS_COLLECTION, uid)
+	const docSnap = await getDoc(docRef)
+
+	if (docSnap.exists()) {
+		const data = docSnap.data()
+		const { curStreak, lastDate, longestStreak } = data
+
+		const isConsecutive = areConsecutiveDays(
+			new Date(date),
+			new Date(lastDate)
+		)
+
+		if (isConsecutive == 1) {
+			// consecutive days
+			const newStreak = curStreak + 1
+			const newLongest = Math.max(newStreak, longestStreak)
+
+			await updateDoc(docRef, {
+				curStreak: newStreak,
+				lastDate: date,
+				longestStreak: newLongest,
+			})
+		} else if (isConsecutive == -1) {
+			// non consecutive days
+			const newLongest = Math.max(curStreak, longestStreak)
+
+			await updateDoc(docRef, {
+				curStreak: 1,
+				lastDate: date,
+				longestStreak: newLongest,
+			})
+		}
+	} else {
+		await setDoc(docRef, {
+			curStreak: 1,
+			lastDate: date,
+			longestStreak: 1,
+		})
+	}
+}
+
+export async function getStreakFirestore(uid: string): Promise<{
+	longestStreak: number
+	curStreak: number
+}> {
+	const docRef = doc(db, STREAKS_COLLECTION, uid)
+	const docSnap = await getDoc(docRef)
+
+	if (docSnap.exists()) {
+		const data = docSnap.data()
+
+		return {
+			longestStreak: data.longestStreak,
+			curStreak: data.curStreak,
+		}
+	}
+
+	return {
+		longestStreak: 0,
+		curStreak: 0,
+	}
 }

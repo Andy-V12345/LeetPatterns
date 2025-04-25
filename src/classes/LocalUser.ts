@@ -5,8 +5,115 @@ import { ProfileInfo } from '@/interfaces/ProfileInfo'
 import { Pattern } from '@/utils/Types'
 import { getWeakPatterns } from '@/utils/UtilFunctions'
 import { redirect } from 'next/navigation'
+import { areConsecutiveDays } from '@/utils/UtilFunctions'
 
 export class LocalUser implements AppUser {
+	async updateStreak(): Promise<void> {
+		if (typeof window !== 'undefined') {
+			const key = 'userStreak'
+			const currentDate = new Date().toISOString()
+			let streakData: {
+				curStreak: number
+				longestStreak: number
+				lastDate: string
+			}
+
+			const stored = localStorage.getItem(key)
+			if (stored) {
+				try {
+					streakData = JSON.parse(stored) as {
+						curStreak: number
+						longestStreak: number
+						lastDate: string
+					}
+
+					// Check if the current date is consecutive with the stored lastDate
+					const isConsecutive = areConsecutiveDays(
+						new Date(currentDate),
+						new Date(streakData.lastDate)
+					)
+
+					if (isConsecutive == 1) {
+						const newStreak = streakData.curStreak + 1
+						const newLongest = Math.max(
+							newStreak,
+							streakData.longestStreak
+						)
+
+						const newStreakData = {
+							curStreak: newStreak,
+							longestStreak: newLongest,
+							lastDate: currentDate,
+						}
+
+						localStorage.setItem(key, JSON.stringify(newStreakData))
+					} else if (isConsecutive == -1) {
+						const newStreakData = {
+							curStreak: 1,
+							longestStreak: Math.max(
+								streakData.curStreak,
+								streakData.longestStreak
+							),
+							lastDate: currentDate,
+						}
+						localStorage.setItem(key, JSON.stringify(newStreakData))
+					}
+				} catch (error) {
+					console.error(
+						'error updating streak in local storage:',
+						error
+					)
+				}
+			} else {
+				streakData = {
+					curStreak: 1,
+					longestStreak: 1,
+					lastDate: currentDate,
+				}
+
+				localStorage.setItem(key, JSON.stringify(streakData))
+			}
+		}
+	}
+	async getStreak(): Promise<{ longestStreak: number; curStreak: number }> {
+		if (typeof window !== 'undefined') {
+			const key = 'userStreak'
+			const stored = localStorage.getItem(key)
+			if (stored) {
+				try {
+					const streakData = JSON.parse(stored) as {
+						curStreak: number
+						longestStreak: number
+						lastDate: string
+					}
+					return {
+						curStreak: streakData.curStreak,
+						longestStreak: streakData.longestStreak,
+					}
+				} catch (error) {
+					console.error(
+						'error loading streak from local storage:',
+						error
+					)
+					return {
+						curStreak: 0,
+						longestStreak: 0,
+					}
+				}
+			}
+
+			return {
+				curStreak: 0,
+				longestStreak: 0,
+			}
+		}
+
+		return {
+			curStreak: 0,
+			longestStreak: 0,
+		}
+	}
+
 	getProfileInfo(): ProfileInfo | null {
 		return null
 	}
