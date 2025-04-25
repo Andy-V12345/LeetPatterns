@@ -16,7 +16,13 @@ export default function RecapCard({
 
 			<div className="flex justify-center gap-8 flex-wrap">
 				{patternStats.map((stat, i) => (
-					<StatCircle key={stat.pattern + i} stat={stat} />
+					<StatCircle
+						key={stat.pattern + i}
+						stat={stat}
+						size={'size-30'}
+						strokeWidth={6}
+						textSize={16}
+					/>
 				))}
 			</div>
 
