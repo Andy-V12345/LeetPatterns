@@ -1,6 +1,6 @@
 import Problem from '@/interfaces/Problem'
 import ProblemCard from './ProblemCard'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
 import { Pattern, ProblemCardState } from '@/utils/Types'
 import ProblemAnswer from './ProblemAnswer'
 import { generateProblem } from '@/utils/GeminiFunctions'
@@ -11,6 +11,7 @@ import SyncLoader from 'react-spinners/SyncLoader'
 import { useAuth } from '../../components/AuthContext'
 import { calculateTotalAttempts } from '@/utils/UtilFunctions'
 import { useIsMobile } from '@/hooks/use-mobile'
+import FlippableCard from './FlippableCard'
 
 interface ProblemAreaProps {
 	focusedPatterns: Pattern[] | undefined | null
@@ -32,6 +33,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const [patternStats, setPatternStats] = useState<PatternStat[]>([])
 	const [problemQ, setProblemQ] = useState<Problem[]>([])
 	const [firstLoad, setFirstLoad] = useState(true)
+	const [selected, setSelected] = useState<string | null>(null)
 
 	const { user } = useAuth()
 
@@ -213,24 +215,48 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							opacity: 0,
 						}}
 						transition={cardTransition}
-						className={`flex self-stretch w-full ${isMobile ? `flex-col ${cardState != 'loading' && cardState != 'default' ? 'p-2' : ''}` : 'h-4/5 max-h-[600px]'} gap-5 relative`}
+						className={`flex self-stretch w-full ${isMobile ? `flex-col p-2 h-full` : 'h-4/5 max-h-[600px]'} gap-5 relative`}
+						style={{
+							perspective: '1000px',
+						}}
 					>
-						{(problem != null || cardState === 'loading') && (
+						{isMobile ? (
+							<FlippableCard
+								problem={problem}
+								cardState={cardState}
+								setCardState={setCardState}
+								showAnswer={showAnswer}
+								setShowAnswer={setShowAnswer}
+								updatePatternStats={updatePatternStats}
+								createNewProblem={createNewProblem}
+								selected={selected}
+								setSelected={setSelected}
+							/>
+						) : (
 							<>
-								<ProblemCard
-									problem={problem}
-									cardState={cardState}
-									setCardState={setCardState}
-									showAnswer={showAnswer}
-									setShowAnswer={setShowAnswer}
-									updatePatternStats={updatePatternStats}
-								/>
-								<ProblemAnswer
-									showAnswer={showAnswer}
-									cardState={cardState}
-									answer={problem?.answer ?? null}
-									createNewProblem={createNewProblem}
-								/>
+								{(problem != null ||
+									cardState === 'loading') && (
+									<>
+										<ProblemCard
+											problem={problem}
+											cardState={cardState}
+											setCardState={setCardState}
+											showAnswer={showAnswer}
+											setShowAnswer={setShowAnswer}
+											updatePatternStats={
+												updatePatternStats
+											}
+											selected={selected}
+											setSelected={setSelected}
+										/>
+										<ProblemAnswer
+											showAnswer={showAnswer}
+											cardState={cardState}
+											answer={problem?.answer ?? null}
+											createNewProblem={createNewProblem}
+										/>
+									</>
+								)}
 							</>
 						)}
 					</motion.div>

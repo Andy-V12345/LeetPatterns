@@ -14,7 +14,9 @@ export default function Home() {
 	const { user, isLoading } = useAuth()
 
 	return (
-		<div className="bg-background overflow-hidden h-[100vh] flex flex-col justify-between items-center">
+		<div
+			className={`bg-background px-5 overflow-hidden h-[100svh] flex flex-col justify-between items-center`}
+		>
 			{isLoading ? (
 				<SyncLoader
 					loading={isLoading}
@@ -24,7 +26,7 @@ export default function Home() {
 				/>
 			) : (
 				<>
-					<div className="flex items-center pt-8 px-5 md:px-10 lg:px-20 justify-between w-full">
+					<div className="flex items-center pt-8 md:px-10 lg:px-20 justify-between w-full">
 						<Link href="/" className="flex items-center gap-3">
 							<Image
 								src={'/leetpatterns_icon.png'}
@@ -74,7 +76,9 @@ export default function Home() {
 							</h1>
 						</div>
 
-						<p className="sm:max-w-full md:max-w-3/5 text-center">
+						<p
+							className={`sm:max-w-full md:max-w-3/5 text-center ${isMobile ? 'text-sm' : 'text-base'}`}
+						>
 							Want to land your dream software engineering role?
 							Learn how to identify common LeetCode patterns to
 							ace your next interview!
