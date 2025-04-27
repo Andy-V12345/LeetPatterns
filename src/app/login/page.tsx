@@ -8,6 +8,7 @@ import { redirect, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { UIState } from '@/utils/Types'
 import BeatLoader from 'react-spinners/BeatLoader'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 export default function LoginPage() {
 	const { continueAsGuest, login, signInWithGoogle } = useAuth()
@@ -57,11 +58,15 @@ export default function LoginPage() {
 		}
 	}
 
+	const isMobile = useIsMobile()
+
 	return (
 		<div className="bg-background overflow-hidden h-[100vh] flex flex-col justify-center items-center p-8">
-			<div className="h-fit w-[450px] bg-card-bg overflow-y-scroll flex flex-col gap-5 rounded-xl p-8">
+			<div
+				className={`h-fit w-[450px] ${isMobile ? '' : 'bg-card-bg'} overflow-y-scroll flex flex-col gap-5 rounded-xl p-8`}
+			>
 				<div className="flex flex-col gap-1">
-					<h1 className="font-bold text-2xl">Sign in</h1>
+					<h1 className="font-bold text-2xl">Log in</h1>
 					<p className="text-sm">
 						Start practicing for free. No credit card required.
 					</p>
@@ -135,7 +140,7 @@ export default function LoginPage() {
 								size={6}
 							/>
 						) : (
-							<p>Sign in</p>
+							<p>Log in</p>
 						)}
 					</button>
 				</form>

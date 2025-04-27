@@ -60,7 +60,7 @@ export default function ProblemAnswer({
 
 	return (
 		<div
-			className={`flex flex-col ${isMobile ? 'w-full' : 'w-[40%]'} self-stretch bg-card-bg rounded-md`}
+			className={`relative flex flex-col bg-card-bg rounded-md self-stretch h-full overflow-x-hidden ${isMobile ? 'w-full' : 'w-[40%]'}`}
 		>
 			<div className="bg-[#363535] p-3 rounded-t-md">
 				<p className="text-theme-orange font-bold text-sm">
@@ -69,14 +69,14 @@ export default function ProblemAnswer({
 			</div>
 
 			<div
-				className={`flex flex-col justify-between h-full max-h-full overflow-scroll p-6`}
+				className={`flex flex-col justify-between h-full max-h-full overflow-scroll p-4 md:p-6`}
 			>
 				{!showAnswer && cardState != 'loading' ? (
 					<i className="text-sm self-center my-auto text-center">
 						Answer the question before seeing the explanation!
 					</i>
 				) : (
-					<div className="flex flex-col gap-6 h-full">
+					<div className="flex flex-col gap-4 md:gap-6 h-full">
 						{/* Explanation text takes up available space */}
 						<div className="flex-1 overflow-y-auto overflow-x-hidden">
 							{answer != null && cardState != 'loading' ? (

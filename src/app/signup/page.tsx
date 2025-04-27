@@ -3,6 +3,7 @@
 import { useAuth } from '@/components/AuthContext'
 import GoogleIcon from '@/components/GoogleSvg'
 import { Input } from '@/components/ui/input'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { UIState } from '@/utils/Types'
 import Link from 'next/link'
 import { redirect, useRouter } from 'next/navigation'
@@ -89,9 +90,13 @@ export default function SignupPage() {
 		}
 	}
 
+	const isMobile = useIsMobile()
+
 	return (
 		<div className="bg-background overflow-hidden h-[100vh] flex flex-col justify-center items-center p-8">
-			<div className="h-fit w-[450px] bg-card-bg overflow-y-scroll flex flex-col gap-5 rounded-xl p-8">
+			<div
+				className={`h-fit w-[450px] ${isMobile ? '' : 'bg-card-bg'} overflow-y-scroll flex flex-col gap-5 rounded-xl p-8`}
+			>
 				<div className="flex flex-col gap-1">
 					<h1 className="font-bold text-2xl">Sign up</h1>
 					<p className="text-sm">
