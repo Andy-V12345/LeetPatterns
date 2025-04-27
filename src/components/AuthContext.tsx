@@ -56,7 +56,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 			if (firebaseUser) {
 				const appUser = await getUserInfo(firebaseUser.uid)
 				appUser!.setFirebaseUser(firebaseUser)
-				console.log('user', appUser)
 				setUser(appUser)
 			} else {
 				if (checkIsGuest()) {

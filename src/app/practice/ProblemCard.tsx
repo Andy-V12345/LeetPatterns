@@ -15,6 +15,8 @@ interface ProblemCardProps {
 	showAnswer: boolean
 	setShowAnswer: React.Dispatch<React.SetStateAction<boolean>>
 	updatePatternStats: (pattern: Pattern, isCorrect: boolean) => void
+	selected: string | null
+	setSelected: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 const overlayVariants = {
@@ -102,9 +104,9 @@ export default function ProblemCard({
 	showAnswer,
 	setShowAnswer,
 	updatePatternStats,
+	selected,
+	setSelected,
 }: ProblemCardProps) {
-	const [selected, setSelected] = useState<string | null>(null)
-
 	const handleSelect = (option: string) => {
 		if (problem == null) {
 			return
@@ -136,7 +138,7 @@ export default function ProblemCard({
 
 	return (
 		<div
-			className={`relative z-20 flex flex-col bg-card-bg rounded-md ${isMobile ? 'z-20 w-full' : 'w-[60%] self-stretch overflow-x-hidden'} `}
+			className={`relative flex flex-col bg-card-bg rounded-md self-stretch h-full overflow-x-hidden ${isMobile ? 'w-full' : 'w-[60%]'}`}
 			style={{
 				boxShadow: `${cardState != 'loading' ? `0px 0px 10px 3px var(${cardStateToColor[cardState]})` : ''}`,
 			}}
@@ -145,72 +147,80 @@ export default function ProblemCard({
 				<p className="text-theme-orange font-bold text-sm">Problem</p>
 			</div>
 
-			<div className="flex flex-col h-full max-h-full overflow-scroll gap-6 px-6 pb-6">
-				<div className="w-full flex-1 overflow-y-scroll overflow-x-hidden">
-					{problem != null && cardState != 'loading' ? (
-						<div className="prose prose-invert pr-5 max-h-full max-w-full markdown">
-							<ReactMarkdown>{problem.prompt}</ReactMarkdown>
-						</div>
-					) : (
-						<div className="max-h-full max-w-full">
-							<Skeleton className="w-full mt-6 bg-[#3C3C3C] text-transparent rounded-sm">
-								hello
-							</Skeleton>
-							<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
-								hello
-							</Skeleton>
-							<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
-								hello
-							</Skeleton>
-							<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
-								hello
-							</Skeleton>
-							<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
-								hello
-							</Skeleton>
-						</div>
-					)}
-				</div>
-
-				<div className="flex flex-col gap-4">
-					{problem != null && cardState != 'loading' ? (
-						<p className="text-theme-orange font-medium text-lg">
-							Which approach should you use?
-						</p>
-					) : (
-						<Skeleton className="text-lg font-medium text-transparent w-full bg-[#3C3C3C] rounded-sm">
-							Which approach should you use?
-						</Skeleton>
-					)}
-
-					<div className="grid grid-cols-2 gap-4">
+			<div
+				className={`flex flex-col justify-between h-full max-h-full overflow-scroll px-4 pb-4 md:px-6 md:pb-6`}
+			>
+				<div className="flex flex-col gap-4 md:gap-6 h-full">
+					<div className="flex-1 overflow-y-auto overflow-x-hidden">
 						{problem != null && cardState != 'loading' ? (
-							problem.options.map((option) => (
-								<button
-									key={option}
-									disabled={cardState != 'default'}
-									onClick={() => handleSelect(option)}
-									className={`py-2 px-4 rounded border hover:opacity-65 transition-all`}
-									style={{
-										color: `${selected === option ? `var(${cardStateToColor[cardState]})` : ''}`,
-										borderColor: `${selected === option ? `var(${cardStateToColor[cardState]})` : ''}`,
-									}}
-								>
-									{option}
-								</button>
-							))
+							<div className="prose prose-invert pr-1 max-h-full max-w-full markdown">
+								<ReactMarkdown>{problem.prompt}</ReactMarkdown>
+							</div>
 						) : (
-							<>
-								<Skeleton className="w-full text-transparent py-2 bg-[#3C3C3C] rounded">
+							<div className="max-h-full max-w-full">
+								<Skeleton className="w-full mt-6 bg-[#3C3C3C] text-transparent rounded-sm">
 									hello
 								</Skeleton>
-								<Skeleton className="w-full bg-[#3C3C3C] rounded" />
-								<Skeleton className="w-full py-2 text-transparent bg-[#3C3C3C] rounded">
+								<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
 									hello
 								</Skeleton>
-								<Skeleton className="w-full bg-[#3C3C3C] rounded" />
-							</>
+								<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+									hello
+								</Skeleton>
+								<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+									hello
+								</Skeleton>
+								<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+									hello
+								</Skeleton>
+							</div>
 						)}
+					</div>
+
+					<div className={`flex w-full flex-col gap-4`}>
+						{problem != null && cardState != 'loading' ? (
+							<p
+								className={`text-theme-orange font-medium text-base md:text-lg`}
+							>
+								Which approach should you use?
+							</p>
+						) : (
+							<Skeleton className="text-lg font-medium text-transparent w-full bg-[#3C3C3C] rounded-sm">
+								Which approach should you use?
+							</Skeleton>
+						)}
+
+						<div
+							className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}
+						>
+							{problem != null && cardState != 'loading' ? (
+								problem.options.map((option) => (
+									<button
+										key={option}
+										disabled={cardState != 'default'}
+										onClick={() => handleSelect(option)}
+										className={`py-2 px-4 rounded border hover:opacity-65 transition-all`}
+										style={{
+											color: `${selected === option ? `var(${cardStateToColor[cardState]})` : ''}`,
+											borderColor: `${selected === option ? `var(${cardStateToColor[cardState]})` : ''}`,
+										}}
+									>
+										{option}
+									</button>
+								))
+							) : (
+								<>
+									<Skeleton className="w-full text-transparent py-2 bg-[#3C3C3C] rounded">
+										hello
+									</Skeleton>
+									<Skeleton className="w-full bg-[#3C3C3C] rounded" />
+									<Skeleton className="w-full py-2 text-transparent bg-[#3C3C3C] rounded">
+										hello
+									</Skeleton>
+									<Skeleton className="w-full bg-[#3C3C3C] rounded" />
+								</>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import SyncLoader from 'react-spinners/SyncLoader'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 export default function PracticePageContent() {
 	const { user, isLoading } = useAuth()
@@ -34,6 +35,8 @@ export default function PracticePageContent() {
 		}
 	}, [user, isLoading])
 
+	const isMobile = useIsMobile()
+
 	return (
 		<div>
 			<AnimatePresence mode="wait">
@@ -60,19 +63,23 @@ export default function PracticePageContent() {
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.4 }}
-						className="mx-auto overflow-y-hidden overflow-x-hidden gap-6 p-6 w-full md:w-11/12 flex h-[100svh] flex-col items-center"
+						className="mx-auto overflow-x-hidden gap-6 p-6 w-full md:w-11/12 flex h-[100svh] flex-col items-center"
 					>
-						<div className="flex gap-2 justify-between items-center w-full self-start">
+						<div
+							className={`flex ${isMobile ? 'flex-col gap-4' : 'flex-row gap-10'} justify-between items-center w-full self-start`}
+						>
 							{/* Focused Patterns Bar */}
 							{focusedPatterns != null &&
 								focusedPatterns.length > 0 && (
-									<div className="flex flex-col gap-2 font-semibold text-lg self-start">
+									<div className="flex flex-col w-full gap-2 overflow-x-scroll font-semibold text-lg self-start">
 										<h3>Focused patterns: </h3>
-										<div className="flex flex-wrap gap-2 text-sm text-foreground font-medium">
+										<div
+											className={`flex w-full scrollbar-hide ${isMobile ? 'flex-nowrap overflow-x-scroll' : 'flex-wrap'} gap-2 text-sm text-foreground font-medium`}
+										>
 											{focusedPatterns.map((pattern) => (
 												<span
 													key={pattern}
-													className="border-theme-orange border-1 px-3 py-1 rounded-full"
+													className="border-theme-orange border-1 whitespace-nowrap px-3 py-1 rounded-full"
 												>
 													{pattern}
 												</span>
@@ -84,9 +91,9 @@ export default function PracticePageContent() {
 							{/* Dashboard Button */}
 							<Link
 								href={'/dashboard'}
-								className="bg-theme-orange hover:bg-theme-hover-orange transition-color ml-auto text-sm font-medium px-4 py-2 rounded-md"
+								className={`bg-card-bg hover:opacity-65 transition-all ${isMobile ? 'self-stretch text-center' : 'ml-auto'} text-sm font-medium px-4 py-3 rounded-md`}
 							>
-								Dashboard
+								{isMobile ? 'Go to Dashboard' : 'Dashboard'}
 							</Link>
 						</div>
 
