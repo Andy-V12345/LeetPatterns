@@ -26,7 +26,12 @@ export default function Home() {
 				/>
 			) : (
 				<>
-					<div className="flex items-center pt-8 md:px-10 lg:px-20 justify-between w-full">
+					<div
+						className="flex items-center md:px-10 lg:px-20 justify-between w-full"
+						style={{
+							paddingTop: isMobile ? '30px' : '40px',
+						}}
+					>
 						<Link href="/" className="flex items-center gap-3">
 							<Image
 								src={'/leetpatterns_icon.png'}
@@ -36,22 +41,11 @@ export default function Home() {
 							/>
 
 							<span className="font-medium text-xl">
-								<h1 className="text-white inline">
-									leetpatterns
-								</h1>
+								<h1 className="inline">leetpatterns</h1>
 								<h1 className="inline text-theme-orange">.</h1>
 								<h1 className="inline text-theme-orange">ai</h1>
 							</span>
 						</Link>
-
-						{!isMobile && (
-							<Link
-								href={user != null ? '/dashboard' : '/signup'}
-								className="py-3 px-6 text-sm font-semibold bg-theme-orange hover:bg-theme-hover-orange transition-all rounded-xl"
-							>
-								{user != null ? 'Dashboard' : 'Get Started'}
-							</Link>
-						)}
 					</div>
 
 					<div className="bg-background mb-10 flex gap-3 flex-col justify-center items-center">
@@ -60,7 +54,7 @@ export default function Home() {
 								className="inline"
 								style={{
 									textShadow:
-										'3px 3px 1px var(--theme-orange)',
+										'2px 2px 1px var(--theme-orange)',
 								}}
 							>
 								Welcome to{' '}
@@ -91,7 +85,7 @@ export default function Home() {
 						>
 							<span className="button-82-shadow"></span>
 							<span className="button-82-edge"></span>
-							<span className="button-82-front text-lg font-bold">
+							<span className="button-82-front text-lg text-white font-bold">
 								{user == null
 									? `Get Started - It's All Free`
 									: 'Go To Your Dashboard'}

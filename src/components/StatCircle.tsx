@@ -35,7 +35,7 @@ export default function StatCircle({
 				correct={stat.correct}
 				attempts={stat.attempts}
 				gaugePrimaryColor={patternColors[stat.pattern]}
-				gaugeSecondaryColor="#363535"
+				gaugeSecondaryColor="var(--card-fg)"
 				strokeWidth={strokeWidth}
 				size={size}
 			/>

@@ -62,7 +62,7 @@ export default function ProblemAnswer({
 		<div
 			className={`relative flex flex-col bg-card-bg rounded-md self-stretch h-full overflow-x-hidden ${isMobile ? 'w-full' : 'w-[40%]'}`}
 		>
-			<div className="bg-[#363535] p-3 rounded-t-md">
+			<div className="bg-card-fg p-3 rounded-t-md">
 				<p className="text-theme-orange font-bold text-sm">
 					Explanation
 				</p>
@@ -122,7 +122,7 @@ export default function ProblemAnswer({
 									target="_blank"
 									className="flex flex-col gap-0 hover:opacity-50 transition-all w-fit"
 								>
-									<p className="text-[#B3B3B3] text-sm">{`Practice ${answer.correct}:`}</p>
+									<p className="text-foreground-fg text-sm">{`Practice ${answer.correct}:`}</p>
 									<div className="flex gap-1 items-center">
 										<LeetcodeIcon />
 										<p className="text-sm font-semibold">

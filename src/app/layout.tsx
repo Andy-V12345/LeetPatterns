@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { AuthProvider } from '@/components/AuthContext'
+import { ThemeProvider } from '@/components/ThemeContext'
+import RootContent from './RootContent'
 
 export const metadata: Metadata = {
 	title: 'LeetPatterns.ai',
@@ -17,11 +18,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en">
-			<body
-				className={`text-foreground font-poppins antialiased bg-background`}
-			>
-				<AuthProvider>{children}</AuthProvider>
-			</body>
+			<ThemeProvider>
+				<RootContent>{children}</RootContent>
+			</ThemeProvider>
 		</html>
 	)
 }
