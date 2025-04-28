@@ -23,7 +23,6 @@ import { checkIsGuest, setIsGuest } from '@/utils/UtilFunctions'
 import { getUserInfo, saveUserInfo } from '@/utils/FirebaseFunctions'
 import { redirect, useRouter } from 'next/navigation'
 import { UIState } from '@/utils/Types'
-import { error } from 'console'
 
 type AuthContextType = {
 	user: AppUser | null

@@ -216,18 +216,27 @@ export default function PreviousSessionDisplay({
 									<button
 										disabled={loading}
 										onClick={handleWorkOnWeakPatterns}
-										className={`flex items-center justify-between bg-card-fg font-semibold text-sm rounded-md text-left p-4 ${loading ? '' : 'hover:opacity-80'} transition-all gap-3`}
+										className={`relative flex items-center transition-none justify-between bg-card-fg font-semibold text-sm rounded-md text-left p-4 ${loading ? '' : 'hover:opacity-80'} transition-all gap-3`}
 									>
 										{loading ? (
-											<BeatLoader
-												className="mx-auto"
-												loading={loading}
-												color="var(--foreground)"
-												size={6}
-											/>
+											<>
+												<BeatLoader
+													className="absolute inset-0 flex items-center justify-center"
+													loading={loading}
+													color="var(--foreground)"
+													size={6}
+												/>
+												<p
+													className={`text-sm ${loading && 'text-transparent'}`}
+												>
+													f
+												</p>
+											</>
 										) : (
 											<>
-												<div className="flex gap-3 items-center">
+												<div
+													className={`flex gap-3 items-center`}
+												>
 													<p>💪</p>
 													<p>
 														Work on your weak

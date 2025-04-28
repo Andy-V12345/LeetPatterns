@@ -143,7 +143,7 @@ export default function ProblemCard({
 				boxShadow: `${cardState != 'loading' ? `0px 0px 10px 3px var(${cardStateToColor[cardState]})` : ''}`,
 			}}
 		>
-			<div className="bg-[#363535] p-3 rounded-t-md">
+			<div className="bg-card-fg p-3 rounded-t-md">
 				<p className="text-theme-orange font-bold text-sm">Problem</p>
 			</div>
 
@@ -158,19 +158,19 @@ export default function ProblemCard({
 							</div>
 						) : (
 							<div className="max-h-full max-w-full">
-								<Skeleton className="w-full mt-6 bg-[#3C3C3C] text-transparent rounded-sm">
+								<Skeleton className="w-full mt-6 text-transparent rounded-sm">
 									hello
 								</Skeleton>
-								<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+								<Skeleton className="w-full mt-4 text-transparent rounded-sm">
 									hello
 								</Skeleton>
-								<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+								<Skeleton className="w-full mt-4 text-transparent rounded-sm">
 									hello
 								</Skeleton>
-								<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+								<Skeleton className="w-full mt-4 text-transparent rounded-sm">
 									hello
 								</Skeleton>
-								<Skeleton className="w-full mt-4 bg-[#3C3C3C] text-transparent rounded-sm">
+								<Skeleton className="w-full mt-4 text-transparent rounded-sm">
 									hello
 								</Skeleton>
 							</div>
@@ -199,7 +199,7 @@ export default function ProblemCard({
 										key={option}
 										disabled={cardState != 'default'}
 										onClick={() => handleSelect(option)}
-										className={`py-2 px-4 rounded border hover:opacity-65 transition-all`}
+										className={`py-2 px-4 rounded border border-foreground hover:opacity-65 transition-all`}
 										style={{
 											color: `${selected === option ? `var(${cardStateToColor[cardState]})` : ''}`,
 											borderColor: `${selected === option ? `var(${cardStateToColor[cardState]})` : ''}`,
@@ -210,14 +210,14 @@ export default function ProblemCard({
 								))
 							) : (
 								<>
-									<Skeleton className="w-full text-transparent py-2 bg-[#3C3C3C] rounded">
+									<Skeleton className="w-full text-transparent py-2 rounded">
 										hello
 									</Skeleton>
-									<Skeleton className="w-full bg-[#3C3C3C] rounded" />
-									<Skeleton className="w-full py-2 text-transparent bg-[#3C3C3C] rounded">
+									<Skeleton className="w-full rounded" />
+									<Skeleton className="w-full py-2 text-transparent rounded">
 										hello
 									</Skeleton>
-									<Skeleton className="w-full bg-[#3C3C3C] rounded" />
+									<Skeleton className="w-full rounded" />
 								</>
 							)}
 						</div>
@@ -236,7 +236,9 @@ export default function ProblemCard({
 							animate="animate"
 							exit="exit"
 							className="absolute inset-0 flex flex-col justify-center items-center opacity-40 rounded-md"
-							style={{ backgroundColor: 'rgba(33, 37, 41, 0.8)' }}
+							style={{
+								backgroundColor: 'var(--overlay-bg)',
+							}}
 						>
 							<motion.svg
 								width="100"

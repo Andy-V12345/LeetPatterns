@@ -1,5 +1,5 @@
 import { PatternStat } from '@/interfaces/PatternStat'
-import { Pattern } from './Types'
+import { ColorTheme, Pattern } from './Types'
 
 export function shuffle<T>(array: T[]): T[] {
 	const result = [...array] // optional: copy if you don't want to mutate
@@ -65,4 +65,22 @@ export function calculateTotalCorrect(patternStats: PatternStat[]): number {
 
 export function calculateTotalAttempts(patternStats: PatternStat[]): number {
 	return patternStats.reduce((total, stat) => total + stat.attempts, 0)
+}
+
+export function setColorTheme(theme: ColorTheme) {
+	if (typeof window !== 'undefined') {
+		localStorage.setItem('theme', JSON.stringify(theme))
+	}
+}
+
+export function getColorTheme(): ColorTheme {
+	if (typeof window !== 'undefined') {
+		const data = localStorage.getItem('theme')
+
+		if (data) {
+			return JSON.parse(data)
+		}
+	}
+
+	return 'dark'
 }

@@ -1,6 +1,6 @@
 import Problem from '@/interfaces/Problem'
 import ProblemCard from './ProblemCard'
-import { SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Pattern, ProblemCardState } from '@/utils/Types'
 import ProblemAnswer from './ProblemAnswer'
 import { generateProblem } from '@/utils/GeminiFunctions'
