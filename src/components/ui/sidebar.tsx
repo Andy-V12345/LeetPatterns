@@ -149,7 +149,7 @@ function SidebarProvider({
 						} as React.CSSProperties
 					}
 					className={cn(
-						'group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full',
+						'group/sidebar-wrapper has-data-[variant=inset]:bg-red-400 flex min-h-svh w-full',
 						className
 					)}
 					{...props}
@@ -180,7 +180,7 @@ function Sidebar({
 			<div
 				data-slot="sidebar"
 				className={cn(
-					'bg-background text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col',
+					'text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col',
 					className
 				)}
 				{...props}
@@ -197,7 +197,7 @@ function Sidebar({
 					data-sidebar="sidebar"
 					data-slot="sidebar"
 					data-mobile="true"
-					className="bg-sidebar border-0 text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
+					className="border-0 text-sidebar-foreground w-(--sidebar-width) p-0 [&>button]:hidden"
 					style={
 						{
 							'--sidebar-width': SIDEBAR_WIDTH_MOBILE,
@@ -211,7 +211,7 @@ function Sidebar({
 							Displays the mobile sidebar.
 						</SheetDescription>
 					</SheetHeader>
-					<div className="flex h-full w-full flex-col">
+					<div className="flex bg-card-bg h-full w-full flex-col">
 						{children}
 					</div>
 				</SheetContent>
@@ -259,7 +259,7 @@ function Sidebar({
 				<div
 					data-sidebar="sidebar"
 					data-slot="sidebar-inner"
-					className="bg-sidebar flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
+					className="bg-card-bg flex h-full w-full flex-col group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:shadow-sm"
 				>
 					{children}
 				</div>

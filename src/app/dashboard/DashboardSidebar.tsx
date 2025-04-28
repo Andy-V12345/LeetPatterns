@@ -11,13 +11,16 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { House, User } from 'lucide-react'
+import { House, User, Moon, Sun } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { DashboardTypes, UIState } from '@/utils/Types'
 import { useAuth } from '@/components/AuthContext'
 import BeatLoader from 'react-spinners/BeatLoader'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
+import { Switch } from '@/components/ui/switch'
+import { useTheme } from '@/components/ThemeContext'
+import { setColorTheme } from '@/utils/UtilFunctions'
 
 export default function DashboardSidebar() {
 	const pathname = usePathname()
@@ -26,6 +29,7 @@ export default function DashboardSidebar() {
 	)
 	const [uiState, setUiState] = useState<UIState>('default')
 	const { logout } = useAuth()
+	const { theme, setTheme } = useTheme()
 
 	useEffect(() => {
 		if (pathname.includes('/dashboard/profile')) {
@@ -41,18 +45,20 @@ export default function DashboardSidebar() {
 		setUiState('default')
 	}
 
+	const handleThemeToggle = () => {
+		if (theme == 'dark') {
+			setTheme('light')
+			setColorTheme('light')
+		} else {
+			setTheme('dark')
+			setColorTheme('dark')
+		}
+	}
+
 	return (
 		<Sidebar>
 			<SidebarHeader>
-				{/* <h1
-					className="text-theme-orange font-bold text-xl"
-					style={{
-						textShadow: '0px 2px 2px var(--theme-orange)',
-					}}
-				>
-					LeetPatterns.ai
-				</h1> */}
-				<Link href="/dashboard" className="flex items-center gap-3">
+				<Link href="/" className="flex items-center gap-3">
 					<Image
 						src={'/leetpatterns_icon.png'}
 						alt={'logo'}
@@ -61,7 +67,7 @@ export default function DashboardSidebar() {
 					/>
 
 					<span className="font-medium text-lg">
-						<h1 className="text-white inline">leetpatterns</h1>
+						<h1 className="text-foreground inline">leetpatterns</h1>
 						<h1 className="inline text-theme-orange">.</h1>
 						<h1 className="inline text-theme-orange">ai</h1>
 					</span>
@@ -81,8 +87,8 @@ export default function DashboardSidebar() {
 									href="/dashboard"
 									className="flex items-center gap-3"
 								>
-									<House />
-									<span className="font-semibold">
+									<House className="text-foreground" />
+									<span className="font-semibold text-foreground">
 										Dashboard
 									</span>
 								</Link>
@@ -99,8 +105,8 @@ export default function DashboardSidebar() {
 									href="/dashboard/profile"
 									className="flex items-center gap-3"
 								>
-									<User />
-									<span className="font-semibold">
+									<User className="text-foreground" />
+									<span className="font-semibold text-foreground">
 										Profile
 									</span>
 								</Link>
@@ -111,6 +117,26 @@ export default function DashboardSidebar() {
 			</SidebarContent>
 			<SidebarFooter className="p-3">
 				<SidebarMenu>
+					<SidebarMenuItem>
+						<div className="flex mb-1 justify-between gap-3 text-foreground items-center">
+							<span className="font-semibold text-sm text-foreground">
+								Color theme:
+							</span>
+
+							<div className="ml-auto flex items-center gap-3">
+								{theme == 'dark' ? (
+									<Moon className="size-5" />
+								) : (
+									<Sun className="size-5" />
+								)}
+
+								<Switch
+									checked={theme == 'dark'}
+									onCheckedChange={handleThemeToggle}
+								/>
+							</div>
+						</div>
+					</SidebarMenuItem>
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							onClick={handleLogOut}

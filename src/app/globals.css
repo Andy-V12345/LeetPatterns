@@ -5,7 +5,11 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+	--overlay-bg: rgba(33, 37, 41, 0.75);
+	--foreground-fg: #b3b3b3;
 	--card-fg: #363535;
+	--skeleton-bg: var(--card-fg);
+	--skeleton-shimmer: #4a4a4a;
 	--theme-orange: #f89f1b;
 	--theme-hover-orange: #ff8c00;
 	--correct-green: #0ead69;
@@ -46,6 +50,7 @@
 }
 
 @theme inline {
+	--color-foreground-fg: var(--foreground-fg);
 	--color-card-fg: var(--card-fg);
 	--color-correct-green: var(--correct-green);
 	--color-wrong-red: var(--wrong-red);
@@ -110,6 +115,18 @@
 	}
 }
 
+.light {
+	--background: white;
+	--foreground: rgba(24, 24, 27, 100);
+	--card-bg: #f5f7f8;
+	--card-fg: #e0e0e0;
+	--foreground-fg: var(--foreground) --sidebar: var(--card-bg);
+	--sidebar-accent: var(--card-fg);
+	--skeleton-bg: var(--card-fg);
+	--skeleton-shimmer: #fbfbfb;
+	--overlay-bg: rgba(0, 0, 0, 0.25);
+}
+
 .dark {
 	--background: oklch(0.145 0 0);
 	--foreground: oklch(0.985 0 0);
@@ -158,7 +175,7 @@
 }
 
 .prose code {
-	background-color: #363535;
+	background-color: var(--card-fg);
 	padding: 3px 5px;
 	border-radius: 0.25rem;
 	font-size: 0.8em;
@@ -175,9 +192,14 @@
 }
 
 .skeleton {
-	background: linear-gradient(-45deg, #3c3c3c 25%, #4a4a4a 50%, #3c3c3c 75%);
+	background: linear-gradient(
+		-45deg,
+		var(--skeleton-bg) 25%,
+		var(--skeleton-shimmer) 50%,
+		var(--skeleton-bg) 75%
+	);
 	background-size: 200% 100%;
-	animation: shimmer 0.8s linear infinite;
+	animation: shimmer 0.9s linear infinite;
 }
 
 .home-button {

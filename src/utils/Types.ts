@@ -16,6 +16,8 @@ export type Pattern =
 	| 'Two Pointers'
 	| 'Union-Find'
 
+export type ColorTheme = 'light' | 'dark'
+
 export type DashboardTypes = 'dashboard' | 'profile'
 
 export type UIState = 'default' | 'loading' | 'error'
