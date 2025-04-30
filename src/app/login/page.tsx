@@ -61,9 +61,11 @@ export default function LoginPage() {
 	const isMobile = useIsMobile()
 
 	return (
-		<div className="bg-background overflow-hidden h-[100vh] flex flex-col justify-center items-center p-8">
+		<div
+			className={`bg-background overflow-hidden h-[100vh] ${isMobile ? 'p-6' : 'p-8'} flex flex-col justify-center items-center`}
+		>
 			<div
-				className={`h-fit w-[450px] ${isMobile ? '' : 'bg-card-bg'} overflow-y-scroll flex flex-col gap-5 rounded-xl p-8`}
+				className={`h-fit ${isMobile ? 'w-full' : 'bg-card-bg w-[450px] p-8 rounded-xl'} overflow-y-scroll flex flex-col gap-5`}
 			>
 				<div className="flex flex-col gap-1">
 					<h1 className="font-bold text-2xl">Log in</h1>
