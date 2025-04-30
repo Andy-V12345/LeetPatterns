@@ -95,7 +95,7 @@ export default function SignupPage() {
 
 	return (
 		<div
-			className={`relative bg-background overflow-hidden h-[100vh] ${isMobile ? 'p-6' : 'p-8'} flex flex-col justify-center items-center`}
+			className={`relative bg-background overflow-hidden h-[100svh] ${isMobile ? 'p-6' : 'p-8'} flex flex-col justify-center items-center`}
 		>
 			<div
 				className={`h-fit ${isMobile ? 'w-full' : 'bg-card-bg w-[450px] p-8 rounded-xl'} overflow-y-scroll flex flex-col gap-5`}
