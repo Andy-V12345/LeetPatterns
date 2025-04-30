@@ -120,7 +120,7 @@ export async function generateProblem(
 	return problem
 }
 
-function getLeetcodeSample(pattern: string): LeetcodeSample {
+function getLeetcodeSample(pattern: Pattern): LeetcodeSample {
 	const leetcode_samples = leetcode_practice_problems[pattern]
 	return leetcode_samples[generateRandomNum(leetcode_samples.length)]
 }

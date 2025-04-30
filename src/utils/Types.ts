@@ -1,7 +1,7 @@
 export type ProblemCardState = 'default' | 'correct' | 'wrong' | 'loading'
 
 export type Pattern =
-	| 'Arrays and Strings'
+	| 'Prefix Sum'
 	| 'BFS'
 	| 'Backtracking'
 	| 'Binary Search'
@@ -15,6 +15,7 @@ export type Pattern =
 	| 'Topological Sort'
 	| 'Two Pointers'
 	| 'Union-Find'
+	| 'Tries'
 
 export type ColorTheme = 'light' | 'dark'
 

@@ -1,10 +1,10 @@
 import Problem from '@/interfaces/Problem'
-import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Pattern, ProblemCardState } from '@/utils/Types'
 import ReactMarkdown from 'react-markdown'
 import { Skeleton } from '../../components/ui/skeleton'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useTheme } from '@/components/ThemeContext'
 
 const drawSpeed = 0.15
 
@@ -135,6 +135,7 @@ export default function ProblemCard({
 	}
 
 	const isMobile = useIsMobile()
+	const { theme } = useTheme()
 
 	return (
 		<div
@@ -177,7 +178,9 @@ export default function ProblemCard({
 						)}
 					</div>
 
-					<div className={`flex w-full flex-col gap-4`}>
+					<div
+						className={`flex w-full flex-col ${isMobile ? 'gap-3' : 'gap-4'}`}
+					>
 						{problem != null && cardState != 'loading' ? (
 							<p
 								className={`text-theme-orange font-medium text-base md:text-lg`}
@@ -191,7 +194,7 @@ export default function ProblemCard({
 						)}
 
 						<div
-							className={`grid ${isMobile ? 'grid-cols-1' : 'grid-cols-2'} gap-4`}
+							className={`grid ${isMobile ? 'grid-cols-1 gap-2' : 'grid-cols-2 gap-4'}`}
 						>
 							{problem != null && cardState != 'loading' ? (
 								problem.options.map((option) => (
@@ -235,9 +238,12 @@ export default function ProblemCard({
 							initial="initial"
 							animate="animate"
 							exit="exit"
-							className="absolute inset-0 flex flex-col justify-center items-center opacity-40 rounded-md"
+							className={`absolute inset-0 flex flex-col justify-center items-center opacity-40 rounded-md`}
 							style={{
-								backgroundColor: 'var(--overlay-bg)',
+								backgroundColor:
+									theme == 'light'
+										? 'rgba(245, 247, 248, 0.8)'
+										: 'var(--overlay-bg)',
 							}}
 						>
 							<motion.svg
