@@ -2,7 +2,6 @@ import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
 import { Pattern, PatternSummary } from './Types'
 
 export const patterns: Pattern[] = [
-	'Arrays and Strings',
 	'BFS',
 	'Backtracking',
 	'Binary Search',
@@ -11,22 +10,16 @@ export const patterns: Pattern[] = [
 	'Greedy',
 	'Hashing',
 	'Heaps',
+	'Prefix Sum',
 	'Sliding Window',
 	'Stacks',
 	'Topological Sort',
+	'Tries',
 	'Two Pointers',
 	'Union-Find',
 ]
 
 export const patternSummaries: Record<Pattern, PatternSummary> = {
-	'Arrays and Strings': {
-		name: 'Arrays and Strings',
-		description:
-			'Problems involving sequential data structures where manipulation, traversal, or searching within arrays or strings is key.',
-		howToIdentify:
-			'Look for operations like sliding, reversing, comparing, or filtering elements in a list or sequence.',
-		learnMore: 'https://leetcode.com/tag/array/',
-	},
 	BFS: {
 		name: 'BFS',
 		description:
@@ -134,27 +127,47 @@ export const patternSummaries: Record<Pattern, PatternSummary> = {
 			'Look for problems involving connectivity, cycle detection, or merging groups.',
 		learnMore: 'https://leetcode.com/tag/union-find/',
 	},
+	'Prefix Sum': {
+		name: 'Prefix Sum',
+		description:
+			'A technique that precomputes cumulative sums to answer range sum queries in constant time.',
+		howToIdentify:
+			'Used when a problem involves frequent calculations of sums over subarrays or ranges. Look for phrases like "sum between indices i and j" or "range sum query".',
+		learnMore: 'https://leetcode.com/tag/prefix-sum/',
+	},
+	Tries: {
+		name: 'Tries',
+		description:
+			'A tree-like data structure used to efficiently store and retrieve strings, often used in autocomplete and prefix-based search problems.',
+		howToIdentify:
+			'Common in problems involving many string lookups, prefix matching, or dictionary word validation. Look for requirements like "starts with", "isPrefix", or "search efficiently by prefix".',
+		learnMore: 'https://leetcode.com/tag/trie/',
+	},
 }
 
 export const patternColors: Record<Pattern, string> = {
-	'Arrays and Strings': '#F97316', // vivid orange
-	BFS: '#06B6D4', // cyan
-	Backtracking: '#EC4899', // pink
-	'Binary Search': '#0EA5E9', // sky blue
-	DFS: '#3B82F6', // classic blue
-	'Dynamic Programming': '#8B5CF6', // violet
-	Greedy: '#F59E0B', // amber/gold
-	Hashing: '#10B981', // emerald
-	Heaps: '#EF4444', // red
-	'Sliding Window': '#22C55E', // green
-	Stacks: '#A855F7', // purple
-	'Topological Sort': '#EAB308', // yellow
-	'Two Pointers': '#14B8A6', // teal
-	'Union-Find': '#FB7185', // rose
+	BFS: '#FF6B6B', // red
+	Backtracking: '#FFB400', // orange-yellow
+	'Binary Search': '#FFD166', // warm yellow
+	DFS: '#06D6A0', // mint green
+	'Dynamic Programming': '#118AB2', // cyan-blue
+	Greedy: '#073B4C', // deep navy
+	Hashing: '#EF476F', // pink-red
+	Heaps: '#8338EC', // vibrant purple
+	'Sliding Window': '#3A86FF', // blue
+	Stacks: '#FF9F1C', // orange
+	'Topological Sort': '#8AC926', // bright green
+	'Two Pointers': '#1982C4', // cool blue
+	'Union-Find': '#6A4C93', // indigo
+	'Prefix Sum': '#F72585', // magenta
+	Tries: '#4CC9F0', // sky blue
 }
 
 export const gemini_system_intructions = `
-You are an AI assistant embedded in a learning platform that helps users identify solution patterns in coding problems. Your task is to generate original LeetCode-style problems that test for specific solution patterns — but framed in fresh, real-world, or creatively abstracted contexts. You must also provide explanations for why that pattern is the best fit. The user will not solve the problem; they will only identify which solution pattern applies. Your outputs must be clear, concise, and logically aligned with the selected pattern.
+You are an AI assistant embedded in a learning platform that helps users identify solution patterns in coding problems. 
+Your task is to generate original LeetCode-style problems that test for specific solution patterns — but framed in fresh, real-world, or creatively abstracted contexts. 
+You must also provide explanations for why that pattern is the best fit. The user will not solve the problem; they will only identify which solution pattern applies. 
+Your outputs must be clear, concise, and logically aligned with the selected pattern.
 
 
 Expected Format:
@@ -165,7 +178,7 @@ You should return a JSON object with the following structure:
   "problem": "string",               // LeetCode-style prompt (3-5 sentences in Markdown, use bullet points for lists)
   "correctPattern": "string",        // One of the known pattern names
   "explanation": "string",           // Why this pattern applies and not any of the other options and how the pattern is used in a solution (in Markdown)
-  "distractorPatterns": [ "string", "string", "string" ] // 3 plausible but incorrect patterns 
+  "distractorPatterns": [ "string", "string", "string" ] // 3 incorrect patterns 
 }
 
 Text format for the "problem" and "explanation" fields:
@@ -177,62 +190,52 @@ Text format for the "problem" and "explanation" fields:
 	•	If you're using seperate paragraphs, there must be an empty line between the two paragraphs
 	• 	Constraints and Output headers should be bolded
 	•	Constraints must be given in a bulleted list even if a constraint is in code format
+	•	Do not include a header or a title
 
 ✅ Problem Guidelines:
 	•	The problem prompt should resemble real LeetCode questions in tone and structure — including input/output descriptions and constraints.
 	•	The context should feel novel or varied: use metaphors from maps, biology, social networks, shipping, games, elections, etc.
 	•	Do not use similar contexts for the same pattern. For example, if you're asked to generate a topological sort problem, you would use two different contexts.
+	•	It should not be vague as to which pattern is the correct answer.
 	•	The core logic must clearly test for the intended algorithmic pattern, without combining multiple major patterns (only one core pattern)
-	•	Use variable names and problem setups that don’t copy LeetCode directly but preserve that level of clarity and technical tone.
+	•	Use variable names and problem setups that don't copy LeetCode directly but preserve that level of clarity and technical tone.
 
 ✅ Explanation Guidelines:
-	•	Explain why the chosen pattern applies in paragraph form.
-	•	Explain how the chosen pattern could be used in a solution
-	•	Include time and space complexity.
-	•	Keep the explanation focused and beginner-friendly.
+	•	You need to have three sections:
+		•	Explain why the chosen pattern applies in paragraph form
+		•	Explain how the chosen pattern could be used in a solution
+		•	Include time and space complexity (these should be in separate bullet points)
+	•	Keep the explanation focused and clear.
 
 ✅ Distractor Patterns:
 	•	Choose 2–3 plausible but incorrect patterns that might reasonably confuse learners.
 	•	Avoid extremely unrelated patterns (e.g., don’t offer Bit Manipulation for a graph traversal).
 
 Patterns you may use: [
-    "Arrays and Strings",
-    "BFS",
-    "Backtracking",
-    "Binary Search",
-    "DFS",
-    "Dynamic Programming",
-    "Greedy",
-    "Hashing",
-    "Heaps",
-    "Sliding Window",
-    "Stacks",
-    "Topological Sort",
-    "Two Pointers",
-    "Union-Find"
+	'BFS',
+	'Backtracking',
+	'Binary Search',
+	'DFS',
+	'Dynamic Programming',
+	'Greedy',
+	'Hashing',
+	'Heaps',
+	'Prefix Sum',
+	'Sliding Window',
+	'Stacks',
+	'Topological Sort',
+	'Tries',
+	'Two Pointers',
+	'Union-Find',
 ]
 
 🚫 Do Not:
-	•	Include actual code or pseudocode.
+	•	Include actual code or pseudocode in the problem
 	•	Repeat real LeetCode problems or titles.
 	•	Blend multiple patterns unless explicitly required (stick to one core pattern)
 `
 
-export const leetcode_practice_problems: { [key: string]: LeetcodeSample[] } = {
-	'Arrays and Strings': [
-		{
-			title: 'Rotate Array',
-			url: 'https://leetcode.com/problems/rotate-array/',
-		},
-		{
-			title: 'Longest Common Prefix',
-			url: 'https://leetcode.com/problems/longest-common-prefix/',
-		},
-		{
-			title: 'Spiral Matrix',
-			url: 'https://leetcode.com/problems/spiral-matrix/',
-		},
-	],
+export const leetcode_practice_problems: Record<Pattern, LeetcodeSample[]> = {
 	BFS: [
 		{
 			title: 'Word Ladder',
@@ -413,6 +416,43 @@ export const leetcode_practice_problems: { [key: string]: LeetcodeSample[] } = {
 		{
 			title: 'Redundant Connection',
 			url: 'https://leetcode.com/problems/redundant-connection/',
+		},
+	],
+	'Prefix Sum': [
+		{
+			title: 'Subarray Sum Equals K',
+			url: 'https://leetcode.com/problems/subarray-sum-equals-k/',
+		},
+		{
+			title: 'Range Sum Query - Immutable',
+			url: 'https://leetcode.com/problems/range-sum-query-immutable/',
+		},
+		{
+			title: 'Count Number of Nice Subarrays',
+			url: 'https://leetcode.com/problems/count-number-of-nice-subarrays/',
+		},
+		{
+			title: 'Subarray Sums Divisible by K',
+			url: 'https://leetcode.com/problems/subarray-sums-divisible-by-k/',
+		},
+	],
+
+	Tries: [
+		{
+			title: 'Implement Trie (Prefix Tree)',
+			url: 'https://leetcode.com/problems/implement-trie-prefix-tree/',
+		},
+		{
+			title: 'Design Add and Search Words Data Structure',
+			url: 'https://leetcode.com/problems/design-add-and-search-words-data-structure/',
+		},
+		{
+			title: 'Longest Word in Dictionary',
+			url: 'https://leetcode.com/problems/longest-word-in-dictionary/',
+		},
+		{
+			title: 'Maximum XOR of Two Numbers in an Array',
+			url: 'https://leetcode.com/problems/maximum-xor-of-two-numbers-in-an-array/',
 		},
 	],
 }
