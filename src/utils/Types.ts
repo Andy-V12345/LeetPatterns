@@ -21,7 +21,7 @@ export type ColorTheme = 'light' | 'dark'
 
 export type DashboardTypes = 'dashboard' | 'profile'
 
-export type UIState = 'default' | 'loading' | 'error'
+export type UIState = 'default' | 'loading' | 'error' | 'success'
 
 export type PatternSummary = {
 	name: string
