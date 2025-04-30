@@ -23,21 +23,24 @@ function selectPattern(
 	focusedPatterns: Pattern[],
 	weakPatterns: Pattern[]
 ): Pattern {
-	const randomNum = generateRandomNum(4)
+	const randomNum = generateRandomNum(100)
 
-	if (randomNum == 0) {
+	if (randomNum <= 44) {
+		// 45% chance of a focused pattern
 		if (focusedPatterns.length > 0) {
 			return focusedPatterns[generateRandomNum(focusedPatterns.length)]
 		}
 
 		return patterns[generateRandomNum(patterns.length)]
-	} else if (randomNum == 1) {
+	} else if (randomNum >= 45 && randomNum <= 74) {
+		// 30% chance of a weak pattern
 		if (weakPatterns.length > 0) {
 			return weakPatterns[generateRandomNum(weakPatterns.length)]
 		}
 
 		return patterns[generateRandomNum(patterns.length)]
 	} else {
+		// 25% chance of a random pattern
 		return patterns[generateRandomNum(patterns.length)]
 	}
 }
