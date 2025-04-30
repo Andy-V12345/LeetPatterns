@@ -11,7 +11,7 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { House, User, Moon, Sun } from 'lucide-react'
+import { House, User } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { DashboardTypes, UIState } from '@/utils/Types'
 import { useAuth } from '@/components/AuthContext'
@@ -21,6 +21,7 @@ import Image from 'next/image'
 import { Switch } from '@/components/ui/switch'
 import { useTheme } from '@/components/ThemeContext'
 import { setColorTheme } from '@/utils/UtilFunctions'
+import ThemeSwitch from '@/components/ThemeSwitch'
 
 export default function DashboardSidebar() {
 	const pathname = usePathname()
@@ -29,7 +30,6 @@ export default function DashboardSidebar() {
 	)
 	const [uiState, setUiState] = useState<UIState>('default')
 	const { logout } = useAuth()
-	const { theme, setTheme } = useTheme()
 
 	useEffect(() => {
 		if (pathname.includes('/dashboard/profile')) {
@@ -43,16 +43,6 @@ export default function DashboardSidebar() {
 		setUiState('loading')
 		await logout()
 		setUiState('default')
-	}
-
-	const handleThemeToggle = () => {
-		if (theme == 'dark') {
-			setTheme('light')
-			setColorTheme('light')
-		} else {
-			setTheme('dark')
-			setColorTheme('dark')
-		}
 	}
 
 	return (
@@ -123,18 +113,7 @@ export default function DashboardSidebar() {
 								Color theme:
 							</span>
 
-							<div className="ml-auto flex items-center gap-3">
-								{theme == 'dark' ? (
-									<Moon className="size-5" />
-								) : (
-									<Sun className="size-5" />
-								)}
-
-								<Switch
-									checked={theme == 'dark'}
-									onCheckedChange={handleThemeToggle}
-								/>
-							</div>
+							<ThemeSwitch className="ml-auto" />
 						</div>
 					</SidebarMenuItem>
 					<SidebarMenuItem>

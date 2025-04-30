@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { UIState } from '@/utils/Types'
 import BeatLoader from 'react-spinners/BeatLoader'
 import { useIsMobile } from '@/hooks/use-mobile'
+import ThemeSwitch from '@/components/ThemeSwitch'
 
 export default function LoginPage() {
 	const { continueAsGuest, login, signInWithGoogle } = useAuth()
@@ -62,7 +63,7 @@ export default function LoginPage() {
 
 	return (
 		<div
-			className={`bg-background overflow-hidden h-[100vh] ${isMobile ? 'p-6' : 'p-8'} flex flex-col justify-center items-center`}
+			className={`relative bg-background overflow-hidden h-[100vh] ${isMobile ? 'p-6' : 'p-8'} flex flex-col justify-center items-center`}
 		>
 			<div
 				className={`h-fit ${isMobile ? 'w-full' : 'bg-card-bg w-[450px] p-8 rounded-xl'} overflow-y-scroll flex flex-col gap-5`}
@@ -173,6 +174,8 @@ export default function LoginPage() {
 					<i>Continue as guest</i>
 				</button>
 			</div>
+
+			<ThemeSwitch className="absolute bottom-5 right-5" />
 		</div>
 	)
 }

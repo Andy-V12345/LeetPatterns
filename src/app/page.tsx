@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useAuth } from '@/components/AuthContext'
 import SyncLoader from 'react-spinners/SyncLoader'
+import ThemeSwitch from '@/components/ThemeSwitch'
 
 export default function Home() {
 	const isMobile = useIsMobile()
@@ -15,7 +16,7 @@ export default function Home() {
 
 	return (
 		<div
-			className={`bg-background px-5 overflow-hidden h-[100svh] flex flex-col justify-between items-center`}
+			className={`relative bg-background px-5 overflow-hidden h-[100svh] flex flex-col justify-between items-center`}
 		>
 			{isLoading ? (
 				<SyncLoader
@@ -93,7 +94,9 @@ export default function Home() {
 						</Link>
 					</div>
 
-					<Marquee>
+					<ThemeSwitch className="absolute bottom-12 right-5" />
+
+					<Marquee className="relative">
 						{patterns.map((pattern) => (
 							<p key={pattern} className="text-shadow-orange">
 								{pattern}
