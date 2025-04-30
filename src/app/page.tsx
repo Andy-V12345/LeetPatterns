@@ -7,15 +7,18 @@ import Image from 'next/image'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useAuth } from '@/components/AuthContext'
 import SyncLoader from 'react-spinners/SyncLoader'
+import ThemeSwitch from '@/components/ThemeSwitch'
+import { useTheme } from '@/components/ThemeContext'
 
 export default function Home() {
 	const isMobile = useIsMobile()
 
 	const { user, isLoading } = useAuth()
+	const { theme } = useTheme()
 
 	return (
 		<div
-			className={`bg-background px-5 overflow-hidden h-[100svh] flex flex-col justify-between items-center`}
+			className={`relative bg-background px-5 overflow-hidden h-[100svh] flex flex-col justify-between items-center`}
 		>
 			{isLoading ? (
 				<SyncLoader
@@ -49,12 +52,16 @@ export default function Home() {
 					</div>
 
 					<div className="bg-background mb-10 flex gap-3 flex-col justify-center items-center">
-						<div className="text-center font-bold text-4xl">
+						<div
+							className={`text-center font-bold text-4xl ${theme == 'light' ? 'text-theme-orange' : ''}`}
+						>
 							<h1
 								className="inline"
 								style={{
 									textShadow:
-										'2px 2px 1px var(--theme-orange)',
+										theme == 'light'
+											? '2px 2px 1px rgba(24, 24, 27, 0.7)'
+											: '2px 2px 1px var(--theme-orange)',
 								}}
 							>
 								Welcome to{' '}
@@ -63,7 +70,9 @@ export default function Home() {
 								className="inline"
 								style={{
 									textShadow:
-										'3px 3px 1px var(--theme-orange)',
+										theme == 'light'
+											? '2px 2px 1px rgba(24, 24, 27, 0.7)'
+											: '2px 2px 1px var(--theme-orange)',
 								}}
 							>
 								LeetPatterns.ai
@@ -93,7 +102,9 @@ export default function Home() {
 						</Link>
 					</div>
 
-					<Marquee>
+					<ThemeSwitch className="absolute bottom-12 right-5" />
+
+					<Marquee className="relative">
 						{patterns.map((pattern) => (
 							<p key={pattern} className="text-shadow-orange">
 								{pattern}
