@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LeetPatterns.ai
 
-## Getting Started
+**LeetPatterns.ai** is an AI-powered tool that helps you master algorithmic pattern recognition for LeetCode-style coding interviews.  
+Instead of solving problems line-by-line, LeetPatterns helps you practice identifying the _type_ of solution — like BFS, Dynamic Programming, or Sliding Window — which is the kind of thinking that actually helps in real interviews.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🧠 Why LeetPatterns?
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Most interview prep tools focus on solving problems.  
+**LeetPatterns** focuses on training your pattern recognition skills — helping you answer the most important question first:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> _“How should I approach this problem?”_
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ✨ How It Works
 
-To learn more about Next.js, take a look at the following resources:
+- AI-generated LeetCode-style problems
+- You identify the algorithmic pattern used to solve each
+- Get immediate feedback with a clear explanation
+- Track performance by pattern over time
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 💡 Built With
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Next.js 14** with App Router
+- **TypeScript** + **Tailwind CSS**
+- **Framer Motion** for UI animations
+- **Firebase** for authentication and Firestore DB
+- **Gemini API** for problem and explanation generation
