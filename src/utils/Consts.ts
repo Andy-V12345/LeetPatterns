@@ -277,6 +277,10 @@ export const leetcode_practice_problems: Record<Pattern, LeetcodeSample[]> = {
 			title: 'Median of Two Sorted Arrays',
 			url: 'https://leetcode.com/problems/median-of-two-sorted-arrays/',
 		},
+		{
+			title: 'Koko Eating Bananas',
+			url: 'https://leetcode.com/problems/koko-eating-bananas/',
+		},
 	],
 	DFS: [
 		{
