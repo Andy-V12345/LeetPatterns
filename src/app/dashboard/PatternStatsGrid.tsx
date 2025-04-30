@@ -1,6 +1,5 @@
 import { LeetcodeIcon } from '@/app/practice/ProblemAnswer'
 import StatCircle from '@/components/StatCircle'
-import { Skeleton } from '@/components/ui/skeleton'
 import { PatternStat } from '@/interfaces/PatternStat'
 import { patternSummaries } from '@/utils/Consts'
 import { UIState } from '@/utils/Types'
@@ -11,6 +10,13 @@ import {
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useState } from 'react'
+import { SquareArrowOutUpRight } from 'lucide-react'
+import {
+	TooltipTrigger,
+	Tooltip,
+	TooltipProvider,
+	TooltipContent,
+} from '@/components/ui/tooltip'
 
 interface PatternStatsGridProps {
 	patternStats: PatternStat[]
@@ -60,117 +66,130 @@ export default function PatternStatsGrid({
 				</div>
 			</div>
 
-			<div
-				style={{
-					display: 'grid',
-					gridTemplateColumns:
-						'repeat(auto-fill, minmax(255px, 1fr))',
-					gap: '10px',
-				}}
-			>
-				{patternStats.map((stat) => {
-					const [flipped, setFlipped] = useState(false)
-
-					return (
-						<div
-							onClick={() => {
-								if (uiState != 'loading') {
-									setFlipped(!flipped)
-								}
-							}}
-							className="relative flex w-full h-56 hover:opacity-85 transition-all"
-							style={{
-								perspective: '1000px',
-							}}
-							key={stat.pattern}
-						>
-							<motion.div
-								className="w-full h-full"
-								initial={false}
-								animate={{
-									rotateX: flipped ? 180 : 0,
-								}}
-								transition={{
-									duration: 0.3,
-								}}
-								style={{
-									position: 'relative',
-									transformStyle: 'preserve-3d',
-								}}
-							>
-								{uiState != 'loading' && (
-									<>
+			{/* Wrap the whole grid in a single TooltipProvider */}
+			<TooltipProvider>
+				<div
+					style={{
+						display: 'grid',
+						gridTemplateColumns:
+							'repeat(auto-fill, minmax(255px, 1fr))',
+						gap: '10px',
+					}}
+				>
+					{patternStats.map((stat) => {
+						const [flipped, setFlipped] = useState(false)
+						return (
+							<Tooltip key={stat.pattern}>
+								<TooltipTrigger asChild>
+									<div
+										className="relative flex w-full h-56 hover:opacity-85 transition-all"
+										style={{
+											perspective: '1000px',
+										}}
+										onClick={() => {
+											if (uiState != 'loading') {
+												setFlipped(!flipped)
+											}
+										}}
+									>
 										<motion.div
-											className="w-full h-full py-10 absolute bg-card-bg rounded-md flex justify-center items-center"
-											style={{}}
-										>
-											<StatCircle
-												stat={stat}
-												size={'size-36'}
-												strokeWidth={5}
-												textSize={15}
-											/>
-										</motion.div>
-
-										<motion.div
-											className="w-full h-full absolute bg-card-bg rounded-md p-5 overflow-y-scroll"
+											className="w-full h-full"
+											initial={false}
+											animate={{
+												rotateX: flipped ? 180 : 0,
+											}}
+											transition={{
+												duration: 0.3,
+											}}
 											style={{
-												transform: 'rotateX(180deg)',
-												backfaceVisibility: 'hidden',
+												position: 'relative',
+												transformStyle: 'preserve-3d',
 											}}
 										>
-											<div className="space-y-5">
-												<div className="space-y-1">
-													<h3 className="text-sm text-theme-orange font-semibold">
-														About
-													</h3>
-
-													<p className="text-sm">
-														{
-															patternSummaries[
-																stat.pattern
-															].description
-														}
-													</p>
-												</div>
-
-												<div className="space-y-1">
-													<h3 className="text-sm text-theme-orange font-semibold">
-														How to identify
-													</h3>
-
-													<p className="text-sm">
-														{
-															patternSummaries[
-																stat.pattern
-															].howToIdentify
-														}
-													</p>
-												</div>
-
-												<Link
-													href={
-														patternSummaries[
-															stat.pattern
-														].learnMore
-													}
-													className="flex w-fit items-center gap-1"
-													target="_blank"
-												>
-													<LeetcodeIcon />
-													<p className="text-sm font-medium">
-														Learn more
-													</p>
-												</Link>
-											</div>
+											{uiState != 'loading' && (
+												<>
+													<motion.div className="w-full h-full py-10 absolute bg-card-bg rounded-md flex justify-center items-center">
+														<StatCircle
+															stat={stat}
+															size={'size-36'}
+															strokeWidth={5}
+															textSize={15}
+														/>
+														<SquareArrowOutUpRight
+															size={15}
+															color="var(--theme-orange)"
+															className="absolute top-2 right-2"
+														/>
+													</motion.div>
+													<motion.div
+														className="w-full h-full absolute bg-card-bg rounded-md p-5 overflow-y-scroll"
+														style={{
+															transform:
+																'rotateX(180deg)',
+															backfaceVisibility:
+																'hidden',
+														}}
+													>
+														<div className="space-y-5">
+															<div className="space-y-1">
+																<h3 className="text-sm text-theme-orange font-semibold">
+																	About
+																</h3>
+																<p className="text-sm">
+																	{
+																		patternSummaries[
+																			stat
+																				.pattern
+																		]
+																			.description
+																	}
+																</p>
+															</div>
+															<div className="space-y-1">
+																<h3 className="text-sm text-theme-orange font-semibold">
+																	How to
+																	identify
+																</h3>
+																<p className="text-sm">
+																	{
+																		patternSummaries[
+																			stat
+																				.pattern
+																		]
+																			.howToIdentify
+																	}
+																</p>
+															</div>
+															<Link
+																href={
+																	patternSummaries[
+																		stat
+																			.pattern
+																	].learnMore
+																}
+																className="flex w-fit items-center gap-1"
+																target="_blank"
+															>
+																{/* Icon and text */}
+																<p className="text-sm font-medium">
+																	Learn more
+																</p>
+															</Link>
+														</div>
+													</motion.div>
+												</>
+											)}
 										</motion.div>
-									</>
-								)}
-							</motion.div>
-						</div>
-					)
-				})}
-			</div>
+									</div>
+								</TooltipTrigger>
+								<TooltipContent>
+									<p>Tap to flip</p>
+								</TooltipContent>
+							</Tooltip>
+						)
+					})}
+				</div>
+			</TooltipProvider>
 		</div>
 	)
 }
