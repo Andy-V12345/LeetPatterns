@@ -1,4 +1,4 @@
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { deleteField, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { increment } from 'firebase/firestore'
 import { db } from './FirebaseConfig'
 import { FirebaseUser } from '@/classes/FirebaseUser'
@@ -6,12 +6,14 @@ import { PatternStat } from '@/interfaces/PatternStat'
 import { Pattern } from './Types'
 import { PrevSession } from '@/interfaces/PrevSession'
 import { areConsecutiveDays, getWeakPatterns } from './UtilFunctions'
+import { Note } from '@/interfaces/Note'
 
 const FOCUSED_PATTERNS_COLLECTION = 'focusedPatterns'
 const USER_INFO_COLLECTION = 'users'
 const PATTERN_STATS_COLLECTION = 'patternStats'
 const PREV_SESSION_COLLECTION = 'prevSessions'
 const STREAKS_COLLECTION = 'streaks'
+const NOTES_COLLECTION = 'notes'
 
 /**
  * Gets the focused patterns of a user
@@ -219,4 +221,60 @@ export async function getStreakFirestore(uid: string): Promise<{
 		longestStreak: 0,
 		curStreak: 0,
 	}
+}
+
+export async function saveNoteFirestore(uid: string, note: Note) {
+	const docRef = doc(db, NOTES_COLLECTION, uid)
+
+	await setDoc(
+		docRef,
+		{
+			[`${note.pattern}`]: {
+				pattern: note.pattern,
+				text: note.text,
+			},
+		},
+		{
+			merge: true,
+		}
+	)
+}
+
+export async function getNotesFirestore(uid: string): Promise<Note[]> {
+	const docRef = doc(db, NOTES_COLLECTION, uid)
+	const docSnap = await getDoc(docRef)
+
+	if (!docSnap.exists()) {
+		return []
+	}
+
+	const data = docSnap.data() as { [key: string]: Note }
+	const notes: Note[] = []
+
+	// Iterate through each key in the document's data.
+	for (const key in data) {
+		if (data.hasOwnProperty(key)) {
+			notes.push(data[key])
+		}
+	}
+
+	// Sort alphabetically by pattern name.
+	notes.sort((a, b) => a.pattern.localeCompare(b.pattern))
+
+	return notes
+}
+
+export async function deleteNoteFirestore(uid: string, note: Note) {
+	const docRef = doc(db, NOTES_COLLECTION, uid)
+
+	// Check if the document exists before updating
+	const docSnap = await getDoc(docRef)
+	if (!docSnap.exists()) {
+		return
+	}
+
+	// Delete the note by setting its field value to a delete sentinel.
+	await updateDoc(docRef, {
+		[`${note.pattern}`]: deleteField(),
+	})
 }

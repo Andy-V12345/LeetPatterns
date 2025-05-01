@@ -1,13 +1,17 @@
 import { AppUser } from '@/interfaces/AppUser'
+import { Note } from '@/interfaces/Note'
 import { PatternStat } from '@/interfaces/PatternStat'
 import { PrevSession } from '@/interfaces/PrevSession'
 import { ProfileInfo } from '@/interfaces/ProfileInfo'
 import {
+	deleteNoteFirestore,
 	getFocusedPatternsFirestore,
+	getNotesFirestore,
 	getPatternStatsFirestore,
 	getPrevSessionFirestore,
 	getStreakFirestore,
 	saveFocusedPatternsFirestore,
+	saveNoteFirestore,
 	setPrevSession,
 	setStreakFirestore,
 	updatePatternStatsFirestore,
@@ -26,6 +30,18 @@ export class FirebaseUser implements AppUser {
 		this.uid = uid
 		this.firstName = firstName
 		this.lastName = lastName
+	}
+
+	async deleteNote(note: Note): Promise<void> {
+		await deleteNoteFirestore(this.uid, note)
+	}
+
+	async saveNote(note: Note): Promise<void> {
+		await saveNoteFirestore(this.uid, note)
+	}
+
+	async getNotes(): Promise<Note[]> {
+		return await getNotesFirestore(this.uid)
 	}
 
 	async updateStreak(): Promise<void> {

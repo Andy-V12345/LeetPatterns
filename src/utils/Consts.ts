@@ -151,14 +151,14 @@ export const patternColors: Record<Pattern, string> = {
 	'Binary Search': '#FFD166', // warm yellow
 	DFS: '#06D6A0', // mint green
 	'Dynamic Programming': '#118AB2', // cyan-blue
-	Greedy: '#073B4C', // deep navy
+	Greedy: '#2ECC71', // green-based
 	Hashing: '#EF476F', // pink-red
 	Heaps: '#8338EC', // vibrant purple
 	'Sliding Window': '#3A86FF', // blue
 	Stacks: '#FF9F1C', // orange
 	'Topological Sort': '#8AC926', // bright green
 	'Two Pointers': '#1982C4', // cool blue
-	'Union-Find': '#6A4C93', // indigo
+	'Union-Find': '#9B59B6', // bright purple (was previously '#6A4C93')
 	'Prefix Sum': '#F72585', // magenta
 	Tries: '#4CC9F0', // sky blue
 }

@@ -6,8 +6,19 @@ import { Pattern } from '@/utils/Types'
 import { getWeakPatterns } from '@/utils/UtilFunctions'
 import { redirect } from 'next/navigation'
 import { areConsecutiveDays } from '@/utils/UtilFunctions'
+import { Note } from '@/interfaces/Note'
 
 export class LocalUser implements AppUser {
+	deleteNote(note: Note): Promise<void> {
+		throw new Error('Method not implemented.')
+	}
+	async saveNote(note: Note): Promise<void> {
+		throw new Error('Method not implemented.')
+	}
+	async getNotes(): Promise<Note[]> {
+		throw new Error('Method not implemented.')
+	}
+
 	async updateStreak(): Promise<void> {
 		if (typeof window !== 'undefined') {
 			const key = 'userStreak'
