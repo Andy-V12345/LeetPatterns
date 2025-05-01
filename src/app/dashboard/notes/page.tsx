@@ -11,7 +11,7 @@ import { useAuth, useProtectedRoute } from '@/components/AuthContext'
 import NoteCard from './NoteCard'
 import { patterns } from '@/utils/Consts'
 
-export function getPatternsFromNotes(notes: Note[]): Pattern[] {
+function getPatternsFromNotes(notes: Note[]): Pattern[] {
 	return notes.map((note) => note.pattern)
 }
 
