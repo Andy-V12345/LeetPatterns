@@ -19,7 +19,7 @@ export type Pattern =
 
 export type ColorTheme = 'light' | 'dark'
 
-export type DashboardTypes = 'dashboard' | 'profile'
+export type DashboardTypes = 'dashboard' | 'profile' | 'notes'
 
 export type UIState = 'default' | 'loading' | 'error' | 'success'
 

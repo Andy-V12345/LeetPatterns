@@ -11,29 +11,30 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { House, User } from 'lucide-react'
+import { House, User, NotebookPen } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { DashboardTypes, UIState } from '@/utils/Types'
 import { useAuth } from '@/components/AuthContext'
 import BeatLoader from 'react-spinners/BeatLoader'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import { Switch } from '@/components/ui/switch'
-import { useTheme } from '@/components/ThemeContext'
-import { setColorTheme } from '@/utils/UtilFunctions'
 import ThemeSwitch from '@/components/ThemeSwitch'
 
 export default function DashboardSidebar() {
 	const pathname = usePathname()
-	const [selection, setSelection] = useState<DashboardTypes>(
-		pathname.includes('/dashboard/profile') ? 'profile' : 'dashboard'
-	)
+	const [selection, setSelection] = useState<DashboardTypes>(() => {
+		if (pathname.includes('/dashboard/profile')) return 'profile'
+		if (pathname.includes('/dashboard/notes')) return 'notes'
+		return 'dashboard'
+	})
 	const [uiState, setUiState] = useState<UIState>('default')
 	const { logout } = useAuth()
 
 	useEffect(() => {
 		if (pathname.includes('/dashboard/profile')) {
 			setSelection('profile')
+		} else if (pathname.includes('/dashboard/notes')) {
+			setSelection('notes')
 		} else {
 			setSelection('dashboard')
 		}
@@ -80,6 +81,24 @@ export default function DashboardSidebar() {
 									<House className="text-foreground" />
 									<span className="font-semibold text-foreground">
 										Dashboard
+									</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								asChild
+								isActive={selection == 'notes'}
+								className="py-5 px-3"
+								onClick={() => setSelection('notes')}
+							>
+								<Link
+									href="/dashboard/notes"
+									className="flex items-center gap-3"
+								>
+									<NotebookPen className="text-foreground" />
+									<span className="font-semibold text-foreground">
+										Notes
 									</span>
 								</Link>
 							</SidebarMenuButton>

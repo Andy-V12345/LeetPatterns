@@ -6,8 +6,61 @@ import { Pattern } from '@/utils/Types'
 import { getWeakPatterns } from '@/utils/UtilFunctions'
 import { redirect } from 'next/navigation'
 import { areConsecutiveDays } from '@/utils/UtilFunctions'
+import { Note } from '@/interfaces/Note'
+
+const NOTES_KEY = 'userNotes'
 
 export class LocalUser implements AppUser {
+	// Delete a note from local storage.
+	async deleteNote(note: Note): Promise<void> {
+		if (typeof window !== 'undefined') {
+			// Get the existing notes from local storage.
+			const stored = localStorage.getItem(NOTES_KEY)
+			let notes: Note[] = stored ? JSON.parse(stored) : []
+
+			// Filter out the note that matches the pattern.
+			notes = notes.filter((n) => n.pattern !== note.pattern)
+
+			// Save the updated notes array.
+			localStorage.setItem(NOTES_KEY, JSON.stringify(notes))
+		}
+	}
+
+	// Save a new note or update an existing note.
+	async saveNote(note: Note): Promise<void> {
+		if (typeof window !== 'undefined') {
+			// Get the existing notes from local storage.
+			const stored = localStorage.getItem(NOTES_KEY)
+			let notes: Note[] = stored ? JSON.parse(stored) : []
+
+			// Check if a note with the same pattern already exists.
+			const index = notes.findIndex((n) => n.pattern === note.pattern)
+			if (index > -1) {
+				// Update the existing note.
+				notes[index] = note
+			} else {
+				// Add the new note.
+				notes.push(note)
+			}
+
+			// Save the updated notes array.
+			localStorage.setItem(NOTES_KEY, JSON.stringify(notes))
+		}
+	}
+
+	// Retrieve all notes from local storage.
+	async getNotes(): Promise<Note[]> {
+		if (typeof window !== 'undefined') {
+			const stored = localStorage.getItem(NOTES_KEY)
+			const notes: Note[] = stored ? JSON.parse(stored) : []
+			// Sort the notes alphabetically by the note's pattern.
+			notes.sort((a, b) => a.pattern.localeCompare(b.pattern))
+			return notes
+		}
+
+		return []
+	}
+
 	async updateStreak(): Promise<void> {
 		if (typeof window !== 'undefined') {
 			const key = 'userStreak'
