@@ -1,7 +1,7 @@
 import Problem from '@/interfaces/Problem'
 import ProblemCard from './ProblemCard'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Pattern, ProblemCardState } from '@/utils/Types'
+import { Pattern, ProblemCardState, UIState } from '@/utils/Types'
 import ProblemAnswer from './ProblemAnswer'
 import { generateProblem } from '@/utils/GeminiFunctions'
 import RecapCard from './RecapCard'
@@ -34,27 +34,39 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const [problemQ, setProblemQ] = useState<Problem[]>([])
 	const [firstLoad, setFirstLoad] = useState(true)
 	const [selected, setSelected] = useState<string | null>(null)
+	const [uiState, setUiState] = useState<UIState>('default')
+	const [error, setError] = useState('')
 
 	const { user } = useAuth()
 
 	const isMobile = useIsMobile()
 
 	const preloadProblems = useCallback(async () => {
-		if (focusedPatterns && problemQ.length < 2) {
-			const next = await generateProblem(focusedPatterns, patternStats)
-			setProblemQ((prev) => [...prev, next])
+		if (problemQ.length < 2) {
+			try {
+				const next = await generateProblem(
+					focusedPatterns ?? [],
+					patternStats
+				)
+				setProblemQ((prev) => [...prev, next])
+			} catch (error) {
+				console.error('Error in preloadProblems():', error)
+				setCardState('default')
+				setUiState('error')
+				setError('Connection lost')
+			}
 		}
 	}, [focusedPatterns, problemQ, patternStats])
 
 	const createNewProblem = useCallback(async () => {
-		if (focusedPatterns != null && !showRecap) {
+		if (!showRecap) {
 			if (questionCount > 0 && questionCount % 5 == 0) {
 				setShowRecap(true)
 			} else {
 				setCardState('loading')
 				let nextProblem = problemQ[0]
-
 				setShowAnswer(false)
+
 				if (nextProblem) {
 					setProblem(nextProblem)
 					setProblemQ((prev) => prev.slice(1))
@@ -65,17 +77,22 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 					setQuestionCount((prev) => {
 						return prev + 1
 					})
-					nextProblem = await generateProblem(
-						focusedPatterns as Pattern[],
-						patternStats
-					)
-					setProblem(nextProblem)
+					try {
+						nextProblem = await generateProblem(
+							focusedPatterns ?? ([] as Pattern[]),
+							patternStats
+						)
+						setProblem(nextProblem)
+					} catch (error) {
+						console.error('Error in createNewProblem():', error)
+						setCardState('default')
+						setUiState('error')
+						setError('Connection lost')
+					}
 				}
 
 				preloadProblems()
 			}
-		} else if (focusedPatterns == null) {
-			console.error('focusedPatterns undefined')
 		} else if (showRecap) {
 			setCardState('loading')
 			setShowRecap(false)
@@ -93,11 +110,18 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				setQuestionCount((prev) => {
 					return prev + 1
 				})
-				nextProblem = await generateProblem(
-					focusedPatterns as Pattern[],
-					patternStats
-				)
-				setProblem(nextProblem)
+				try {
+					nextProblem = await generateProblem(
+						focusedPatterns ?? ([] as Pattern[]),
+						patternStats
+					)
+					setProblem(nextProblem)
+				} catch (error) {
+					console.error('Error in createNewProblem():', error)
+					setCardState('default')
+					setUiState('error')
+					setError('Connection lost')
+				}
 			}
 
 			preloadProblems()
@@ -143,21 +167,27 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 		[user]
 	)
 
+	const handleRetry = () => {
+		setUiState('default')
+		setFirstLoad(true)
+		preloadProblems()
+		createNewProblem()
+	}
+
 	useEffect(() => {
-		if (
-			focusedPatterns != null &&
-			!problem &&
-			!hasCreatedInitialProblem.current
-		) {
+		if (problem) {
+			setCardState('default')
+			setFirstLoad(false)
+		} else if (!problem && !hasCreatedInitialProblem.current) {
 			hasCreatedInitialProblem.current = true
 			preloadProblems()
 			createNewProblem()
 		}
-	}, [focusedPatterns, problem])
+	}, [problem])
 
 	const saveSession = useCallback(async () => {
-		if (user && focusedPatterns) {
-			await user.savePrevSession(focusedPatterns, patternStats)
+		if (user) {
+			await user.savePrevSession(focusedPatterns ?? [], patternStats)
 		}
 	}, [focusedPatterns, user, patternStats])
 
@@ -171,20 +201,13 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 		}
 	}, [user, focusedPatterns, patternStats])
 
-	useEffect(() => {
-		if (problem) {
-			setCardState('default')
-			setFirstLoad(false)
-		}
-	}, [problem])
-
 	return (
 		<div
 			className={`self-stretch h-full relative ${isMobile ? 'overflow-y-scroll' : ''}`}
 		>
 			<AnimatePresence mode="wait">
 				{/* Initial Loading */}
-				{firstLoad && (
+				{firstLoad && uiState == 'default' && (
 					<motion.div
 						key="load-div"
 						className="flex flex-col justify-center items-center gap-5 h-full relative"
@@ -204,8 +227,35 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 					</motion.div>
 				)}
 
+				{uiState == 'error' && (
+					<motion.div
+						key="error-div"
+						className="flex flex-col justify-center items-center gap-5 h-full relative"
+						initial={{ opacity: 1 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.2 }}
+					>
+						<div className="flex flex-col justify-center gap-2">
+							<p className="font-medium text-base text-wrong-red">
+								{error}
+							</p>
+
+							<button
+								onClick={handleRetry}
+								className="px-3 py-2 text-sm text-wrong-red rounded-lg hover:opacity-75 transition-all"
+								style={{
+									backgroundColor: 'rgba(255, 0, 84, 0.2)',
+								}}
+							>
+								Retry
+							</button>
+						</div>
+					</motion.div>
+				)}
+
 				{/* Problem Card */}
-				{!firstLoad && !showRecap && (
+				{!firstLoad && uiState != 'error' && !showRecap && (
 					<motion.div
 						key={`problem-${questionCount}`}
 						initial={{ x: '100%', opacity: 0 }}
