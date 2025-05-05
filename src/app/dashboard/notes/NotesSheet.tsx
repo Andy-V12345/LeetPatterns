@@ -1,3 +1,4 @@
+import { FirebaseUser } from '@/classes/FirebaseUser'
 import { useAuth } from '@/components/AuthContext'
 import {
 	Select,
@@ -19,6 +20,7 @@ import { Note } from '@/interfaces/Note'
 import { patternColors, patterns } from '@/utils/Consts'
 import { Pattern, UIState } from '@/utils/Types'
 import { ChangeEvent, useEffect, useState } from 'react'
+import BeatLoader from 'react-spinners/BeatLoader'
 
 interface NotesSheetProps {
 	setUiState: React.Dispatch<React.SetStateAction<UIState>>
@@ -28,8 +30,6 @@ interface NotesSheetProps {
 }
 
 export default function NotesSheet({
-	setUiState,
-	setLoadingText,
 	handleUpdateNotes,
 	alreadyCreated,
 }: NotesSheetProps) {
@@ -38,7 +38,7 @@ export default function NotesSheet({
 		Pattern | undefined
 	>()
 	const [text, setText] = useState('')
-
+	const [loading, setLoading] = useState(false)
 	const [ready, setReady] = useState(false)
 
 	useEffect(() => {
@@ -51,9 +51,6 @@ export default function NotesSheet({
 
 	const handleCreateNote = async () => {
 		if (user) {
-			// setUiState('loading')
-			// setLoadingText('Saving your note...')
-
 			const newNote = {
 				pattern: selectedPattern!,
 				text: text,
@@ -62,14 +59,41 @@ export default function NotesSheet({
 			user.saveNote(newNote)
 			handleUpdateNotes(newNote)
 
-			// await new Promise((resolve) => setTimeout(resolve, 1000))
-
 			setText('')
 			setSelectedPattern(undefined)
-
-			// setUiState('default')
-			// setLoadingText('Getting your notes...')
 		}
+	}
+
+	const handleStreamNotes = async (
+		pattern: string,
+		onChunk: (text: string) => void
+	) => {
+		setLoading(true)
+		const firUser = user as FirebaseUser
+		const token = await firUser.getTokenId()
+		const response = await fetch('/api/generateNotes', {
+			method: 'POST',
+			body: JSON.stringify({ pattern }),
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`,
+			},
+		})
+
+		const reader = response.body?.getReader()
+		const decoder = new TextDecoder()
+		let result = ''
+
+		while (reader) {
+			const { value, done } = await reader.read()
+			if (done) break
+
+			const chunk = decoder.decode(value, { stream: true })
+			result += chunk
+			onChunk(result) // Update state to display as it's streamed
+		}
+
+		setLoading(false)
 	}
 
 	return (
@@ -81,7 +105,7 @@ export default function NotesSheet({
 				</SheetDescription>
 			</SheetHeader>
 
-			<div className="px-4 flex flex-col gap-5">
+			<div className="px-4 h-full flex flex-col gap-5">
 				<div className="flex flex-col gap-2">
 					<p className="text-sm font-medium">Pattern</p>
 					<Select
@@ -91,7 +115,8 @@ export default function NotesSheet({
 						}}
 					>
 						<SelectTrigger
-							className="w-full"
+							disabled={loading}
+							className="w-full font-medium"
 							style={{
 								color: selectedPattern
 									? patternColors[selectedPattern]
@@ -107,6 +132,7 @@ export default function NotesSheet({
 										<SelectItem
 											value={pattern}
 											key={pattern}
+											className="font-medium"
 											style={{
 												color: patternColors[pattern],
 											}}
@@ -119,24 +145,46 @@ export default function NotesSheet({
 					</Select>
 				</div>
 
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-2 h-full">
 					<p className="text-sm font-medium">Note</p>
 					<Textarea
+						disabled={loading}
+						className="h-full resize-none"
 						value={text}
 						onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
 							setText(event.target.value)
 						}}
-						placeholder="Write your note here..."
+						placeholder="Write your notes here..."
 					/>
+
+					{user && user instanceof FirebaseUser && (
+						<button
+							disabled={!selectedPattern || loading}
+							className={`mt-1 bg-card-fg text-theme-orange font-medium py-3 rounded-md ${selectedPattern ? 'hover:opacity-75' : 'opacity-75'} transition-all`}
+							onClick={() =>
+								handleStreamNotes(selectedPattern!, setText)
+							}
+						>
+							{loading ? (
+								<BeatLoader
+									loading={loading}
+									color="var(--theme-orange)"
+									size={6}
+								/>
+							) : (
+								<p>Generate Notes with AI ✨</p>
+							)}
+						</button>
+					)}
 				</div>
 			</div>
 
 			<SheetFooter>
-				<SheetClose disabled={!ready} asChild>
+				<SheetClose disabled={!ready || loading} asChild>
 					<button
 						onClick={handleCreateNote}
-						disabled={!ready}
-						className={`py-2 text-base font-semibold bg-theme-orange ${!ready ? 'opacity-75' : 'hover:bg-theme-hover-orange'} transition-all rounded-md`}
+						disabled={!ready || loading}
+						className={`py-2 text-base font-semibold bg-theme-orange ${!ready || loading ? 'opacity-75' : 'hover:bg-theme-hover-orange'} transition-all rounded-md`}
 					>
 						Save Note
 					</button>

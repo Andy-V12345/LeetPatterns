@@ -2,7 +2,8 @@
 
 import { GoogleGenAI, Type } from '@google/genai'
 import {
-	gemini_system_intructions,
+	generate_notes_sys_instr,
+	generate_problem_sys_instr,
 	leetcode_practice_problems,
 	patterns,
 } from './Consts'
@@ -94,7 +95,7 @@ export async function generateProblem(
 					'distractorPatterns',
 				],
 			},
-			systemInstruction: gemini_system_intructions,
+			systemInstruction: generate_problem_sys_instr,
 		},
 	})
 
@@ -126,4 +127,29 @@ export async function generateProblem(
 function getLeetcodeSample(pattern: Pattern): LeetcodeSample {
 	const leetcode_samples = leetcode_practice_problems[pattern]
 	return leetcode_samples[generateRandomNum(leetcode_samples.length)]
+}
+
+export async function generateNotesStream(
+	pattern: string
+): Promise<ReadableStream> {
+	const response = await ai.models.generateContentStream({
+		model: 'gemini-2.0-flash',
+		contents: `Generate notes for the ${pattern} pattern.`,
+		config: {
+			systemInstruction: generate_notes_sys_instr,
+		},
+	})
+
+	const encoder = new TextEncoder()
+	const stream = new ReadableStream({
+		async start(controller) {
+			for await (const chunk of response) {
+				const text = chunk.text ?? ''
+				controller.enqueue(encoder.encode(text))
+			}
+			controller.close()
+		},
+	})
+
+	return stream
 }
