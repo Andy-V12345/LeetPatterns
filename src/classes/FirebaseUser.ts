@@ -32,6 +32,13 @@ export class FirebaseUser implements AppUser {
 		this.lastName = lastName
 	}
 
+	async getTokenId(): Promise<string> {
+		if (this.firebaseUser) {
+			return await this.firebaseUser.getIdToken()
+		}
+		return ''
+	}
+
 	async deleteNote(note: Note): Promise<void> {
 		await deleteNoteFirestore(this.uid, note)
 	}

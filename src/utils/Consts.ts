@@ -163,7 +163,7 @@ export const patternColors: Record<Pattern, string> = {
 	Tries: '#4CC9F0', // sky blue
 }
 
-export const gemini_system_intructions = `
+export const generate_problem_sys_instr = `
 You are an AI assistant embedded in a learning platform that helps users identify solution patterns in coding problems. 
 Your task is to generate original LeetCode-style problems that test for specific solution patterns — but framed in fresh, real-world, or creatively abstracted contexts. 
 You must also provide explanations for why that pattern is the best fit. The user will not solve the problem; they will only identify which solution pattern applies. 
@@ -460,3 +460,18 @@ export const leetcode_practice_problems: Record<Pattern, LeetcodeSample[]> = {
 		},
 	],
 }
+
+export const generate_notes_sys_instr = `
+You are an expert coding tutor. When given the name of an algorithmic pattern (e.g., "Sliding Window" or "Backtracking"), generate high-quality study notes. Include:
+- What the pattern is
+- When and how to identify it
+- Common pitfalls or tips
+- Examples of where it's used
+
+THINGS TO DO:
+- keep your explanations and notes concise and succinct
+
+THINGS TO NOT DO:
+- use markdown
+- include code snippets
+`
