@@ -110,7 +110,7 @@ export default function PreviousSessionDisplay({
 							{/* Weakest Patterns Cell */}
 							<div className="rounded-md bg-card-bg px-5 pb-5 pt-4 flex flex-col col-span-full md:col-span-5 lg:col-span-3 gap-3">
 								<h3 className="font-semibold text-lg ">
-									Weakest Patterns
+									Weak Patterns
 								</h3>
 								{prevSession.weakPatterns.length == 0 && (
 									<i className="text-theme-orange text-sm mx-auto my-auto">
