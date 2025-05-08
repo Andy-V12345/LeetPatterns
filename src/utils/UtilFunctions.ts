@@ -33,7 +33,7 @@ export function areConsecutiveDays(date1: Date, date2: Date): number {
 export function getWeakPatterns(patternStats: PatternStat[]): Pattern[] {
 	const weakPatterns: Pattern[] = patternStats
 		.filter(
-			(stat) => stat.attempts >= 2 && stat.correct / stat.attempts < 0.4
+			(stat) => stat.attempts > 1 && stat.correct / stat.attempts < 0.5
 		)
 		.map((stat) => stat.pattern)
 
