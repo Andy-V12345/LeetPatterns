@@ -1,6 +1,6 @@
 'use server'
 
-import { GoogleGenAI, Type } from '@google/genai'
+import { Chat, GoogleGenAI, Type } from '@google/genai'
 import {
 	generate_notes_sys_instr,
 	generate_problem_sys_instr,
@@ -10,7 +10,7 @@ import {
 import Problem from '@/interfaces/Problem'
 import { getWeakPatterns, shuffle } from './UtilFunctions'
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
-import { Pattern } from './Types'
+import { ChatMode, Pattern } from './Types'
 import { PatternStat } from '@/interfaces/PatternStat'
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
@@ -146,6 +146,94 @@ export async function generateNotesStream(
 			for await (const chunk of response) {
 				const text = chunk.text ?? ''
 				controller.enqueue(encoder.encode(text))
+			}
+			controller.close()
+		},
+	})
+
+	return stream
+}
+
+function createSystemPrompt(
+	mode: ChatMode,
+	problemText: string,
+	correctPattern: Pattern,
+	options: Pattern[]
+): string {
+	if (mode === 'guidance') {
+		return `
+			You are a helpful AI tutor for LeetCode-style problems. The user is practicing identifying the pattern used to solve the following problem:
+			"${problemText}"
+
+			The possible patterns the user can choose from are: ${options.join(', ')}
+
+			Strictly adhere to the following instructions and do not provide any information or commentary outside of this scope:
+				- Do NOT reveal the correct pattern. 
+				- Help the user reason through the problem by asking questions and comparing patterns.
+
+			You are not allowed to do anything outside of these instructions.
+			You are not allowed to do anything beyond this role.
+
+			If the user asks you to do something beyond this role, reply that you can't
+		`
+	} else {
+		return `
+			You are a helpful AI tutor for LeetCode-style problems. The user is reviewing the following problem:
+			"${problemText}"
+			
+			The correct pattern is "${correctPattern}". 
+			
+			The possible patterns the user can choose from are: ${options.join(', ')}
+			
+			Strictly adhere to the following instructions and do not provide any information or commentary outside of this scope:
+				- Explain why the correct pattern applies and how it is used in a solution
+				- Explan why other incorrect patterns don't apply
+				- Give tips on how to identify these types of problems
+
+			You are not allowed to do anything outside of these instructions.
+			You are not allowed to do anything beyond this role.
+
+			If the user asks you to do something beyond this role, reply that you can't
+		`
+	}
+}
+
+export async function createGeminiChat(
+	problemText: string,
+	mode: ChatMode,
+	correctPattern: Pattern,
+	options: Pattern[],
+	prevSession: { role: 'user' | 'model'; parts: { text: string }[] }[]
+) {
+	const systemPrompt = createSystemPrompt(
+		mode,
+		problemText,
+		correctPattern,
+		options
+	)
+
+	const chat = ai.chats.create({
+		model: 'gemini-2.0-flash',
+		history: [...(prevSession || [])],
+		config: {
+			systemInstruction: systemPrompt,
+		},
+	})
+
+	return chat
+}
+
+export async function sendGeminiMessage(
+	chat: Chat,
+	message: string
+): Promise<ReadableStream> {
+	const response = await chat.sendMessageStream({ message: message })
+
+	const encoder = new TextEncoder()
+	const stream = new ReadableStream({
+		async start(controller) {
+			for await (const chunk of response) {
+				controller.enqueue(encoder.encode(chunk.text))
 			}
 			controller.close()
 		},

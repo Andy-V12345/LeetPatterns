@@ -12,6 +12,8 @@ import { useAuth } from '../../components/AuthContext'
 import { calculateTotalAttempts } from '@/utils/UtilFunctions'
 import { useIsMobile } from '@/hooks/use-mobile'
 import FlippableCard from './FlippableCard'
+import ChatSheet from './ChatSheet'
+import { useGeminiChat } from '@/hooks/useGeminiChat'
 
 interface ProblemAreaProps {
 	focusedPatterns: Pattern[] | undefined | null
@@ -38,6 +40,8 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const [error, setError] = useState('')
 
 	const { user } = useAuth()
+	const { prevSession, setPrevSession, sendMessage, liveResponse } =
+		useGeminiChat()
 
 	const isMobile = useIsMobile()
 
@@ -59,6 +63,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	}, [focusedPatterns, problemQ, patternStats])
 
 	const createNewProblem = useCallback(async () => {
+		setPrevSession([])
 		if (!showRecap) {
 			if (questionCount > 0 && questionCount % 5 == 0) {
 				setShowRecap(true)
@@ -265,7 +270,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							opacity: 0,
 						}}
 						transition={cardTransition}
-						className={`flex self-stretch w-full ${isMobile ? `flex-col p-2 h-full` : 'h-4/5 max-h-[600px]'} gap-5 relative`}
+						className={`flex self-stretch w-full ${isMobile ? `flex-col p-2 h-full` : 'h-10/12 max-h-[700px]'} gap-5 relative`}
 						style={{
 							perspective: '1000px',
 						}}
@@ -329,6 +334,15 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 					</motion.div>
 				)}
 			</AnimatePresence>
+
+			<ChatSheet
+				messages={prevSession}
+				setMessages={setPrevSession}
+				liveResponse={liveResponse}
+				sendMessage={sendMessage}
+				cardState={cardState}
+				problem={problem}
+			/>
 		</div>
 	)
 }

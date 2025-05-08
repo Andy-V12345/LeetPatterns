@@ -29,3 +29,10 @@ export type PatternSummary = {
 	howToIdentify: string
 	learnMore: string
 }
+
+export type ChatMode = 'guidance' | 'explanation'
+
+export type GeminiMessage = {
+	role: 'user' | 'model'
+	parts: { text: string }[]
+}
