@@ -41,7 +41,7 @@ export default function PracticePageContent() {
 
 	return (
 		<Sheet>
-			<div className="relative">
+			<div className="relative overflow-x-hidden overflow-y-scroll">
 				<AnimatePresence mode="wait">
 					{uiState == 'loading' ? (
 						<motion.div

@@ -61,6 +61,7 @@ export function useGeminiChat() {
 		}
 
 		setPrevSession((prev) => {
+			// updates latest message to have the fullReply
 			const old = prev[prev.length - 1] // get latest message
 			old.parts[0].text = fullReply
 			prev[prev.length - 1] = old

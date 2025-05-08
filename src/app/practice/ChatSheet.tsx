@@ -19,9 +19,11 @@ import {
 	UIState,
 } from '@/utils/Types'
 import { ArrowUp } from 'lucide-react'
-import { ChangeEvent, useMemo, useState } from 'react'
+import { ChangeEvent, useMemo, useState, useRef, useEffect } from 'react'
 import SyncLoader from 'react-spinners/SyncLoader'
 import PuffLoader from 'react-spinners/PuffLoader'
+import { LocalUser } from '@/classes/LocalUser'
+import Link from 'next/link'
 
 interface ChatSheetProps {
 	messages: GeminiMessage[]
@@ -44,6 +46,7 @@ interface ChatSheetProps {
 	liveResponse: string
 	cardState: ProblemCardState
 	problem: Problem | null | undefined
+	showRecap: boolean
 }
 
 export default function ChatSheet({
@@ -53,15 +56,20 @@ export default function ChatSheet({
 	liveResponse,
 	cardState,
 	problem,
+	showRecap,
 }: ChatSheetProps) {
 	const [msgText, setMsgText] = useState('')
 	const [uiState, setUiState] = useState<UIState>('default')
 	const { user } = useAuth()
 
-	const suggestions = [
-		'What is this problem really asking?',
-		'What should I look for in this problem?',
-	]
+	// Ref to scroll message container to bottom
+	const messagesEndRef = useRef<HTMLDivElement | null>(null)
+
+	useEffect(() => {
+		if (messagesEndRef.current) {
+			messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
+		}
+	}, [messages, liveResponse])
 
 	const mode: ChatMode = useMemo(() => {
 		if (cardState == 'correct' || cardState == 'wrong') {
@@ -70,6 +78,20 @@ export default function ChatSheet({
 			return 'guidance'
 		}
 	}, [cardState])
+
+	const suggestions: string[] = useMemo(() => {
+		if (mode == 'guidance') {
+			return [
+				'What is this problem really asking?',
+				'What should I look for in this problem?',
+			]
+		} else {
+			return [
+				'Explain the correct answer.',
+				'Why are the other options wrong?',
+			]
+		}
+	}, [mode])
 
 	const isEmptyText: boolean = useMemo(() => {
 		return msgText.trim().length == 0
@@ -132,91 +154,165 @@ export default function ChatSheet({
 						: 'Ask any questions you have about the problem. Leet can help you understand the correct answer.'}
 				</SheetDescription>
 			</SheetHeader>
-			{cardState == 'loading' ? (
-				<div className="flex-1 flex flex-col justify-center items-center">
-					<SyncLoader
-						loading={cardState == 'loading'}
-						color="var(--theme-orange)"
-						size={11}
-					/>
-				</div>
+
+			{showRecap ? (
+				<SheetFooter>
+					<SheetClose asChild>
+						<button className="py-2 mt-2 text-base font-medium bg-card-fg hover:opacity-80 transition-all rounded-md">
+							Cancel
+						</button>
+					</SheetClose>
+				</SheetFooter>
 			) : (
 				<>
-					{messages.length > 0 && (
-						<div className="flex-1 scrollbar-hide flex flex-col overflow-y-auto gap-3 p-2">
-							{messages.map((msg, idx) => (
-								<div key={idx}>
-									{msg.role == 'user' ? (
-										<div
-											className={`rounded-md p-2 ml-auto bg-theme-orange text-sm font-medium text-foreground w-fit max-w-4/5`}
-										>
-											{msg.parts[0].text}
-										</div>
-									) : (
-										<AiTextBubble
-											text={
-												idx == messages.length - 1
-													? liveResponse
-													: msg.parts[0].text
-											}
-										/>
-									)}
-								</div>
-							))}
-						</div>
-					)}
-
-					<SheetFooter>
-						{messages.length == 0 && (
-							<div className="space-y-2 mb-2">
-								{suggestions.map((suggestion) => (
-									<button
-										onClick={() => setMsgText(suggestion)}
-										className="text-sm bg-card-fg p-3 rounded-md w-full hover:opacity-75 transition-all"
-										key={suggestion}
-									>
-										{suggestion}
-									</button>
-								))}
-							</div>
-						)}
-						<form onSubmit={handleSubmit}>
-							<div className="flex items-center gap-3">
-								<Input
-									disabled={uiState == 'loading'}
-									value={msgText}
-									onChange={handleTextChange}
-									placeholder="Ask Leet something..."
+					{cardState == 'loading' ? (
+						<>
+							<div className="flex-1 flex flex-col justify-center items-center">
+								<SyncLoader
+									loading={cardState == 'loading'}
+									color="var(--theme-orange)"
+									size={11}
 								/>
-								<button
-									disabled={
-										uiState == 'loading' || isEmptyText
-									}
-									type="submit"
-									className={`flex ${isEmptyText ? 'opacity-75' : 'hover:opacity-75'} transition-all justify-center items-center rounded-full bg-theme-orange p-[5px]`}
-								>
-									{uiState == 'loading' ? (
-										<PuffLoader
-											loading={uiState == 'loading'}
-											size={20}
-											color={'var(--foreground)'}
-										/>
-									) : (
-										<ArrowUp
-											size={20}
-											color="var(--foreground)"
-										/>
-									)}
-								</button>
 							</div>
-						</form>
+							<SheetFooter>
+								<SheetClose asChild>
+									<button className="py-2 mt-2 text-base font-medium bg-card-fg hover:opacity-80 transition-all rounded-md">
+										Cancel
+									</button>
+								</SheetClose>
+							</SheetFooter>
+						</>
+					) : (
+						<>
+							{user && user instanceof LocalUser ? (
+								<>
+									<div className="flex-1 flex flex-col justify-center items-center">
+										<div className="flex flex-col justify-center items-center gap-5">
+											<p className="font-medium text-sm">
+												You need an account to chat with
+												Leet
+											</p>
+											<Link
+												href={'/signup'}
+												className="button-82-pushable mx-auto"
+											>
+												<span className="button-82-shadow"></span>
+												<span className="button-82-edge"></span>
+												<span className="button-82-front text-lg font-bold">
+													Create one
+												</span>
+											</Link>
+										</div>
+									</div>
 
-						<SheetClose asChild>
-							<button className="py-2 mt-2 text-base font-medium bg-card-fg hover:opacity-80 transition-all rounded-md">
-								Cancel
-							</button>
-						</SheetClose>
-					</SheetFooter>
+									<SheetFooter>
+										<SheetClose asChild>
+											<button className="py-2 mt-2 text-base font-medium bg-card-fg hover:opacity-80 transition-all rounded-md">
+												Cancel
+											</button>
+										</SheetClose>
+									</SheetFooter>
+								</>
+							) : (
+								<>
+									{messages.length > 0 && (
+										<div className="flex-1 scrollbar-hide flex flex-col overflow-y-auto gap-3 p-2">
+											{messages.map((msg, idx) => (
+												<div key={idx}>
+													{msg.role == 'user' ? (
+														<div
+															className={`rounded-md p-2 ml-auto bg-theme-orange text-sm font-medium text-foreground w-fit max-w-4/5`}
+														>
+															{msg.parts[0].text}
+														</div>
+													) : (
+														<AiTextBubble
+															text={
+																idx ==
+																messages.length -
+																	1
+																	? liveResponse
+																	: msg
+																			.parts[0]
+																			.text
+															}
+														/>
+													)}
+												</div>
+											))}
+											<div ref={messagesEndRef} />
+										</div>
+									)}
+
+									<SheetFooter>
+										{messages.length == 0 && (
+											<div className="space-y-2 mb-2">
+												{suggestions.map(
+													(suggestion) => (
+														<button
+															onClick={() =>
+																setMsgText(
+																	suggestion
+																)
+															}
+															className="text-sm bg-card-fg p-3 rounded-md w-full hover:opacity-75 transition-all"
+															key={suggestion}
+														>
+															{suggestion}
+														</button>
+													)
+												)}
+											</div>
+										)}
+										<form onSubmit={handleSubmit}>
+											<div className="flex items-center gap-3">
+												<Input
+													disabled={
+														uiState == 'loading'
+													}
+													value={msgText}
+													onChange={handleTextChange}
+													placeholder="Ask Leet something..."
+												/>
+												<button
+													disabled={
+														uiState == 'loading' ||
+														isEmptyText
+													}
+													type="submit"
+													className={`flex ${isEmptyText ? 'opacity-75' : 'hover:opacity-75'} transition-all justify-center items-center rounded-full bg-theme-orange p-[5px]`}
+												>
+													{uiState == 'loading' ? (
+														<PuffLoader
+															loading={
+																uiState ==
+																'loading'
+															}
+															size={20}
+															color={
+																'var(--foreground)'
+															}
+														/>
+													) : (
+														<ArrowUp
+															size={20}
+															color="var(--foreground)"
+														/>
+													)}
+												</button>
+											</div>
+										</form>
+
+										<SheetClose asChild>
+											<button className="py-2 mt-2 text-base font-medium bg-card-fg hover:opacity-80 transition-all rounded-md">
+												Cancel
+											</button>
+										</SheetClose>
+									</SheetFooter>
+								</>
+							)}
+						</>
+					)}
 				</>
 			)}
 		</SheetContent>

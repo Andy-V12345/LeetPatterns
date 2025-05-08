@@ -270,7 +270,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							opacity: 0,
 						}}
 						transition={cardTransition}
-						className={`flex self-stretch w-full ${isMobile ? `flex-col p-2 h-full` : 'h-10/12 max-h-[700px]'} gap-5 relative`}
+						className={`flex self-stretch w-full ${isMobile ? `flex-col p-2 h-full` : 'h-10/12 max-h-[600px]'} gap-5 relative`}
 						style={{
 							perspective: '1000px',
 						}}
@@ -342,6 +342,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				sendMessage={sendMessage}
 				cardState={cardState}
 				problem={problem}
+				showRecap={showRecap}
 			/>
 		</div>
 	)
