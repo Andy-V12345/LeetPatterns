@@ -20,10 +20,11 @@ export default function PreviousSessionDisplay({
 	prevSession,
 }: PreviousSessionDisplayProps) {
 	const { user } = useAuth()
-	const [loading, setLoading] = useState(false)
+	const [weakLoading, setWeakLoading] = useState(false)
+	const [focusLoading, setFocusLoading] = useState(false)
 
 	const handleWorkOnWeakPatterns = useCallback(async () => {
-		setLoading(true)
+		setWeakLoading(true)
 		if (user && prevSession) {
 			const focusedPatterns = patterns.reduce(
 				(acc, pattern) => {
@@ -36,7 +37,24 @@ export default function PreviousSessionDisplay({
 			await user.saveFocusedPatterns(focusedPatterns)
 			redirect('/practice')
 		}
-		setLoading(false)
+		setWeakLoading(false)
+	}, [user, prevSession])
+
+	const handleWorkOnSameStuff = useCallback(async () => {
+		setFocusLoading(true)
+		if (user && prevSession) {
+			const focusedPatterns = patterns.reduce(
+				(acc, pattern) => {
+					acc[pattern] = prevSession.focusedPatterns.includes(pattern)
+					return acc
+				},
+				{} as { [pattern: string]: boolean }
+			)
+
+			await user.saveFocusedPatterns(focusedPatterns)
+			redirect('/practice')
+		}
+		setFocusLoading(false)
 	}, [user, prevSession])
 
 	return (
@@ -214,20 +232,20 @@ export default function PreviousSessionDisplay({
 
 								{prevSession.weakPatterns.length > 0 && (
 									<button
-										disabled={loading}
+										disabled={weakLoading}
 										onClick={handleWorkOnWeakPatterns}
-										className={`relative flex items-center transition-none justify-between bg-card-fg font-semibold text-sm rounded-md text-left p-4 ${loading ? '' : 'hover:opacity-80'} transition-all gap-3`}
+										className={`relative flex items-center transition-none justify-between bg-card-fg font-semibold text-sm rounded-md text-left p-4 ${weakLoading || focusLoading ? '' : 'hover:opacity-80'} transition-all gap-3`}
 									>
-										{loading ? (
+										{weakLoading ? (
 											<>
 												<BeatLoader
 													className="absolute inset-0 flex items-center justify-center"
-													loading={loading}
+													loading={weakLoading}
 													color="var(--foreground)"
 													size={6}
 												/>
 												<p
-													className={`text-sm ${loading && 'text-transparent'}`}
+													className={`text-sm ${weakLoading && 'text-transparent'}`}
 												>
 													f
 												</p>
@@ -252,7 +270,7 @@ export default function PreviousSessionDisplay({
 
 								<Link
 									href="/onboarding"
-									className={`flex items-center justify-between bg-card-fg font-semibold text-sm rounded-md text-left ${loading ? 'pointer-events-none' : 'hover:opacity-80'} p-4 transition-all gap-3`}
+									className={`flex items-center justify-between bg-card-fg font-semibold text-sm rounded-md text-left ${weakLoading || focusLoading ? 'pointer-events-none' : 'hover:opacity-80'} p-4 transition-all gap-3`}
 								>
 									<div className="flex gap-3 items-center">
 										<p>🧠</p>
@@ -261,16 +279,38 @@ export default function PreviousSessionDisplay({
 									<ChevronRight className="size-4" />
 								</Link>
 
-								<Link
-									href="/practice"
-									className={`flex items-center justify-between bg-card-fg font-semibold text-sm rounded-md text-left ${loading ? 'pointer-events-none' : 'hover:opacity-80'} p-4 transition-all gap-3`}
+								<button
+									disabled={focusLoading}
+									onClick={handleWorkOnSameStuff}
+									className={`relative flex items-center transition-none justify-between bg-card-fg font-semibold text-sm rounded-md text-left p-4 ${weakLoading || focusLoading ? '' : 'hover:opacity-80'} transition-all gap-3`}
 								>
-									<div className="flex gap-3 items-center">
-										<p>🏃</p>
-										<p>Focus on the same stuff</p>
-									</div>
-									<ChevronRight className="size-4" />
-								</Link>
+									{focusLoading ? (
+										<>
+											<BeatLoader
+												className="absolute inset-0 flex items-center justify-center"
+												loading={focusLoading}
+												color="var(--foreground)"
+												size={6}
+											/>
+											<p
+												className={`text-sm ${focusLoading && 'text-transparent'}`}
+											>
+												f
+											</p>
+										</>
+									) : (
+										<>
+											<div
+												className={`flex gap-3 items-center`}
+											>
+												<p>🏃</p>
+												<p>Focus on the same stuff</p>
+											</div>
+
+											<ChevronRight className="size-4" />
+										</>
+									)}
+								</button>
 							</div>
 						</div>
 					</div>
