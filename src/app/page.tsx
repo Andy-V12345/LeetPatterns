@@ -131,7 +131,7 @@ export default function Home() {
 								preload="auto"
 								onCanPlay={() => setVideoLoaded(true)}
 								className="rounded-lg"
-								src="/leetpatterns-demo2.mp4"
+								src="/leetpatterns-demo2-compressed.mp4"
 							/>
 						</motion.div>
 					</div>
