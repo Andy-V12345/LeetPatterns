@@ -2,6 +2,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useTheme } from './ThemeContext'
 import { Switch } from './ui/switch'
 import { setColorTheme } from '@/utils/UtilFunctions'
+import { useIsChrome } from '@/hooks/useIsChrome'
 
 interface ThemeSwitchProps {
 	className: string
@@ -9,6 +10,7 @@ interface ThemeSwitchProps {
 
 export default function ThemeSwitch({ className = '' }: ThemeSwitchProps) {
 	const { theme, setTheme } = useTheme()
+	const isChrome = useIsChrome()
 
 	const handleThemeToggle = () => {
 		if (theme == 'dark') {
@@ -18,6 +20,11 @@ export default function ThemeSwitch({ className = '' }: ThemeSwitchProps) {
 			setTheme('dark')
 			setColorTheme('dark')
 		}
+	}
+
+	if (isChrome) {
+		// if chrome don't display switch
+		return <></>
 	}
 
 	return (

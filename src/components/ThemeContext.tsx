@@ -1,5 +1,6 @@
 'use client'
 
+import { useIsChrome } from '@/hooks/useIsChrome'
 import { ColorTheme } from '@/utils/Types'
 import { getColorTheme } from '@/utils/UtilFunctions'
 import {
@@ -19,9 +20,14 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 	const [theme, setTheme] = useState<ColorTheme>('dark')
+	const isChrome = useIsChrome()
 
 	useEffect(() => {
-		setTheme(getColorTheme())
+		if (isChrome) {
+			setTheme('dark')
+		} else {
+			setTheme(getColorTheme())
+		}
 	}, [])
 
 	return (

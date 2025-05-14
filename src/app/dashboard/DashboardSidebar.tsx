@@ -19,6 +19,7 @@ import BeatLoader from 'react-spinners/BeatLoader'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import ThemeSwitch from '@/components/ThemeSwitch'
+import { useIsChrome } from '@/hooks/useIsChrome'
 
 export default function DashboardSidebar() {
 	const pathname = usePathname()
@@ -29,6 +30,7 @@ export default function DashboardSidebar() {
 	})
 	const [uiState, setUiState] = useState<UIState>('default')
 	const { logout } = useAuth()
+	const isChrome = useIsChrome()
 
 	useEffect(() => {
 		if (pathname.includes('/dashboard/profile')) {
@@ -126,15 +128,17 @@ export default function DashboardSidebar() {
 			</SidebarContent>
 			<SidebarFooter className="p-3">
 				<SidebarMenu>
-					<SidebarMenuItem>
-						<div className="flex mb-1 justify-between gap-3 text-foreground items-center">
-							<span className="font-semibold text-sm text-foreground">
-								Color theme:
-							</span>
+					{!isChrome && (
+						<SidebarMenuItem>
+							<div className="flex mb-1 justify-between gap-3 text-foreground items-center">
+								<span className="font-semibold text-sm text-foreground">
+									Color theme:
+								</span>
 
-							<ThemeSwitch className="ml-auto" />
-						</div>
-					</SidebarMenuItem>
+								<ThemeSwitch className="ml-auto" />
+							</div>
+						</SidebarMenuItem>
+					)}
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							onClick={handleLogOut}
