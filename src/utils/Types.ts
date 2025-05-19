@@ -19,7 +19,7 @@ export type Pattern =
 
 export type ColorTheme = 'light' | 'dark'
 
-export type DashboardTypes = 'dashboard' | 'profile' | 'notes'
+export type DashboardTypes = 'dashboard' | 'profile' | 'notes' | 'templates'
 
 export type UIState = 'default' | 'loading' | 'error' | 'success'
 
@@ -28,6 +28,16 @@ export type PatternSummary = {
 	description: string
 	howToIdentify: string
 	learnMore: string
+}
+
+export type CodeTemplate = {
+	variants: TemplateVariant[]
+	explanation: string
+}
+
+export type TemplateVariant = {
+	template: string
+	title: string
 }
 
 export type ChatMode = 'guidance' | 'explanation'

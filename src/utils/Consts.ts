@@ -1,5 +1,5 @@
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
-import { Pattern, PatternSummary } from './Types'
+import { CodeTemplate, Pattern, PatternSummary } from './Types'
 
 export const patterns: Pattern[] = [
 	'BFS',
@@ -18,6 +18,345 @@ export const patterns: Pattern[] = [
 	'Two Pointers',
 	'Union-Find',
 ]
+
+export const codeTemplates: Record<Pattern, CodeTemplate> = {
+	DFS: {
+		explanation:
+			'Depth-First Search explores as far as possible along each branch before backtracking. Commonly used in graphs and trees.',
+		variants: [
+			{
+				title: 'DFS on Tree',
+				template: `
+def dfs(node):
+	if not node:
+		return
+		
+	# process node
+
+	dfs(node.left)
+	dfs(node.right)
+		  `.trim(),
+			},
+			{
+				title: 'DFS on Graphs',
+				template: `
+  def dfs(node, visited):
+	  if node in visited:
+		  return
+	  visited.add(node)
+	  for neighbor in node.neighbors:
+		  dfs(neighbor, visited)
+		  `.trim(),
+			},
+		],
+	},
+
+	BFS: {
+		explanation:
+			'Breadth-First Search explores neighbors level by level. It is widely used for shortest path and layer-wise traversal.',
+		variants: [
+			{
+				title: 'BFS on Tree',
+				template: `
+  from collections import deque
+  
+  def bfs(root):
+	  if not root:
+		  return []
+	  queue = deque([root])
+	  result = []
+  
+	  while queue:
+		  level = []
+		  for _ in range(len(queue)):
+			  node = queue.popleft()
+			  level.append(node.val)
+			  if node.left:
+				  queue.append(node.left)
+			  if node.right:
+				  queue.append(node.right)
+		  result.append(level)
+	  return result
+		  `.trim(),
+			},
+			{
+				title: 'BFS on Graphs',
+				template: `
+  from collections import deque
+  
+  def bfs(start):
+	  queue = deque([start])
+	  visited = set([start])
+  
+	  while queue:
+		  node = queue.popleft()
+		  for neighbor in node.neighbors:
+			  if neighbor not in visited:
+				  visited.add(neighbor)
+				  queue.append(neighbor)
+		  `.trim(),
+			},
+			{
+				title: 'BFS on a Matrix',
+				template: `
+  from collections import deque
+  
+  def bfs_matrix(grid, start):
+	  rows, cols = len(grid), len(grid[0])
+	  queue = deque([start])
+	  visited = set([start])
+  
+	  while queue:
+		  r, c = queue.popleft()
+		  for dr, dc in [(0,1),(1,0),(-1,0),(0,-1)]:
+			  nr, nc = r + dr, c + dc
+			  if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:
+				  visited.add((nr, nc))
+				  queue.append((nr, nc))
+		  `.trim(),
+			},
+		],
+	},
+
+	'Sliding Window': {
+		explanation:
+			'Sliding Window maintains a subset of data across a range and is used for efficient subarray processing.',
+		variants: [
+			{
+				title: 'Sliding Window (Fixed Size)',
+				template: `
+  def max_subarray_sum(nums, k):
+	  window_sum = sum(nums[:k])
+	  max_sum = window_sum
+	  for i in range(k, len(nums)):
+		  window_sum += nums[i] - nums[i - k]
+		  max_sum = max(max_sum, window_sum)
+	  return max_sum
+		  `.trim(),
+			},
+			{
+				title: 'Sliding Window Flexible - Longest',
+				template: `
+  def longest_substring_k_distinct(s, k):
+	  from collections import defaultdict
+	  left = 0
+	  char_count = defaultdict(int)
+	  max_len = 0
+  
+	  for right in range(len(s)):
+		  char_count[s[right]] += 1
+		  while len(char_count) > k:
+			  char_count[s[left]] -= 1
+			  if char_count[s[left]] == 0:
+				  del char_count[s[left]]
+			  left += 1
+		  max_len = max(max_len, right - left + 1)
+	  return max_len
+		  `.trim(),
+			},
+			{
+				title: 'Sliding Window Flexible - Shortest',
+				template: `
+  def min_subarray_len(target, nums):
+	  left = 0
+	  total = 0
+	  min_len = float('inf')
+  
+	  for right in range(len(nums)):
+		  total += nums[right]
+		  while total >= target:
+			  min_len = min(min_len, right - left + 1)
+			  total -= nums[left]
+			  left += 1
+	  return 0 if min_len == float('inf') else min_len
+		  `.trim(),
+			},
+		],
+	},
+
+	Backtracking: {
+		explanation:
+			'Backtracking explores all possibilities by building partial solutions and abandoning those that fail.',
+		variants: [
+			{
+				title: 'Backtracking 1 (Combinations)',
+				template: `
+  def backtrack(start, path):
+	  result.append(path[:])
+	  for i in range(start, len(nums)):
+		  path.append(nums[i])
+		  backtrack(i + 1, path)
+		  path.pop()
+		  `.trim(),
+			},
+			{
+				title: 'Backtracking 2 (Permutations)',
+				template: `
+  def backtrack(path, used):
+	  if len(path) == len(nums):
+		  result.append(path[:])
+		  return
+	  for i in range(len(nums)):
+		  if used[i]:
+			  continue
+		  used[i] = True
+		  path.append(nums[i])
+		  backtrack(path, used)
+		  path.pop()
+		  used[i] = False
+		  `.trim(),
+			},
+		],
+	},
+
+	'Binary Search': {
+		explanation:
+			'Binary Search is an efficient algorithm for finding elements in a sorted array by halving the search space.',
+		variants: [
+			{
+				title: 'Binary Search (Standard)',
+				template: `
+  def binary_search(nums, target):
+	  left, right = 0, len(nums) - 1
+	  while left <= right:
+		  mid = (left + right) // 2
+		  if nums[mid] == target:
+			  return mid
+		  elif nums[mid] < target:
+			  left = mid + 1
+		  else:
+			  right = mid - 1
+	  return -1
+		  `.trim(),
+			},
+		],
+	},
+
+	Stacks: {
+		explanation:
+			'Monotonic Stacks maintain ordered elements and are useful for "next greater/smaller" type problems.',
+		variants: [
+			{
+				title: 'Mono Stack (Next Greater Element)',
+				template: `
+  def next_greater(nums):
+	  stack = []
+	  result = [-1] * len(nums)
+	  for i in range(len(nums)):
+		  while stack and nums[i] > nums[stack[-1]]:
+			  index = stack.pop()
+			  result[index] = nums[i]
+		  stack.append(i)
+	  return result
+		  `.trim(),
+			},
+		],
+	},
+
+	Tries: {
+		explanation:
+			'Tries are tree-like data structures used to store strings for efficient retrieval and prefix-based search.',
+		variants: [
+			{
+				title: 'Trie - Insert & Search',
+				template: `
+  class TrieNode:
+	  def __init__(self):
+		  self.children = {}
+		  self.is_end = False
+  
+  class Trie:
+	  def __init__(self):
+		  self.root = TrieNode()
+  
+	  def insert(self, word):
+		  node = self.root
+		  for c in word:
+			  if c not in node.children:
+				  node.children[c] = TrieNode()
+			  node = node.children[c]
+		  node.is_end = True
+		  `.trim(),
+			},
+		],
+	},
+
+	'Topological Sort': {
+		explanation:
+			'Topological Sort orders nodes in a Directed Acyclic Graph such that dependencies are respected.',
+		variants: [
+			{
+				title: 'Topological Sort (Kahn’s Algorithm)',
+				template: `
+  from collections import deque, defaultdict
+  
+  def topological_sort(graph):
+	  indegree = defaultdict(int)
+	  for u in graph:
+		  for v in graph[u]:
+			  indegree[v] += 1
+	  queue = deque([u for u in graph if indegree[u] == 0])
+	  result = []
+  
+	  while queue:
+		  u = queue.popleft()
+		  result.append(u)
+		  for v in graph[u]:
+			  indegree[v] -= 1
+			  if indegree[v] == 0:
+				  queue.append(v)
+	  return result
+		  `.trim(),
+			},
+		],
+	},
+
+	'Union-Find': {
+		explanation:
+			'Union-Find is a disjoint set structure useful for tracking connected components and cycle detection in graphs.',
+		variants: [
+			{
+				title: 'Union-Find (with Path Compression)',
+				template: `
+  def find(parent, x):
+	  if parent[x] != x:
+		  parent[x] = find(parent, parent[x])
+	  return parent[x]
+  
+  def union(parent, x, y):
+	  root_x = find(parent, x)
+	  root_y = find(parent, y)
+	  if root_x != root_y:
+		  parent[root_y] = root_x
+		  `.trim(),
+			},
+		],
+	},
+	'Prefix Sum': {
+		variants: [],
+		explanation: '',
+	},
+	'Dynamic Programming': {
+		variants: [],
+		explanation: '',
+	},
+	Greedy: {
+		variants: [],
+		explanation: '',
+	},
+	Hashing: {
+		variants: [],
+		explanation: '',
+	},
+	Heaps: {
+		variants: [],
+		explanation: '',
+	},
+	'Two Pointers': {
+		variants: [],
+		explanation: '',
+	},
+}
 
 export const patternSummaries: Record<Pattern, PatternSummary> = {
 	BFS: {

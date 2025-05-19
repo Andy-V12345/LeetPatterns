@@ -62,7 +62,7 @@ export default function NotesPage() {
 
 	return (
 		<Sheet>
-			<div className="flex flex-col gap-15 bg-background h-[100svh] p-[30px] overflow-scroll">
+			<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] overflow-scroll">
 				<div className="flex items-center gap-5">
 					<SidebarTrigger className="" />
 
@@ -92,11 +92,9 @@ export default function NotesPage() {
 						</p>
 					</div>
 				) : (
-					<div
-						className={`flex-col flex h-full justify-center items-center`}
-					>
+					<>
 						{notes.length == 0 ? (
-							<div className="flex flex-col justify-center mb-15 items-center gap-5">
+							<div className="flex flex-col justify-center h-full mb-15 items-center gap-5">
 								<p className="">No notes created!</p>
 
 								<SheetTrigger asChild>
@@ -110,7 +108,7 @@ export default function NotesPage() {
 								</SheetTrigger>
 							</div>
 						) : (
-							<div className="grid grid-cols-8 gap-[10px] h-full w-full">
+							<div className="grid grid-cols-8 gap-[10px] w-full">
 								{notes.map((note) => (
 									<NoteCard
 										key={note.pattern}
@@ -123,7 +121,7 @@ export default function NotesPage() {
 								))}
 							</div>
 						)}
-					</div>
+					</>
 				)}
 			</div>
 
