@@ -3,7 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { patternColors } from '@/utils/Consts'
 import { CodeTemplate, Pattern } from '@/utils/Types'
 import SyntaxHighlighter from 'react-syntax-highlighter'
-import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import {
+	atomOneDark,
+	atomOneLight,
+} from 'react-syntax-highlighter/dist/esm/styles/hljs'
+import { useTheme } from '@/components/ThemeContext'
 
 interface TemplateBoxProps {
 	pattern: Pattern
@@ -15,6 +19,7 @@ export default function TemplateBox({
 	codeTemplate,
 }: TemplateBoxProps) {
 	const [open, setOpen] = useState(pattern == 'DFS' ? true : false)
+	const { theme } = useTheme()
 
 	return (
 		<div className="col-span-full rounded-lg bg-card-bg shadow transition-all p-4">
@@ -64,7 +69,11 @@ export default function TemplateBox({
 								)}
 								<SyntaxHighlighter
 									language="python"
-									style={atomOneDark}
+									style={
+										theme == 'dark'
+											? atomOneDark
+											: atomOneLight
+									}
 									showLineNumbers
 									customStyle={{ borderRadius: 8 }}
 								>

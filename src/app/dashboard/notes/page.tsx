@@ -10,6 +10,7 @@ import NotesSheet from './NotesSheet'
 import { useAuth, useProtectedRoute } from '@/components/AuthContext'
 import NoteCard from './NoteCard'
 import { patterns } from '@/utils/Consts'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 function getPatternsFromNotes(notes: Note[]): Pattern[] {
 	return notes.map((note) => note.pattern)
@@ -60,6 +61,8 @@ export default function NotesPage() {
 		fetchNotes()
 	}, [user, isLoading])
 
+	const isMobile = useIsMobile()
+
 	return (
 		<Sheet>
 			<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] overflow-scroll">
@@ -70,14 +73,26 @@ export default function NotesPage() {
 						Notes
 					</h1>
 
-					{notes.length > 0 && notes.length < patterns.length && (
+					{!isMobile &&
+						notes.length > 0 &&
+						notes.length < patterns.length && (
+							<SheetTrigger asChild>
+								<button className="ml-auto bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-sm font-semibold rounded-md">
+									Add note
+								</button>
+							</SheetTrigger>
+						)}
+				</div>
+
+				{isMobile &&
+					notes.length > 0 &&
+					notes.length < patterns.length && (
 						<SheetTrigger asChild>
-							<button className="ml-auto bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-sm font-medium rounded-md">
+							<button className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-lg font-semibold rounded-md">
 								Add note
 							</button>
 						</SheetTrigger>
 					)}
-				</div>
 
 				{uiState == 'loading' ? (
 					<div className="mx-auto my-auto flex flex-col gap-6 justify-center items-center">

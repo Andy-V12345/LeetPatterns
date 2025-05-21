@@ -1,5 +1,6 @@
 import { PatternStat } from '@/interfaces/PatternStat'
-import { ColorTheme, Pattern } from './Types'
+import { ColorTheme, Pattern, TemplateVariant } from './Types'
+import { codeTemplates } from './Consts'
 
 export function shuffle<T>(array: T[]): T[] {
 	const result = [...array] // optional: copy if you don't want to mutate
@@ -83,4 +84,19 @@ export function getColorTheme(): ColorTheme {
 	}
 
 	return 'dark'
+}
+
+export function getTemplateVariants(): TemplateVariant[] {
+	const variants: TemplateVariant[] = []
+
+	for (const [_, data] of Object.entries(codeTemplates)) {
+		for (const variant of data.variants) {
+			variants.push({
+				template: variant.template,
+				title: variant.title,
+			})
+		}
+	}
+
+	return variants
 }

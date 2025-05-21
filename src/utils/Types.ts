@@ -40,6 +40,11 @@ export type TemplateVariant = {
 	title: string
 }
 
+export type TemplateMode =
+	| 'flashcards'
+	| 'pattern_from_template'
+	| 'template_face_off'
+
 export type ChatMode = 'guidance' | 'explanation'
 
 export type GeminiMessage = {

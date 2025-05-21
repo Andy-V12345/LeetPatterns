@@ -30,23 +30,21 @@ export const codeTemplates: Record<Pattern, CodeTemplate> = {
 def dfs(node):
 	if not node:
 		return
-		
 	# process node
-
 	dfs(node.left)
 	dfs(node.right)
-		  `.trim(),
+`.trim(),
 			},
 			{
 				title: 'DFS on Graphs',
 				template: `
-  def dfs(node, visited):
-	  if node in visited:
-		  return
-	  visited.add(node)
-	  for neighbor in node.neighbors:
-		  dfs(neighbor, visited)
-		  `.trim(),
+def dfs(node, visited):
+	if node in visited:
+		return
+	visited.add(node)
+	for neighbor in node.neighbors:
+		dfs(neighbor, visited)
+`.trim(),
 			},
 		],
 	},
@@ -58,62 +56,76 @@ def dfs(node):
 			{
 				title: 'BFS on Tree',
 				template: `
-  from collections import deque
-  
-  def bfs(root):
-	  if not root:
-		  return []
-	  queue = deque([root])
-	  result = []
-  
-	  while queue:
-		  level = []
-		  for _ in range(len(queue)):
-			  node = queue.popleft()
-			  level.append(node.val)
-			  if node.left:
-				  queue.append(node.left)
-			  if node.right:
-				  queue.append(node.right)
-		  result.append(level)
-	  return result
-		  `.trim(),
+from collections import deque
+
+def bfs(root):
+	if not root:
+		return []
+	queue = deque([root])
+	result = []
+	
+	# while the queue is not empty
+	while queue:
+
+		# get the current level of nodes and add the node children to the queue
+		level = []
+		for _ in range(len(queue)):
+			node = queue.popleft()
+
+			level.append(node.val)
+			if node.left:
+				queue.append(node.left)
+			if node.right:
+				queue.append(node.right)
+		
+		
+		result.append(level)
+	return result
+`.trim(),
 			},
 			{
 				title: 'BFS on Graphs',
 				template: `
-  from collections import deque
+from collections import deque
   
-  def bfs(start):
-	  queue = deque([start])
-	  visited = set([start])
-  
-	  while queue:
-		  node = queue.popleft()
-		  for neighbor in node.neighbors:
-			  if neighbor not in visited:
-				  visited.add(neighbor)
-				  queue.append(neighbor)
-		  `.trim(),
+def bfs(start):
+	queue = deque([start])
+	visited = set([start]) # use a set to keep track of visited nodes
+
+	# while queue is not empty
+	while queue:
+		# get the current node
+		node = queue.popleft()
+
+		# process the node 
+		process_node(node)
+		
+		# add node's neighbors to the queue
+		for neighbor in node.neighbors:
+			if neighbor not in visited:
+				visited.add(neighbor)
+				queue.append(neighbor)
+`.trim(),
 			},
 			{
 				title: 'BFS on a Matrix',
 				template: `
-  from collections import deque
-  
-  def bfs_matrix(grid, start):
-	  rows, cols = len(grid), len(grid[0])
-	  queue = deque([start])
-	  visited = set([start])
-  
-	  while queue:
-		  r, c = queue.popleft()
-		  for dr, dc in [(0,1),(1,0),(-1,0),(0,-1)]:
-			  nr, nc = r + dr, c + dc
-			  if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:
-				  visited.add((nr, nc))
-				  queue.append((nr, nc))
-		  `.trim(),
+from collections import deque
+
+def bfs_matrix(grid, start):
+	rows, cols = len(grid), len(grid[0])
+	queue = deque([start])
+	visited = set([start])
+
+	while queue:
+		r, c = queue.popleft()
+
+		for dr, dc in [(0,1),(1,0),(-1,0),(0,-1)]:
+			nr, nc = r + dr, c + dc
+			if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited:
+				visited.add((nr, nc))
+				queue.append((nr, nc))
+`.trim(),
 			},
 		],
 	},
@@ -125,51 +137,71 @@ def dfs(node):
 			{
 				title: 'Sliding Window (Fixed Size)',
 				template: `
-  def max_subarray_sum(nums, k):
-	  window_sum = sum(nums[:k])
-	  max_sum = window_sum
-	  for i in range(k, len(nums)):
-		  window_sum += nums[i] - nums[i - k]
-		  max_sum = max(max_sum, window_sum)
-	  return max_sum
-		  `.trim(),
+def sliding_window_fixed(nums, k):
+    left = 0
+    window_sum = 0
+
+    for right in range(len(nums)):
+        window_sum += nums[right]
+
+        # Once we have a complete window of size k
+        if right - left + 1 == k:
+            # Process the current window (e.g., max, min, sum, etc.)
+            print("Window sum:", window_sum)
+
+            # Slide the window forward
+            window_sum -= nums[left]
+            left += 1
+`.trim(),
 			},
 			{
 				title: 'Sliding Window Flexible - Longest',
 				template: `
-  def longest_substring_k_distinct(s, k):
-	  from collections import defaultdict
-	  left = 0
-	  char_count = defaultdict(int)
-	  max_len = 0
-  
-	  for right in range(len(s)):
-		  char_count[s[right]] += 1
-		  while len(char_count) > k:
-			  char_count[s[left]] -= 1
-			  if char_count[s[left]] == 0:
-				  del char_count[s[left]]
-			  left += 1
-		  max_len = max(max_len, right - left + 1)
-	  return max_len
-		  `.trim(),
+def sliding_window_flexible_longest(nums):
+    left = 0
+    result = 0
+
+    # Use a dict, set, or counter depending on the condition you need to satisfy
+    window = {}
+
+    for right in range(len(nums)):
+        # Expand window
+        num = nums[right]
+        window[num] = window.get(num, 0) + 1
+
+        # Shrink window if it violates a condition
+        while some_condition_based_on_window():
+            window[nums[left]] -= 1
+            if window[nums[left]] == 0:
+                del window[nums[left]]
+            left += 1
+
+        # Update result with longest valid window so far
+        result = max(result, right - left + 1)
+
+    return result
+`.trim(),
 			},
 			{
 				title: 'Sliding Window Flexible - Shortest',
 				template: `
-  def min_subarray_len(target, nums):
-	  left = 0
-	  total = 0
-	  min_len = float('inf')
-  
-	  for right in range(len(nums)):
-		  total += nums[right]
-		  while total >= target:
-			  min_len = min(min_len, right - left + 1)
-			  total -= nums[left]
-			  left += 1
-	  return 0 if min_len == float('inf') else min_len
-		  `.trim(),
+def sliding_window_flexible_shortest(nums, condition_target):
+	left = 0
+	result = float('inf')
+	window_sum = 0
+
+	for right in range(len(nums)):
+		window_sum += nums[right]
+
+		# Shrink window while condition is satisfied
+		while window_sum >= condition_target:
+			result = min(result, right - left + 1)
+
+			window_sum -= nums[left]
+			left += 1
+
+	return 0 if result == float('inf') else result
+`.trim(),
 			},
 		],
 	},
@@ -181,30 +213,47 @@ def dfs(node):
 			{
 				title: 'Backtracking 1 (Combinations)',
 				template: `
-  def backtrack(start, path):
-	  result.append(path[:])
-	  for i in range(start, len(nums)):
-		  path.append(nums[i])
-		  backtrack(i + 1, path)
-		  path.pop()
-		  `.trim(),
+def backtrack(start, path):
+    # At each step, if path is a valid combination/subset add it to the result
+	if path_meets_some_condition():
+    	result.append(path[:])
+
+    # Explore further elements starting from 'start'
+    for i in range(start, len(nums)):
+        # Choose the current number
+        path.append(nums[i])
+
+        # Recurse with next index (i + 1) to avoid duplicates
+        backtrack(i + 1, path)
+
+        # Undo the choice (backtrack)
+        path.pop()
+`.trim(),
 			},
 			{
 				title: 'Backtracking 2 (Permutations)',
 				template: `
-  def backtrack(path, used):
-	  if len(path) == len(nums):
-		  result.append(path[:])
-		  return
-	  for i in range(len(nums)):
-		  if used[i]:
-			  continue
-		  used[i] = True
-		  path.append(nums[i])
-		  backtrack(path, used)
-		  path.pop()
-		  used[i] = False
-		  `.trim(),
+def backtrack(path, used):
+    # If the path length equals the number of elements, it's a complete permutation
+    if len(path) == len(nums):
+        result.append(path[:])
+        return
+
+    for i in range(len(nums)):
+        if used[i]:
+            continue  # Skip already-used elements
+
+        # Mark the element as used and add to the path
+        used[i] = True
+        path.append(nums[i])
+
+        # Recurse to build the rest of the permutation
+        backtrack(path, used)
+
+        # Undo the choice and mark as unused (backtrack)
+        path.pop()
+        used[i] = False
+`.trim(),
 			},
 		],
 	},
@@ -216,18 +265,19 @@ def dfs(node):
 			{
 				title: 'Binary Search (Standard)',
 				template: `
-  def binary_search(nums, target):
-	  left, right = 0, len(nums) - 1
-	  while left <= right:
-		  mid = (left + right) // 2
-		  if nums[mid] == target:
-			  return mid
-		  elif nums[mid] < target:
-			  left = mid + 1
-		  else:
-			  right = mid - 1
-	  return -1
-		  `.trim(),
+def binary_search(nums, target):
+	left, right = 0, len(nums) - 1
+
+	while left <= right:
+		mid = (left + right) // 2
+		if nums[mid] == target:
+			return mid
+		elif nums[mid] < target: # search to the right
+			left = mid + 1
+		else: # search to the left
+			right = mid - 1
+	return -1
+`.trim(),
 			},
 		],
 	},
@@ -239,16 +289,26 @@ def dfs(node):
 			{
 				title: 'Mono Stack (Next Greater Element)',
 				template: `
-  def next_greater(nums):
-	  stack = []
-	  result = [-1] * len(nums)
-	  for i in range(len(nums)):
-		  while stack and nums[i] > nums[stack[-1]]:
-			  index = stack.pop()
-			  result[index] = nums[i]
-		  stack.append(i)
-	  return result
-		  `.trim(),
+def next_greater(nums):
+    # Initialize an empty stack to store indices
+    stack = []
+
+    # Initialize result array with -1s (default if no greater element exists)
+    result = [-1] * len(nums)
+
+    for i in range(len(nums)):
+        # While the current number is greater than the top of the stack,
+        # we've found the next greater element for that index
+        while stack and nums[i] > nums[stack[-1]]:
+            index = stack.pop()
+            result[index] = nums[i]
+
+        # Push the current index to the stack
+        # This index is still waiting for a greater number
+        stack.append(i)
+
+    return result
+`.trim(),
 			},
 		],
 	},
@@ -260,23 +320,49 @@ def dfs(node):
 			{
 				title: 'Trie - Insert & Search',
 				template: `
-  class TrieNode:
-	  def __init__(self):
-		  self.children = {}
-		  self.is_end = False
-  
-  class Trie:
-	  def __init__(self):
-		  self.root = TrieNode()
-  
-	  def insert(self, word):
-		  node = self.root
-		  for c in word:
-			  if c not in node.children:
-				  node.children[c] = TrieNode()
-			  node = node.children[c]
-		  node.is_end = True
-		  `.trim(),
+class TrieNode:
+    def __init__(self):
+        # Dictionary to store child nodes
+        self.children = {}
+        # Flag to mark the end of a word
+        self.is_end = False
+
+
+class Trie:
+    def __init__(self):
+        # The root node is an empty TrieNode
+        self.root = TrieNode()
+
+    def insert(self, word):
+        # Start from the root
+        node = self.root
+
+        for char in word:
+            # If the character doesn't exist in children, add it
+            if char not in node.children:
+                node.children[char] = TrieNode()
+
+            # Move to the child node
+            node = node.children[char]
+
+        # After inserting all characters, mark the end of the word
+        node.is_end = True
+
+    def search(self, word):
+        # Start from the root
+        node = self.root
+
+        for char in word:
+            # If the character isn't found, the word doesn't exist
+            if char not in node.children:
+                return False
+
+            # Move to the next node
+            node = node.children[char]
+
+        # Word is found only if is_end is True at the last character
+        return node.is_end
+`.trim(),
 			},
 		],
 	},
@@ -286,27 +372,68 @@ def dfs(node):
 			'Topological Sort orders nodes in a Directed Acyclic Graph such that dependencies are respected.',
 		variants: [
 			{
+				title: 'Topological Sort (DFS-based)',
+				template: `
+from collections import defaultdict
+
+def topological_sort_dfs(graph):
+    # Initialize visited set to avoid revisiting nodes
+    visited = set()
+    # Stack to store the topological order (in reverse)
+    stack = []
+    # Track recursion stack to detect cycles
+    on_path = set()
+
+    def dfs(node):
+        if node in on_path:
+            raise ValueError("Graph has a cycle — topological sort not possible")
+
+        if node in visited:
+            return  # Already processed
+
+        # Mark the node as visited and on the current path
+        visited.add(node)
+        on_path.add(node)
+
+        # Explore all neighbors
+        for neighbor in graph[node]:
+            dfs(neighbor)
+
+        # Finished processing node, remove from path and add to result
+        on_path.remove(node)
+        stack.append(node)
+
+    # Start DFS from all unvisited nodes
+    for node in graph:
+        if node not in visited:
+            dfs(node)
+
+    # Reverse the stack to get the topological order
+    return stack[::-1]
+`.trim(),
+			},
+			{
 				title: 'Topological Sort (Kahn’s Algorithm)',
 				template: `
-  from collections import deque, defaultdict
-  
-  def topological_sort(graph):
-	  indegree = defaultdict(int)
-	  for u in graph:
-		  for v in graph[u]:
-			  indegree[v] += 1
-	  queue = deque([u for u in graph if indegree[u] == 0])
-	  result = []
-  
-	  while queue:
-		  u = queue.popleft()
-		  result.append(u)
-		  for v in graph[u]:
-			  indegree[v] -= 1
-			  if indegree[v] == 0:
-				  queue.append(v)
-	  return result
-		  `.trim(),
+from collections import deque, defaultdict
+
+def topological_sort(graph):
+	indegree = defaultdict(int)
+	for u in graph:
+		for v in graph[u]:
+			indegree[v] += 1
+	queue = deque([u for u in graph if indegree[u] == 0])
+	result = []
+
+	while queue:
+		u = queue.popleft()
+		result.append(u)
+		for v in graph[u]:
+			indegree[v] -= 1
+			if indegree[v] == 0:
+				queue.append(v)
+	return result
+`.trim(),
 			},
 		],
 	},
@@ -318,27 +445,124 @@ def dfs(node):
 			{
 				title: 'Union-Find (with Path Compression)',
 				template: `
-  def find(parent, x):
-	  if parent[x] != x:
-		  parent[x] = find(parent, parent[x])
-	  return parent[x]
-  
-  def union(parent, x, y):
-	  root_x = find(parent, x)
-	  root_y = find(parent, y)
-	  if root_x != root_y:
-		  parent[root_y] = root_x
-		  `.trim(),
+def find(parent, x):
+    # Base case: if x is its own parent, it is the root
+    if parent[x] != x:
+        # Path compression: recursively find the root and flatten the path
+        parent[x] = find(parent, parent[x])
+    return parent[x]
+
+
+def union(parent, x, y):
+    # Find the root of each element
+    root_x = find(parent, x)
+    root_y = find(parent, y)
+
+    # If roots are different, connect them
+    if root_x != root_y:
+        parent[root_y] = root_x  # Merge y's set into x's set
+`.trim(),
 			},
 		],
 	},
 	'Prefix Sum': {
-		variants: [],
-		explanation: '',
+		explanation:
+			'Prefix Sum is used to preprocess cumulative data in arrays, enabling fast range queries or subarray computations.',
+		variants: [
+			{
+				title: 'Basic Prefix Sum Array',
+				template: `
+def build_prefix_sum(nums):
+    # Initialize prefix array with an extra 0 for easier indexing
+    prefix = [0] * (len(nums) + 1)
+
+    for i in range(len(nums)):
+        prefix[i + 1] = prefix[i] + nums[i]
+
+    return prefix
+`.trim(),
+			},
+			{
+				title: 'Range Sum Using Prefix Array',
+				template: `
+def range_sum(prefix, left, right):
+    # Returns the sum of nums[left:right+1]
+    return prefix[right + 1] - prefix[left]
+`.trim(),
+			},
+		],
 	},
 	'Dynamic Programming': {
-		variants: [],
-		explanation: '',
+		explanation:
+			'Dynamic Programming solves problems by breaking them down into overlapping subproblems and storing their results.',
+		variants: [
+			{
+				title: 'Bottom-Up (Tabulation)',
+				template: `
+def dp_bottom_up(n):
+    dp = [0] * (n + 1)
+    dp[0] = 1  # base case
+
+    for i in range(1, n + 1):
+        # compute dp[i] from smaller subproblems
+        dp[i] = dp[i - 1] + ... # fill in recurrence
+
+    return dp[n]
+`.trim(),
+			},
+			{
+				title: 'Top-Down (Memoization)',
+				template: `
+def dp_top_down(n, memo={}):
+    if n in memo:
+        return memo[n]
+
+    if n <= 1:
+        return 1
+
+    memo[n] = dp_top_down(n - 1, memo) + ... # use recurrence
+    return memo[n]
+`.trim(),
+			},
+		],
+	},
+	'Two Pointers': {
+		explanation:
+			'Two Pointers is a technique for processing elements from both ends of an array or within a window.',
+		variants: [
+			{
+				title: 'Start-End Pointer on Sorted Array',
+				template: `
+def two_sum_sorted(nums, target):
+    left, right = 0, len(nums) - 1
+
+    while left < right:
+        curr_sum = nums[left] + nums[right]
+        if curr_sum == target:
+            return [left, right]
+        elif curr_sum < target:
+            left += 1
+        else:
+            right -= 1
+`.trim(),
+			},
+			{
+				title: 'Slow-Fast Pointer',
+				template: `
+def remove_duplicates(nums):
+    if not nums:
+        return 0
+
+    slow = 0
+    for fast in range(1, len(nums)):
+        if nums[fast] != nums[slow]:
+            slow += 1
+            nums[slow] = nums[fast]
+
+    return slow + 1
+`.trim(),
+			},
+		],
 	},
 	Greedy: {
 		variants: [],
@@ -349,10 +573,6 @@ def dfs(node):
 		explanation: '',
 	},
 	Heaps: {
-		variants: [],
-		explanation: '',
-	},
-	'Two Pointers': {
 		variants: [],
 		explanation: '',
 	},

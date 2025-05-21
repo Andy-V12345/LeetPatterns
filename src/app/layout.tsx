@@ -3,6 +3,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/ThemeContext'
 import RootContent from './RootContent'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const metadata: Metadata = {
 	title: 'LeetPatterns.ai',
@@ -22,6 +23,7 @@ export default function RootLayout({
 			<ThemeProvider>
 				<RootContent>{children}</RootContent>
 				<Analytics />
+				<SpeedInsights />
 			</ThemeProvider>
 		</html>
 	)
