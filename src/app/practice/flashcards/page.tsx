@@ -37,6 +37,7 @@ export default function FlashcardsPracticePage() {
 	const [dir, setDir] = useState(1)
 	const [isAnimating, setIsAnimating] = useState(false)
 	const [isAnswering, setIsAnswering] = useState(false)
+	const [isUndoing, setIsUndoing] = useState(false)
 	const [answerDirection, setAnswerDirection] = useState<
 		null | 'left' | 'right'
 	>(null) // left is wrong and right is correct
@@ -65,9 +66,28 @@ export default function FlashcardsPracticePage() {
 		},
 	}
 	const quizModeVariants = {
-		initial: {},
-		animate: {},
-		exit: {},
+		initial: isUndoing
+			? {
+					opacity: 0,
+					x: '-100%',
+				}
+			: {},
+		animate: isUndoing
+			? {
+					x: 0,
+					opacity: 1,
+					transition: {
+						type: 'spring',
+						bounce: 0.2,
+						duration: 0.5,
+					},
+				}
+			: {},
+		exit: isUndoing
+			? {
+					opacity: 0,
+				}
+			: {},
 	}
 
 	const normalVariants = {
@@ -113,6 +133,19 @@ export default function FlashcardsPracticePage() {
 		})
 	}, [])
 
+	const handleUndo = async () => {
+		if (variantIdx == 0) {
+			return
+		}
+
+		setIsUndoing(true)
+		handlePrevQuestion()
+
+		await new Promise((resolve) => setTimeout(resolve, 550)) // wait for the undo animation to complete
+
+		setIsUndoing(false)
+	}
+
 	const handleAnswer = async (isCorrect: boolean) => {
 		if (isAnimating) {
 			return
@@ -123,13 +156,15 @@ export default function FlashcardsPracticePage() {
 		handleNextQuestion()
 
 		// Wait for animation to finish before moving to next card
-		await new Promise((resolve) => setTimeout(resolve, 400))
+		await new Promise((resolve) => setTimeout(resolve, 400)) // wait for the answer overlay to appear
 		setIsAnswering(false)
 		setAnswerDirection(null)
 
-		await new Promise((resolve) => setTimeout(resolve, 325))
+		await new Promise((resolve) => setTimeout(resolve, 325)) // wait for the exit animation to finish
 		setIsAnimating(false)
 	}
+
+	const handleShuffle = () => {}
 
 	const handleSwitchChange = useCallback(() => {
 		setIsQuizMode(!isQuizMode)
@@ -240,21 +275,46 @@ export default function FlashcardsPracticePage() {
 							{isQuizMode ? (
 								/* quiz mode button */
 								<>
-									<button
-										onClick={() => handleAnswer(false)}
-										className={`hover:opacity-75 transition-all border border-wrong-red px-4 py-1 rounded-full`}
-									>
-										<X color="var(--wrong-red)" size={30} />
-									</button>
-									<button
-										onClick={() => handleAnswer(true)}
-										className={`hover:opacity-75 transition-all border border-correct-green px-4 py-1 rounded-full`}
-									>
-										<Check
-											color="var(--correct-green)"
-											size={30}
-										/>
-									</button>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<button
+												onClick={() =>
+													handleAnswer(false)
+												}
+												className={`hover:opacity-75 transition-all border border-wrong-red px-4 py-1 rounded-full`}
+											>
+												<X
+													color="var(--wrong-red)"
+													size={30}
+												/>
+											</button>
+										</TooltipTrigger>
+										<TooltipContent side="bottom">
+											<p className="text-wrong-red">
+												Didn't get it
+											</p>
+										</TooltipContent>
+									</Tooltip>
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<button
+												onClick={() =>
+													handleAnswer(true)
+												}
+												className={`hover:opacity-75 transition-all border border-correct-green px-4 py-1 rounded-full`}
+											>
+												<Check
+													color="var(--correct-green)"
+													size={30}
+												/>
+											</button>
+										</TooltipTrigger>
+										<TooltipContent side="bottom">
+											<p className="text-correct-green">
+												Got it
+											</p>
+										</TooltipContent>
+									</Tooltip>
 								</>
 							) : (
 								/* normal mode buttons */
@@ -287,7 +347,16 @@ export default function FlashcardsPracticePage() {
 						</div>
 						<Tooltip>
 							<TooltipTrigger asChild>
-								<button className="absolute right-0">
+								<button
+									disabled={
+										isQuizMode &&
+										(variantIdx == 0 || isUndoing)
+									}
+									onClick={
+										isQuizMode ? handleUndo : handleShuffle
+									}
+									className={`absolute right-0 ${isQuizMode && variantIdx == 0 ? 'opacity-50' : 'hover:opacity-75'}`}
+								>
 									{isQuizMode ? <Undo /> : <Shuffle />}
 								</button>
 							</TooltipTrigger>
