@@ -15,6 +15,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function TemplatePageContent() {
 	const isMobile = useIsMobile()
@@ -83,7 +84,7 @@ export default function TemplatePageContent() {
 
 			<DrawerContent>
 				<div
-					className="flex flex-col items-center gap-[25px]"
+					className="flex flex-col items-center gap-[25px] overflow-y-scroll"
 					style={{
 						padding: '0 20px 20px 20px',
 					}}
@@ -121,16 +122,28 @@ export default function TemplatePageContent() {
 										? '0 0 5px 3px var(--theme-orange)'
 										: '',
 							}}
-							className={`bg-card-bg p-4 rounded-md`}
+							className={`flex flex-col items-center bg-card-bg px-5 pb-5 rounded-lg`}
 						>
-							<span className="flex items-center gap-2">
-								<h1 className="text-xl">🗒️</h1>
-
-								<h1 className="text-theme-orange text-xl font-bold">
-									Flashcards
-								</h1>
-							</span>
-							<p>Quickly flip through patterns and templates.</p>
+							<div
+								className="w-1/2 md:w-4/5 lg:w-1/2"
+								style={{
+									position: 'relative',
+									height: 'auto',
+									aspectRatio: '1 / 1',
+								}}
+							>
+								<Image
+									src="/flashcard_img.svg"
+									alt="flashcard_img"
+									fill
+								/>
+							</div>
+							<h1 className="self-start text-left text-theme-hover-orange text-xl font-bold">
+								Flashcards
+							</h1>
+							<p className="self-start text-left">
+								Quickly flip through patterns and templates.
+							</p>
 						</motion.div>
 
 						<motion.div
@@ -146,22 +159,32 @@ export default function TemplatePageContent() {
 								setSelectedMode('pattern_from_template')
 							}
 							style={{
+								gridColumn: isMobile ? 'span 3' : 'span 1',
 								boxShadow:
 									selectedMode == 'pattern_from_template'
 										? '0 0 5px 3px var(--theme-orange)'
 										: '',
-								gridColumn: isMobile ? 'span 3' : 'span 1',
 							}}
-							className={`bg-card-bg p-4 rounded-md`}
+							className={`flex flex-col items-center bg-card-bg px-5 pb-5 rounded-lg`}
 						>
-							<span className="flex items-center gap-2">
-								<h1 className="text-xl">🤖</h1>
-
-								<h1 className="text-theme-orange text-xl font-bold">
-									Pattern From Code
-								</h1>
-							</span>
-							<p>
+							<div
+								className="w-1/2 md:w-4/5 lg:w-1/2"
+								style={{
+									position: 'relative',
+									height: 'auto',
+									aspectRatio: '1 / 1',
+								}}
+							>
+								<Image
+									src="/pattern_from_code_img.svg"
+									alt="pattern_from_code"
+									fill
+								/>
+							</div>
+							<h1 className="self-start text-left text-theme-hover-orange text-xl font-bold">
+								Pattern From Code
+							</h1>
+							<p className="self-start text-left">
 								Look at an adapted template — can you recognize
 								the underlying pattern?
 							</p>
@@ -178,28 +201,37 @@ export default function TemplatePageContent() {
 							}}
 							onClick={() => setSelectedMode('template_face_off')}
 							style={{
+								gridColumn: isMobile ? 'span 3' : 'span 1',
 								boxShadow:
 									selectedMode == 'template_face_off'
 										? '0 0 5px 3px var(--theme-orange)'
 										: '',
-								gridColumn: isMobile ? 'span 3' : 'span 1',
 							}}
-							className={`bg-card-bg p-4 rounded-md`}
+							className={`flex flex-col items-center bg-card-bg px-5 pb-5 rounded-lg`}
 						>
-							<span className="flex items-center gap-2">
-								<h1 className="text-xl">⚔️</h1>
-
-								<h1 className="text-theme-orange text-xl font-bold">
-									Template Face-Off
-								</h1>
-							</span>
-							<p>
-								Which of these templates would solve the problem
-								best?
+							<div
+								className="w-1/2 md:w-4/5 lg:w-1/2"
+								style={{
+									position: 'relative',
+									height: 'auto',
+									aspectRatio: '1 / 1',
+								}}
+							>
+								<Image
+									src="/face_off_img.svg"
+									alt="face_off_img"
+									fill
+								/>
+							</div>
+							<h1 className="self-start text-left text-theme-hover-orange text-xl font-bold">
+								Template Face-Off
+							</h1>
+							<p className="self-start text-left">
+								Which one of these templates would solve the
+								problem best?
 							</p>
 						</motion.div>
 					</div>
-
 					<DrawerFooter className="p-0" style={{ width: '100%' }}>
 						<Link
 							href={
