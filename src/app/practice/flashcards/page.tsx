@@ -251,6 +251,11 @@ export default function FlashcardsPracticePage() {
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
 			event.preventDefault()
+
+			if (isDone) {
+				return
+			}
+
 			switch (event.code) {
 				case 'ArrowRight':
 					if (isQuizMode) {
