@@ -12,23 +12,27 @@ import {
 interface FlashcardProps {
 	variant: TemplateVariant
 	showTip: boolean
-	addToStarredList: (i: number, variant: TemplateVariant) => void
-	removedFromStarredList: (i: number, variant: TemplateVariant) => void
-	starredTemplatesIdx: number[]
-	idx: number
+	addToStarredList: (variant: TemplateVariant) => void
+	removedFromStarredList: (variant: TemplateVariant) => void
+	starredList: TemplateVariant[]
+}
+
+function isStarred(title: string, starredList: TemplateVariant[]): boolean {
+	return starredList.filter((data) => data.title == title).length > 0
 }
 
 export default function Flashcard({
 	variant,
-	idx,
 	showTip,
 	addToStarredList,
 	removedFromStarredList,
-	starredTemplatesIdx,
+	starredList,
 }: FlashcardProps) {
 	const { theme } = useTheme()
 	const [flipped, setFlipped] = useState(false)
-	const [starred, setStarred] = useState(starredTemplatesIdx.includes(idx))
+	const [starred, setStarred] = useState(
+		isStarred(variant.title, starredList)
+	)
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
@@ -48,10 +52,10 @@ export default function Flashcard({
 	const handleStarToggle = () => {
 		if (starred) {
 			setStarred(false)
-			removedFromStarredList(idx, variant)
+			removedFromStarredList(variant)
 		} else {
 			setStarred(true)
-			addToStarredList(idx, variant)
+			addToStarredList(variant)
 		}
 	}
 

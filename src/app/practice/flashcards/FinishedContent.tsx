@@ -83,7 +83,7 @@ export default function FinishedContent({
 
 						<div className="w-full text-xs md:text-sm space-y-3">
 							<span className="flex bg-[#163B45] items-center px-4 py-2 rounded-full text-[#5AE8B5] font-semibold justify-between">
-								<p>{isQuizMode ? 'Learned' : 'Completed'}</p>
+								<p>{isQuizMode ? 'Learned' : 'Seen'}</p>
 								<p>{isQuizMode ? learned : seen}</p>
 							</span>
 
@@ -134,7 +134,7 @@ export default function FinishedContent({
 							</button>
 						)}
 
-						{needToLearnCards.length > 0 && (
+						{isQuizMode && needToLearnCards.length > 0 && (
 							<button
 								onClick={() =>
 									handleStudyUnlearnedCards(needToLearnCards)

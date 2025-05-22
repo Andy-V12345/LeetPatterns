@@ -6,31 +6,15 @@ import Link from 'next/link'
 import Flashcard from './Flashcard'
 import { getTemplateVariants, shuffle } from '@/utils/UtilFunctions'
 import { useEffect, useState, useCallback } from 'react'
-import {
-	Check,
-	ChevronLeft,
-	ChevronRight,
-	Shuffle,
-	Undo,
-	X,
-} from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Switch } from '@/components/ui/switch'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import FinishedContent from './FinishedContent'
 import { FlashcardStatus, TemplateVariant } from '@/utils/Types'
 import FlashcardData from '@/interfaces/FlashcardData'
-import CardCounter from './CardCounter'
 import ControlBar from './ControlBar'
 
 function calcSeenCards(flashcards: FlashcardData[]): number {
-	return flashcards.filter((flashcardData) => flashcardData.status == 'seen')
-		.length
+	return flashcards.length
 }
 
 function calcLearnedCards(flashcards: FlashcardData[]): number {
@@ -71,7 +55,6 @@ export default function FlashcardsPracticePage() {
 	const [starredTemplates, setStarredTemplates] = useState<TemplateVariant[]>(
 		[]
 	)
-	const [starredTemplatesIdx, setStarredTemplatesIdx] = useState<number[]>([])
 	const [flashcards, setFlashcards] = useState<FlashcardData[]>([])
 	const [templateVariants, setTemplateVariants] = useState<TemplateVariant[]>(
 		getTemplateVariants()
@@ -146,31 +129,18 @@ export default function FlashcardsPracticePage() {
 		},
 	}
 
-	const addToStarredList = (i: number, templateVariant: TemplateVariant) => {
+	const addToStarredList = (templateVariant: TemplateVariant) => {
 		setStarredTemplates((prev) => {
 			return [...prev, templateVariant]
 		})
-
-		setStarredTemplatesIdx((prev) => {
-			return [...prev, i]
-		})
 	}
 
-	const removeFromStarredList = (
-		i: number,
-		templateVariant: TemplateVariant
-	) => {
+	const removeFromStarredList = (templateVariant: TemplateVariant) => {
 		setStarredTemplates((prev) => {
 			const filtered = prev.filter(
 				(data) => data.title != templateVariant.title
 			)
 			return prev
-		})
-
-		setStarredTemplatesIdx((prev) => {
-			const filtered = prev.filter((idx) => idx != i)
-
-			return filtered
 		})
 	}
 
@@ -305,6 +275,10 @@ export default function FlashcardsPracticePage() {
 		}
 	}, [handleNextQuestion, handlePrevQuestion, isQuizMode, handleAnswer])
 
+	useEffect(() => {
+		setTemplateVariants(shuffle(templateVariants))
+	}, [])
+
 	const handleStudyStarredItems = () => {
 		setTemplateVariants(starredTemplates)
 		setFlashcards([])
@@ -316,15 +290,13 @@ export default function FlashcardsPracticePage() {
 	const handleStudyUnlearnedCards = (unlearned: TemplateVariant[]) => {
 		setTemplateVariants(unlearned)
 		setFlashcards([])
-		setStarredTemplates([])
-		setStarredTemplatesIdx([])
 		setIsDone(false)
 		setVariantIdx(0)
 		setIsQuizMode(true)
 	}
 
 	const handleRestart = () => {
-		setTemplateVariants(getTemplateVariants())
+		setTemplateVariants(shuffle(getTemplateVariants()))
 		setFlashcards([])
 		setIsDone(false)
 		setVariantIdx(0)
@@ -396,10 +368,7 @@ export default function FlashcardsPracticePage() {
 											removedFromStarredList={
 												removeFromStarredList
 											}
-											starredTemplatesIdx={
-												starredTemplatesIdx
-											}
-											idx={variantIdx}
+											starredList={starredTemplates}
 										/>
 									</motion.div>
 
