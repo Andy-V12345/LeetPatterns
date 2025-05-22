@@ -81,7 +81,7 @@ export default function Flashcard({
 					onClick={() => {
 						setFlipped(!flipped)
 					}}
-					className="w-full h-full absolute bg-card-bg shadow rounded-lg flex justify-center items-center"
+					className="w-full h-full p-5 absolute bg-card-bg shadow rounded-lg flex justify-center items-center"
 				>
 					<button
 						onClick={(e) => {
@@ -124,6 +124,24 @@ export default function Flashcard({
 					}}
 				>
 					<h3 className="font-bold text-xl">Template</h3>
+
+					<button
+						onClick={(e) => {
+							e.stopPropagation()
+							handleStarToggle()
+						}}
+						className="absolute top-5 right-5"
+					>
+						<Star
+							strokeWidth={2}
+							color={
+								starred
+									? 'var(--theme-orange)'
+									: 'var(--muted-foreground)'
+							}
+							className="hover:opacity-60"
+						/>
+					</button>
 
 					<SyntaxHighlighter
 						language="python"

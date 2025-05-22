@@ -4,7 +4,7 @@ import { useProtectedRoute } from '@/components/AuthContext'
 import { useIsMobile } from '@/hooks/use-mobile'
 import Link from 'next/link'
 import Flashcard from './Flashcard'
-import { getTemplateVariants } from '@/utils/UtilFunctions'
+import { getTemplateVariants, shuffle } from '@/utils/UtilFunctions'
 import { useEffect, useState, useCallback } from 'react'
 import {
 	Check,
@@ -25,6 +25,8 @@ import {
 import FinishedContent from './FinishedContent'
 import { FlashcardStatus, TemplateVariant } from '@/utils/Types'
 import FlashcardData from '@/interfaces/FlashcardData'
+import CardCounter from './CardCounter'
+import ControlBar from './ControlBar'
 
 function calcSeenCards(flashcards: FlashcardData[]): number {
 	return flashcards.filter((flashcardData) => flashcardData.status == 'seen')
@@ -268,7 +270,9 @@ export default function FlashcardsPracticePage() {
 		setIsAnimating(false)
 	}
 
-	const handleShuffle = () => {}
+	const handleShuffle = () => {
+		setTemplateVariants(shuffle(templateVariants))
+	}
 
 	const handleSwitchChange = useCallback(() => {
 		setIsQuizMode(!isQuizMode)
@@ -329,20 +333,22 @@ export default function FlashcardsPracticePage() {
 	return (
 		<TooltipProvider>
 			<div>
-				<div className="mx-auto scrollbar-hide overflow-x-visible gap-6 p-6 w-full md:w-10/12 flex h-[100svh] flex-col items-center">
+				<div className="mx-auto scrollbar-hide overflow-x-visible gap-6 p-5 md:p-6 w-full lg:w-10/12 xl:w-9/12 flex h-[100svh] flex-col items-center">
 					<div
 						className={`flex ${isMobile ? 'flex-col gap-4' : 'flex-row gap-10'} justify-between items-center w-full self-start`}
 					>
-						<h1 className="text-2xl w-full text-left font-bold text-theme-orange">
+						<h1
+							className={`text-2xl text-left font-bold text-theme-orange ${isMobile ? 'w-full' : ''}`}
+						>
 							Flashcard Template Practice
 						</h1>
 
 						{/* Dashboard Button */}
 						<Link
-							href={'/dashboard'}
-							className={`bg-card-bg hover:opacity-65 transition-all ${isMobile ? 'self-stretch text-center' : 'ml-auto'} text-sm font-medium px-4 py-3 rounded-md`}
+							href={'/dashboard/templates'}
+							className={`bg-card-bg hover:opacity-65 transition-all ${isMobile ? 'self-stretch text-center' : ''} text-sm font-medium px-4 py-3 rounded-md`}
 						>
-							{isMobile ? 'Go to Dashboard' : 'Dashboard'}
+							Back to Templates
 						</Link>
 					</div>
 
@@ -422,120 +428,18 @@ export default function FlashcardsPracticePage() {
 							</div>
 
 							{/* control bar */}
-							<div className="flex relative items-center justify-center w-full">
-								<div className="left-0 flex absolute items-center gap-3 font-semibold text-theme-orange">
-									<p>Quiz mode</p>
-									<Switch
-										checked={isQuizMode}
-										onCheckedChange={handleSwitchChange}
-										isTheme={false}
-									/>
-								</div>
-
-								<div className="flex mx-auto items-center gap-6">
-									{isQuizMode ? (
-										/* quiz mode button */
-										<>
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<button
-														onClick={() =>
-															handleAnswer(false)
-														}
-														className={`hover:opacity-75 transition-all border border-wrong-red px-4 py-1 rounded-full`}
-													>
-														<X
-															color="var(--wrong-red)"
-															size={30}
-														/>
-													</button>
-												</TooltipTrigger>
-												<TooltipContent side="bottom">
-													<p className="text-wrong-red">
-														Didn't get it
-													</p>
-												</TooltipContent>
-											</Tooltip>
-											<Tooltip>
-												<TooltipTrigger asChild>
-													<button
-														onClick={() =>
-															handleAnswer(true)
-														}
-														className={`hover:opacity-75 transition-all border border-correct-green px-4 py-1 rounded-full`}
-													>
-														<Check
-															color="var(--correct-green)"
-															size={30}
-														/>
-													</button>
-												</TooltipTrigger>
-												<TooltipContent side="bottom">
-													<p className="text-correct-green">
-														Got it
-													</p>
-												</TooltipContent>
-											</Tooltip>
-										</>
-									) : (
-										/* normal mode buttons */
-										<>
-											<button
-												disabled={variantIdx === 0}
-												onClick={() =>
-													handlePrevQuestion(true)
-												}
-												className={`${variantIdx === 0 ? 'opacity-50 pointer-events-none' : ''} hover:opacity-75 transition-all border border-theme-hover-orange px-4 py-1 rounded-full`}
-											>
-												<ChevronLeft
-													color="var(--theme-hover-orange)"
-													size={30}
-												/>
-											</button>
-											<button
-												onClick={() =>
-													handleNextQuestion(true)
-												}
-												className={`hover:opacity-75 transition-all border border-theme-hover-orange px-4 py-1 rounded-full`}
-											>
-												<ChevronRight
-													color="var(--theme-hover-orange)"
-													size={30}
-												/>
-											</button>
-										</>
-									)}
-								</div>
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<button
-											disabled={
-												isQuizMode &&
-												(variantIdx == 0 || isUndoing)
-											}
-											onClick={
-												isQuizMode
-													? handleUndo
-													: handleShuffle
-											}
-											className={`absolute right-0 ${isQuizMode && variantIdx == 0 ? 'opacity-50' : 'hover:opacity-75'}`}
-										>
-											{isQuizMode ? (
-												<Undo />
-											) : (
-												<Shuffle />
-											)}
-										</button>
-									</TooltipTrigger>
-									<TooltipContent side="bottom">
-										<p>
-											{isQuizMode
-												? 'Undo'
-												: 'Shuffle cards'}
-										</p>
-									</TooltipContent>
-								</Tooltip>
-							</div>
+							<ControlBar
+								isQuizMode={isQuizMode}
+								handleSwitchChange={handleSwitchChange}
+								handleAnswer={handleAnswer}
+								variantIdx={variantIdx}
+								templateVariants={templateVariants}
+								handlePrevQuestion={handlePrevQuestion}
+								handleNextQuestion={handleNextQuestion}
+								isUndoing={isUndoing}
+								handleUndo={handleUndo}
+								handleShuffle={handleShuffle}
+							/>
 						</>
 					)}
 				</div>
