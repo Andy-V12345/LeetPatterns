@@ -19,7 +19,7 @@ export type Pattern =
 
 export type ColorTheme = 'light' | 'dark'
 
-export type DashboardTypes = 'dashboard' | 'profile' | 'notes'
+export type DashboardTypes = 'dashboard' | 'profile' | 'notes' | 'templates'
 
 export type UIState = 'default' | 'loading' | 'error' | 'success'
 
@@ -30,9 +30,26 @@ export type PatternSummary = {
 	learnMore: string
 }
 
+export type CodeTemplate = {
+	variants: TemplateVariant[]
+	explanation: string
+}
+
+export type TemplateVariant = {
+	template: string
+	title: string
+}
+
+export type TemplateMode =
+	| 'flashcards'
+	| 'pattern_from_template'
+	| 'template_face_off'
+
 export type ChatMode = 'guidance' | 'explanation'
 
 export type GeminiMessage = {
 	role: 'user' | 'model'
 	parts: { text: string }[]
 }
+
+export type FlashcardStatus = 'seen' | 'learned' | 'need_to_learn'

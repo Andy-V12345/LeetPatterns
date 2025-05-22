@@ -11,7 +11,7 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { House, User, NotebookPen } from 'lucide-react'
+import { House, User, NotebookPen, Code, MessageSquareText } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { DashboardTypes, UIState } from '@/utils/Types'
 import { useAuth } from '@/components/AuthContext'
@@ -26,6 +26,7 @@ export default function DashboardSidebar() {
 	const [selection, setSelection] = useState<DashboardTypes>(() => {
 		if (pathname.includes('/dashboard/profile')) return 'profile'
 		if (pathname.includes('/dashboard/notes')) return 'notes'
+		if (pathname.includes('/dashboard/templates')) return 'templates'
 		return 'dashboard'
 	})
 	const [uiState, setUiState] = useState<UIState>('default')
@@ -37,6 +38,8 @@ export default function DashboardSidebar() {
 			setSelection('profile')
 		} else if (pathname.includes('/dashboard/notes')) {
 			setSelection('notes')
+		} else if (pathname.includes('/dashboard/templates')) {
+			setSelection('templates')
 		} else {
 			setSelection('dashboard')
 		}
@@ -90,6 +93,24 @@ export default function DashboardSidebar() {
 						<SidebarMenuItem>
 							<SidebarMenuButton
 								asChild
+								isActive={selection == 'templates'}
+								className="py-5 px-3"
+								onClick={() => setSelection('templates')}
+							>
+								<Link
+									href="/dashboard/templates"
+									className="flex items-center gap-3"
+								>
+									<Code className="text-foreground" />
+									<span className="font-semibold text-foreground">
+										Templates
+									</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								asChild
 								isActive={selection == 'notes'}
 								className="py-5 px-3"
 								onClick={() => setSelection('notes')}
@@ -119,6 +140,20 @@ export default function DashboardSidebar() {
 									<User className="text-foreground" />
 									<span className="font-semibold text-foreground">
 										Profile
+									</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton asChild className="py-5 px-3">
+								<Link
+									target="_blank"
+									className="flex items-center gap-3 text-theme-hover-orange"
+									href="https://mail.google.com/mail/?view=cm&fs=1&to=leetpatterns.ai@gmail.com&su=LeetPatterns%20Feedback&body=Hi%20LeetPatterns%20Team,%0D%0A%0D%0AI%20wanted%20to%20share%20some%20feedback:"
+								>
+									<MessageSquareText />
+									<span className="font-semibold">
+										Send feedback
 									</span>
 								</Link>
 							</SidebarMenuButton>

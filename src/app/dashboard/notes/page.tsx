@@ -10,6 +10,7 @@ import NotesSheet from './NotesSheet'
 import { useAuth, useProtectedRoute } from '@/components/AuthContext'
 import NoteCard from './NoteCard'
 import { patterns } from '@/utils/Consts'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 function getPatternsFromNotes(notes: Note[]): Pattern[] {
 	return notes.map((note) => note.pattern)
@@ -60,9 +61,11 @@ export default function NotesPage() {
 		fetchNotes()
 	}, [user, isLoading])
 
+	const isMobile = useIsMobile()
+
 	return (
 		<Sheet>
-			<div className="flex flex-col gap-15 bg-background h-[100svh] p-[30px] overflow-scroll">
+			<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] overflow-scroll">
 				<div className="flex items-center gap-5">
 					<SidebarTrigger className="" />
 
@@ -70,14 +73,38 @@ export default function NotesPage() {
 						Notes
 					</h1>
 
-					{notes.length > 0 && notes.length < patterns.length && (
+					{!isMobile &&
+						notes.length > 0 &&
+						notes.length < patterns.length && (
+							<SheetTrigger asChild>
+								<button
+									className="ml-auto bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-sm font-semibold rounded-md"
+									style={{
+										boxShadow:
+											'0px 0px 12px 1px var(--theme-hover-orange)',
+									}}
+								>
+									Add note
+								</button>
+							</SheetTrigger>
+						)}
+				</div>
+
+				{isMobile &&
+					notes.length > 0 &&
+					notes.length < patterns.length && (
 						<SheetTrigger asChild>
-							<button className="ml-auto bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-sm font-medium rounded-md">
+							<button
+								className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-lg font-semibold rounded-md"
+								style={{
+									boxShadow:
+										'0px 0px 12px 1px var(--theme-hover-orange)',
+								}}
+							>
 								Add note
 							</button>
 						</SheetTrigger>
 					)}
-				</div>
 
 				{uiState == 'loading' ? (
 					<div className="mx-auto my-auto flex flex-col gap-6 justify-center items-center">
@@ -92,11 +119,9 @@ export default function NotesPage() {
 						</p>
 					</div>
 				) : (
-					<div
-						className={`flex-col flex h-full justify-center items-center`}
-					>
+					<>
 						{notes.length == 0 ? (
-							<div className="flex flex-col justify-center mb-15 items-center gap-5">
+							<div className="flex flex-col justify-center h-full mb-15 items-center gap-5">
 								<p className="">No notes created!</p>
 
 								<SheetTrigger asChild>
@@ -110,7 +135,7 @@ export default function NotesPage() {
 								</SheetTrigger>
 							</div>
 						) : (
-							<div className="grid grid-cols-8 gap-[10px] h-full w-full">
+							<div className="grid grid-cols-8 gap-[10px] w-full">
 								{notes.map((note) => (
 									<NoteCard
 										key={note.pattern}
@@ -123,7 +148,7 @@ export default function NotesPage() {
 								))}
 							</div>
 						)}
-					</div>
+					</>
 				)}
 			</div>
 

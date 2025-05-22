@@ -38,6 +38,7 @@ export default function ThemeSwitch({ className = '' }: ThemeSwitchProps) {
 			<Switch
 				checked={theme == 'dark'}
 				onCheckedChange={handleThemeToggle}
+				isTheme={true}
 			/>
 		</div>
 	)
