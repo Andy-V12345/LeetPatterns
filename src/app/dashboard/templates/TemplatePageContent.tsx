@@ -148,16 +148,14 @@ export default function TemplatePageContent() {
 
 						<motion.div
 							whileHover={{ y: isMobile ? -5 : -15 }}
-							whileTap={{
-								y: 0,
-								transition: {
-									type: 'spring',
-									bounce: 0.5,
-								},
-							}}
-							onClick={() =>
-								setSelectedMode('pattern_from_template')
-							}
+							// whileTap={{
+							// 	y: 0,
+							// 	transition: {
+							// 		type: 'spring',
+							// 		bounce: 0.5,
+							// 	},
+							// }} TODO: COMING SOON
+							// onClick={() =>setSelectedMode('pattern_from_template')} TODO: COMING SOON
 							style={{
 								gridColumn: isMobile ? 'span 3' : 'span 1',
 								boxShadow:
@@ -165,7 +163,7 @@ export default function TemplatePageContent() {
 										? '0 0 5px 3px var(--theme-orange)'
 										: '',
 							}}
-							className={`flex flex-col items-center bg-card-bg px-5 pb-5 rounded-lg`}
+							className={`flex flex-col relative items-center bg-card-bg px-5 pb-5 rounded-lg`}
 						>
 							<div
 								className="w-1/2 md:w-4/5 lg:w-1/2"
@@ -188,18 +186,31 @@ export default function TemplatePageContent() {
 								Look at an adapted template — can you recognize
 								the underlying pattern?
 							</p>
+
+							<div className="absolute flex justify-center items-center w-full h-full">
+								<div className="w-full h-full bg-card-bg opacity-70 rounded-lg" />
+								<p
+									className="absolute text-sm right-4 top-4 py-1 px-2 bg-theme-hover-orange rounded-md font-semibold text-foreground"
+									style={{
+										boxShadow:
+											'0 0 3px 2px var(--theme-orange)',
+									}}
+								>
+									Coming soon!
+								</p>
+							</div>
 						</motion.div>
 
 						<motion.div
 							whileHover={{ y: isMobile ? -5 : -15 }}
-							whileTap={{
-								y: 0,
-								transition: {
-									type: 'spring',
-									bounce: 0.5,
-								},
-							}}
-							onClick={() => setSelectedMode('template_face_off')}
+							// whileTap={{
+							// 	y: 0,
+							// 	transition: {
+							// 		type: 'spring',
+							// 		bounce: 0.5,
+							// 	},
+							// }} TODO: COMING SOON
+							// onClick={() => setSelectedMode('template_face_off')} TODO: COMING SOON
 							style={{
 								gridColumn: isMobile ? 'span 3' : 'span 1',
 								boxShadow:
@@ -207,7 +218,7 @@ export default function TemplatePageContent() {
 										? '0 0 5px 3px var(--theme-orange)'
 										: '',
 							}}
-							className={`flex flex-col items-center bg-card-bg px-5 pb-5 rounded-lg`}
+							className={`flex relative flex-col items-center bg-card-bg px-5 pb-5 rounded-lg`}
 						>
 							<div
 								className="w-1/2 md:w-4/5 lg:w-1/2"
@@ -230,6 +241,19 @@ export default function TemplatePageContent() {
 								Which one of these templates would solve the
 								problem best?
 							</p>
+
+							<div className="absolute flex justify-center items-center w-full h-full">
+								<div className="w-full h-full bg-card-bg opacity-70 rounded-lg" />
+								<p
+									className="absolute text-sm right-4 top-4 py-1 px-2 bg-theme-hover-orange rounded-md font-semibold text-foreground"
+									style={{
+										boxShadow:
+											'0 0 3px 2px var(--theme-orange)',
+									}}
+								>
+									Coming soon!
+								</p>
+							</div>
 						</motion.div>
 					</div>
 					<DrawerFooter className="p-0" style={{ width: '100%' }}>

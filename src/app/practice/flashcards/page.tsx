@@ -266,7 +266,7 @@ export default function FlashcardsPracticePage() {
 		setIsAnswering(false)
 		setAnswerDirection(null)
 
-		await new Promise((resolve) => setTimeout(resolve, 325)) // wait for the exit animation to finish
+		await new Promise((resolve) => setTimeout(resolve, 300)) // wait for the exit animation to finish
 		setIsAnimating(false)
 	}
 
