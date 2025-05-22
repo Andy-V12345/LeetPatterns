@@ -51,3 +51,5 @@ export type GeminiMessage = {
 	role: 'user' | 'model'
 	parts: { text: string }[]
 }
+
+export type FlashcardStatus = 'seen' | 'learned' | 'need_to_learn'

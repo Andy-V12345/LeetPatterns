@@ -14,7 +14,7 @@ import {
 	Undo,
 	X,
 } from 'lucide-react'
-import { animate, AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import { Switch } from '@/components/ui/switch'
 import {
 	Tooltip,
@@ -22,11 +22,35 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
+import FinishedContent from './FinishedContent'
+import { FlashcardStatus, TemplateVariant } from '@/utils/Types'
+import FlashcardData from '@/interfaces/FlashcardData'
 
-const cardTransition = {
-	type: 'spring',
-	bounce: 0.2,
-	visualDuration: 0.4,
+function calcSeenCards(flashcards: FlashcardData[]): number {
+	return flashcards.filter((flashcardData) => flashcardData.status == 'seen')
+		.length
+}
+
+function calcLearnedCards(flashcards: FlashcardData[]): number {
+	return flashcards.filter(
+		(flashcardData) =>
+			flashcardData.status == 'learned' || flashcardData.status == 'seen'
+	).length
+}
+
+function getNeedToLearnCards(flashcards: FlashcardData[]): TemplateVariant[] {
+	const filtered = flashcards.filter(
+		(flashcardData) => flashcardData.status == 'need_to_learn'
+	)
+
+	return filtered.map((data) => data.templateVariant)
+}
+
+function calcLeftover(
+	templateVariants: TemplateVariant[],
+	flashcards: FlashcardData[]
+): number {
+	return Math.max(0, templateVariants.length - flashcards.length)
 }
 
 export default function FlashcardsPracticePage() {
@@ -41,6 +65,16 @@ export default function FlashcardsPracticePage() {
 	const [answerDirection, setAnswerDirection] = useState<
 		null | 'left' | 'right'
 	>(null) // left is wrong and right is correct
+	const [isDone, setIsDone] = useState(false)
+	const [starredTemplates, setStarredTemplates] = useState<TemplateVariant[]>(
+		[]
+	)
+	const [starredTemplatesIdx, setStarredTemplatesIdx] = useState<number[]>([])
+	const [flashcards, setFlashcards] = useState<FlashcardData[]>([])
+	const [templateVariants, setTemplateVariants] = useState<TemplateVariant[]>(
+		getTemplateVariants()
+	)
+	const isMobile = useIsMobile()
 
 	/* animation variants */
 	const answeringOverlayVariants = {
@@ -110,25 +144,91 @@ export default function FlashcardsPracticePage() {
 		},
 	}
 
-	const isMobile = useIsMobile()
-	const templateVariants = getTemplateVariants()
-
-	const handleNextQuestion = useCallback(() => {
-		setVariantIdx((prevIdx) => {
-			if (prevIdx < templateVariants.length - 1) {
-				setDir(1)
-				return prevIdx + 1
-			}
-			return prevIdx
+	const addToStarredList = (i: number, templateVariant: TemplateVariant) => {
+		setStarredTemplates((prev) => {
+			return [...prev, templateVariant]
 		})
-	}, [templateVariants.length])
 
-	const handlePrevQuestion = useCallback(() => {
+		setStarredTemplatesIdx((prev) => {
+			return [...prev, i]
+		})
+	}
+
+	const removeFromStarredList = (
+		i: number,
+		templateVariant: TemplateVariant
+	) => {
+		setStarredTemplates((prev) => {
+			const filtered = prev.filter(
+				(data) => data.title != templateVariant.title
+			)
+			return prev
+		})
+
+		setStarredTemplatesIdx((prev) => {
+			const filtered = prev.filter((idx) => idx != i)
+
+			return filtered
+		})
+	}
+
+	const addToFlashcardList = useCallback(
+		(templateVariant: TemplateVariant, status: FlashcardStatus) => {
+			setFlashcards((prev) => {
+				return [
+					...prev,
+					{
+						templateVariant: templateVariant,
+						status: status,
+					},
+				]
+			})
+		},
+		[setFlashcards]
+	)
+
+	const removeFromFlashcardList = () => {
+		setFlashcards((prev) => {
+			if (prev.length == 0) {
+				return prev
+			}
+
+			const tmp = [...prev]
+			tmp.pop()
+
+			return tmp
+		})
+	}
+
+	const handleNextQuestion = useCallback(
+		(addToList: boolean) => {
+			if (addToList) {
+				addToFlashcardList(templateVariants[variantIdx], 'seen')
+			}
+
+			setVariantIdx((prevIdx) => {
+				if (prevIdx < templateVariants.length - 1) {
+					setDir(1)
+					return prevIdx + 1
+				}
+
+				setIsDone(true)
+				return prevIdx
+			})
+		},
+		[templateVariants.length]
+	)
+
+	const handlePrevQuestion = useCallback((removeFromList: boolean = true) => {
+		if (removeFromList) {
+			removeFromFlashcardList()
+		}
 		setVariantIdx((prevIdx) => {
 			if (prevIdx > 0) {
 				setDir(-1)
 				return prevIdx - 1
 			}
+
 			return prevIdx
 		})
 	}, [])
@@ -139,7 +239,7 @@ export default function FlashcardsPracticePage() {
 		}
 
 		setIsUndoing(true)
-		handlePrevQuestion()
+		handlePrevQuestion(true)
 
 		await new Promise((resolve) => setTimeout(resolve, 550)) // wait for the undo animation to complete
 
@@ -153,7 +253,11 @@ export default function FlashcardsPracticePage() {
 		setIsAnimating(true)
 		setAnswerDirection(isCorrect ? 'right' : 'left')
 		setIsAnswering(true)
-		handleNextQuestion()
+		handleNextQuestion(false)
+		addToFlashcardList(
+			templateVariants[variantIdx],
+			isCorrect ? 'learned' : 'need_to_learn'
+		)
 
 		// Wait for animation to finish before moving to next card
 		await new Promise((resolve) => setTimeout(resolve, 400)) // wait for the answer overlay to appear
@@ -172,19 +276,20 @@ export default function FlashcardsPracticePage() {
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
+			event.preventDefault()
 			switch (event.code) {
 				case 'ArrowRight':
 					if (isQuizMode) {
 						handleAnswer(true)
 					} else {
-						handleNextQuestion()
+						handleNextQuestion(true)
 					}
 					break
 				case 'ArrowLeft':
 					if (isQuizMode) {
 						handleAnswer(false)
 					} else {
-						handlePrevQuestion()
+						handlePrevQuestion(true)
 					}
 					break
 			}
@@ -196,10 +301,35 @@ export default function FlashcardsPracticePage() {
 		}
 	}, [handleNextQuestion, handlePrevQuestion, isQuizMode, handleAnswer])
 
+	const handleStudyStarredItems = () => {
+		setTemplateVariants(starredTemplates)
+		setFlashcards([])
+		setIsDone(false)
+		setVariantIdx(0)
+		setIsQuizMode(false)
+	}
+
+	const handleStudyUnlearnedCards = (unlearned: TemplateVariant[]) => {
+		setTemplateVariants(unlearned)
+		setFlashcards([])
+		setStarredTemplates([])
+		setStarredTemplatesIdx([])
+		setIsDone(false)
+		setVariantIdx(0)
+		setIsQuizMode(true)
+	}
+
+	const handleRestart = () => {
+		setTemplateVariants(getTemplateVariants())
+		setFlashcards([])
+		setIsDone(false)
+		setVariantIdx(0)
+	}
+
 	return (
 		<TooltipProvider>
 			<div>
-				<div className="mx-auto scrollbar-hide overflow-x-visible gap-6 p-6 w-full md:w-11/12 flex h-[100svh] flex-col items-center">
+				<div className="mx-auto scrollbar-hide overflow-x-visible gap-6 p-6 w-full md:w-10/12 flex h-[100svh] flex-col items-center">
 					<div
 						className={`flex ${isMobile ? 'flex-col gap-4' : 'flex-row gap-10'} justify-between items-center w-full self-start`}
 					>
@@ -216,155 +346,198 @@ export default function FlashcardsPracticePage() {
 						</Link>
 					</div>
 
-					<div className="relative flex w-full h-[450px]">
-						<AnimatePresence mode="wait">
-							<motion.div
-								key={`${variantIdx}-${isAnswering}`} // so AnimatePresence resets on each animation
-								className="flex w-full h-full"
-								variants={
-									isQuizMode
-										? quizModeVariants
-										: normalVariants
-								}
-								initial={'initial'}
-								animate={'animate'}
-								exit={'exit'}
-							>
-								<Flashcard
-									variant={templateVariants[variantIdx]}
-									showTip={variantIdx === 0}
-								/>
-							</motion.div>
-
-							{/* correct / incorrect overlay for quiz mode */}
-							{isQuizMode && isAnswering && (
-								<motion.div
-									variants={answeringOverlayVariants}
-									initial="initial"
-									animate="animate"
-									exit="exit"
-									className="h-full w-full absolute bg-card-bg rounded-lg flex justify-center items-center"
-									style={{
-										boxShadow: `0 0 10px 3px ${answerDirection == 'left' ? 'var(--wrong-red)' : 'var(--correct-green)'}`,
-									}}
-								>
-									<p
-										className={`font-bold text-4xl md:text-5xl ${answerDirection == 'left' ? 'text-wrong-red' : 'text-correct-green'}`}
-									>
-										{answerDirection == 'left'
-											? "Didn't get it"
-											: 'Got it'}
-									</p>
-								</motion.div>
+					{isDone ? (
+						<FinishedContent
+							handleStudyStarredItems={handleStudyStarredItems}
+							handleRestart={handleRestart}
+							seen={calcSeenCards(flashcards)}
+							learned={calcLearnedCards(flashcards)}
+							needToLearnCards={getNeedToLearnCards(flashcards)}
+							leftover={calcLeftover(
+								templateVariants,
+								flashcards
 							)}
-						</AnimatePresence>
-					</div>
-
-					{/* control bar */}
-					<div className="flex relative items-center justify-center w-full">
-						<div className="left-0 flex absolute items-center gap-3 font-semibold text-theme-orange">
-							<p>Quiz mode</p>
-							<Switch
-								checked={isQuizMode}
-								onCheckedChange={handleSwitchChange}
-								isTheme={false}
-							/>
-						</div>
-
-						<div className="flex mx-auto items-center gap-6">
-							{isQuizMode ? (
-								/* quiz mode button */
-								<>
-									<Tooltip>
-										<TooltipTrigger asChild>
-											<button
-												onClick={() =>
-													handleAnswer(false)
-												}
-												className={`hover:opacity-75 transition-all border border-wrong-red px-4 py-1 rounded-full`}
-											>
-												<X
-													color="var(--wrong-red)"
-													size={30}
-												/>
-											</button>
-										</TooltipTrigger>
-										<TooltipContent side="bottom">
-											<p className="text-wrong-red">
-												Didn't get it
-											</p>
-										</TooltipContent>
-									</Tooltip>
-									<Tooltip>
-										<TooltipTrigger asChild>
-											<button
-												onClick={() =>
-													handleAnswer(true)
-												}
-												className={`hover:opacity-75 transition-all border border-correct-green px-4 py-1 rounded-full`}
-											>
-												<Check
-													color="var(--correct-green)"
-													size={30}
-												/>
-											</button>
-										</TooltipTrigger>
-										<TooltipContent side="bottom">
-											<p className="text-correct-green">
-												Got it
-											</p>
-										</TooltipContent>
-									</Tooltip>
-								</>
-							) : (
-								/* normal mode buttons */
-								<>
-									<button
-										disabled={variantIdx === 0}
-										onClick={handlePrevQuestion}
-										className={`${variantIdx === 0 ? 'opacity-50 pointer-events-none' : ''} hover:opacity-75 transition-all border border-theme-hover-orange px-4 py-1 rounded-full`}
-									>
-										<ChevronLeft
-											color="var(--theme-hover-orange)"
-											size={30}
-										/>
-									</button>
-									<button
-										disabled={
-											variantIdx ===
-											templateVariants.length - 1
+							total={templateVariants.length}
+							isQuizMode={isQuizMode}
+							handleStudyUnlearnedCards={
+								handleStudyUnlearnedCards
+							}
+							starredTemplateVariants={starredTemplates}
+						/>
+					) : (
+						<>
+							{/* card area */}
+							<div className="relative flex w-full h-[450px]">
+								<AnimatePresence mode="wait">
+									<motion.div
+										key={`${variantIdx}-${isAnswering}`} // so AnimatePresence resets on each animation
+										className="flex w-full h-full"
+										variants={
+											isQuizMode
+												? quizModeVariants
+												: normalVariants
 										}
-										onClick={handleNextQuestion}
-										className={`${variantIdx === templateVariants.length - 1 ? 'opacity-50 pointer-events-none' : ''} hover:opacity-75 transition-all border border-theme-hover-orange px-4 py-1 rounded-full`}
+										initial={'initial'}
+										animate={'animate'}
+										exit={'exit'}
 									>
-										<ChevronRight
-											color="var(--theme-hover-orange)"
-											size={30}
+										<Flashcard
+											variant={
+												templateVariants[variantIdx]
+											}
+											showTip={variantIdx === 0}
+											addToStarredList={addToStarredList}
+											removedFromStarredList={
+												removeFromStarredList
+											}
+											starredTemplatesIdx={
+												starredTemplatesIdx
+											}
+											idx={variantIdx}
 										/>
-									</button>
-								</>
-							)}
-						</div>
-						<Tooltip>
-							<TooltipTrigger asChild>
-								<button
-									disabled={
-										isQuizMode &&
-										(variantIdx == 0 || isUndoing)
-									}
-									onClick={
-										isQuizMode ? handleUndo : handleShuffle
-									}
-									className={`absolute right-0 ${isQuizMode && variantIdx == 0 ? 'opacity-50' : 'hover:opacity-75'}`}
-								>
-									{isQuizMode ? <Undo /> : <Shuffle />}
-								</button>
-							</TooltipTrigger>
-							<TooltipContent side="bottom">
-								<p>{isQuizMode ? 'Undo' : 'Shuffle cards'}</p>
-							</TooltipContent>
-						</Tooltip>
-					</div>
+									</motion.div>
+
+									{/* correct / incorrect overlay for quiz mode */}
+									{isQuizMode && isAnswering && (
+										<motion.div
+											variants={answeringOverlayVariants}
+											initial="initial"
+											animate="animate"
+											exit="exit"
+											className="h-full w-full absolute bg-card-bg rounded-lg flex justify-center items-center"
+											style={{
+												boxShadow: `0 0 10px 3px ${answerDirection == 'left' ? 'var(--wrong-red)' : 'var(--correct-green)'}`,
+											}}
+										>
+											<p
+												className={`font-bold text-4xl md:text-5xl ${answerDirection == 'left' ? 'text-wrong-red' : 'text-correct-green'}`}
+											>
+												{answerDirection == 'left'
+													? "Didn't get it"
+													: 'Got it'}
+											</p>
+										</motion.div>
+									)}
+								</AnimatePresence>
+							</div>
+
+							{/* control bar */}
+							<div className="flex relative items-center justify-center w-full">
+								<div className="left-0 flex absolute items-center gap-3 font-semibold text-theme-orange">
+									<p>Quiz mode</p>
+									<Switch
+										checked={isQuizMode}
+										onCheckedChange={handleSwitchChange}
+										isTheme={false}
+									/>
+								</div>
+
+								<div className="flex mx-auto items-center gap-6">
+									{isQuizMode ? (
+										/* quiz mode button */
+										<>
+											<Tooltip>
+												<TooltipTrigger asChild>
+													<button
+														onClick={() =>
+															handleAnswer(false)
+														}
+														className={`hover:opacity-75 transition-all border border-wrong-red px-4 py-1 rounded-full`}
+													>
+														<X
+															color="var(--wrong-red)"
+															size={30}
+														/>
+													</button>
+												</TooltipTrigger>
+												<TooltipContent side="bottom">
+													<p className="text-wrong-red">
+														Didn't get it
+													</p>
+												</TooltipContent>
+											</Tooltip>
+											<Tooltip>
+												<TooltipTrigger asChild>
+													<button
+														onClick={() =>
+															handleAnswer(true)
+														}
+														className={`hover:opacity-75 transition-all border border-correct-green px-4 py-1 rounded-full`}
+													>
+														<Check
+															color="var(--correct-green)"
+															size={30}
+														/>
+													</button>
+												</TooltipTrigger>
+												<TooltipContent side="bottom">
+													<p className="text-correct-green">
+														Got it
+													</p>
+												</TooltipContent>
+											</Tooltip>
+										</>
+									) : (
+										/* normal mode buttons */
+										<>
+											<button
+												disabled={variantIdx === 0}
+												onClick={() =>
+													handlePrevQuestion(true)
+												}
+												className={`${variantIdx === 0 ? 'opacity-50 pointer-events-none' : ''} hover:opacity-75 transition-all border border-theme-hover-orange px-4 py-1 rounded-full`}
+											>
+												<ChevronLeft
+													color="var(--theme-hover-orange)"
+													size={30}
+												/>
+											</button>
+											<button
+												onClick={() =>
+													handleNextQuestion(true)
+												}
+												className={`hover:opacity-75 transition-all border border-theme-hover-orange px-4 py-1 rounded-full`}
+											>
+												<ChevronRight
+													color="var(--theme-hover-orange)"
+													size={30}
+												/>
+											</button>
+										</>
+									)}
+								</div>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<button
+											disabled={
+												isQuizMode &&
+												(variantIdx == 0 || isUndoing)
+											}
+											onClick={
+												isQuizMode
+													? handleUndo
+													: handleShuffle
+											}
+											className={`absolute right-0 ${isQuizMode && variantIdx == 0 ? 'opacity-50' : 'hover:opacity-75'}`}
+										>
+											{isQuizMode ? (
+												<Undo />
+											) : (
+												<Shuffle />
+											)}
+										</button>
+									</TooltipTrigger>
+									<TooltipContent side="bottom">
+										<p>
+											{isQuizMode
+												? 'Undo'
+												: 'Shuffle cards'}
+										</p>
+									</TooltipContent>
+								</Tooltip>
+							</div>
+						</>
+					)}
 				</div>
 			</div>
 		</TooltipProvider>

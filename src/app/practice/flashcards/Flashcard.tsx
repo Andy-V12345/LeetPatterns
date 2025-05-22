@@ -1,7 +1,7 @@
 import { useTheme } from '@/components/ThemeContext'
 import { TemplateVariant } from '@/utils/Types'
 import { motion } from 'framer-motion'
-import { Check, X } from 'lucide-react'
+import { Star } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import SyntaxHighlighter from 'react-syntax-highlighter'
 import {
@@ -12,11 +12,23 @@ import {
 interface FlashcardProps {
 	variant: TemplateVariant
 	showTip: boolean
+	addToStarredList: (i: number, variant: TemplateVariant) => void
+	removedFromStarredList: (i: number, variant: TemplateVariant) => void
+	starredTemplatesIdx: number[]
+	idx: number
 }
 
-export default function Flashcard({ variant, showTip }: FlashcardProps) {
+export default function Flashcard({
+	variant,
+	idx,
+	showTip,
+	addToStarredList,
+	removedFromStarredList,
+	starredTemplatesIdx,
+}: FlashcardProps) {
 	const { theme } = useTheme()
 	const [flipped, setFlipped] = useState(false)
+	const [starred, setStarred] = useState(starredTemplatesIdx.includes(idx))
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
@@ -32,6 +44,16 @@ export default function Flashcard({ variant, showTip }: FlashcardProps) {
 			window.removeEventListener('keydown', handleKeyDown)
 		}
 	}, [flipped])
+
+	const handleStarToggle = () => {
+		if (starred) {
+			setStarred(false)
+			removedFromStarredList(idx, variant)
+		} else {
+			setStarred(true)
+			addToStarredList(idx, variant)
+		}
+	}
 
 	return (
 		<div
@@ -61,6 +83,24 @@ export default function Flashcard({ variant, showTip }: FlashcardProps) {
 					}}
 					className="w-full h-full absolute bg-card-bg shadow rounded-lg flex justify-center items-center"
 				>
+					<button
+						onClick={(e) => {
+							e.stopPropagation()
+							handleStarToggle()
+						}}
+						className="absolute top-5 right-5"
+					>
+						<Star
+							strokeWidth={2}
+							color={
+								starred
+									? 'var(--theme-orange)'
+									: 'var(--muted-foreground)'
+							}
+							className="hover:opacity-60"
+						/>
+					</button>
+
 					<p className="text-2xl md:text-3xl font-bold text-center">
 						{variant.title}
 					</p>
