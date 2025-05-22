@@ -4,6 +4,8 @@ import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useIsMobile } from '@/hooks/use-mobile'
+import confetti from 'canvas-confetti'
+import { useEffect } from 'react'
 
 interface FinishedContentProps {
 	handleStudyStarredItems: () => void
@@ -31,6 +33,42 @@ export default function FinishedContent({
 	starredTemplateVariants,
 }: FinishedContentProps) {
 	const isMobile = useIsMobile()
+
+	const handleConfetti = () => {
+		const end = Date.now() + 1 * 1000 // 1 sec
+		const colors = ['#f89f1b', '#2bc4ad', '#9e6dfc']
+
+		const frame = () => {
+			if (Date.now() > end) return
+
+			confetti({
+				particleCount: 2,
+				angle: 70,
+				spread: 65,
+				startVelocity: 60,
+				origin: { x: 0, y: 1 },
+				colors: colors,
+				gravity: 1,
+			})
+			confetti({
+				particleCount: 2,
+				angle: 110,
+				spread: 65,
+				startVelocity: 60,
+				origin: { x: 1, y: 1 },
+				colors: colors,
+				gravity: 1,
+			})
+
+			requestAnimationFrame(frame)
+		}
+
+		frame()
+	}
+
+	useEffect(() => {
+		handleConfetti()
+	}, [])
 
 	return (
 		<motion.div
