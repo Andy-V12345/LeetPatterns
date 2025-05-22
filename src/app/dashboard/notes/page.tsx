@@ -77,7 +77,13 @@ export default function NotesPage() {
 						notes.length > 0 &&
 						notes.length < patterns.length && (
 							<SheetTrigger asChild>
-								<button className="ml-auto bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-sm font-semibold rounded-md">
+								<button
+									className="ml-auto bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-sm font-semibold rounded-md"
+									style={{
+										boxShadow:
+											'0px 0px 12px 1px var(--theme-hover-orange)',
+									}}
+								>
 									Add note
 								</button>
 							</SheetTrigger>
@@ -88,7 +94,13 @@ export default function NotesPage() {
 					notes.length > 0 &&
 					notes.length < patterns.length && (
 						<SheetTrigger asChild>
-							<button className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-lg font-semibold rounded-md">
+							<button
+								className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-3 py-2 text-lg font-semibold rounded-md"
+								style={{
+									boxShadow:
+										'0px 0px 12px 1px var(--theme-hover-orange)',
+								}}
+							>
 								Add note
 							</button>
 						</SheetTrigger>
