@@ -56,7 +56,7 @@ export default function DashboardSidebar() {
 			<SidebarHeader>
 				<Link href="/" className="flex items-center gap-3">
 					<Image
-						src={'/leetpatterns_icon.png'}
+						src={'/leetpatterns_icon.svg'}
 						alt={'logo'}
 						width={'15'}
 						height={'15'}
