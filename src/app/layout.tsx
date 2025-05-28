@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 	title: 'LeetPatterns.ai',
 	description: 'Learn common LeetCode patterns',
 	icons: {
-		icon: '/favicon.ico',
+		icon: '/leetpatterns_icon.svg',
 	},
 }
 

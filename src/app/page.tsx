@@ -42,10 +42,10 @@ export default function Home() {
 					>
 						<Link href="/" className="flex items-center gap-3">
 							<Image
-								src={'/leetpatterns_icon.png'}
+								src={'/leetpatterns_icon.svg'}
 								alt={'logo'}
-								width={'25'}
-								height={'25'}
+								width={'20'}
+								height={'20'}
 							/>
 
 							<span className="font-medium text-xl">
