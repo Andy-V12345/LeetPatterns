@@ -11,18 +11,41 @@ import ThemeSwitch from '@/components/ThemeSwitch'
 import { useTheme } from '@/components/ThemeContext'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import {
+	BotMessageSquare,
+	Boxes,
+	ChartNoAxesCombined,
+	CheckCircle,
+	XCircle,
+	PiggyBank,
+} from 'lucide-react'
 
 export default function Home() {
 	const isMobile = useIsMobile()
-
 	const { user, isLoading } = useAuth()
-	const { theme } = useTheme()
-
 	const [videoLoaded, setVideoLoaded] = useState(false)
+
+	const features = [
+		{
+			title: 'Pattern Recognition',
+			description:
+				'Practice with unique, AI-generated problems so you can develop real pattern recognition skills—without relying on memorization.',
+		},
+		{
+			title: 'Interactive Learning',
+			description:
+				'Chat with Leet, your AI assistant, to get personalized hints, explanations, and real-time support as you work through each problem.',
+		},
+		{
+			title: 'Progress Tracking',
+			description:
+				'Track your learning journey with detailed progress metrics and personalized recommendations.',
+		},
+	]
 
 	return (
 		<div
-			className={`relative scrollbar-hide bg-background px-5 pb-5 overflow-x-hidden overflow-y-scroll h-[100svh] flex flex-col ${isMobile ? 'gap-14' : 'gap-20'} items-center`}
+			className={`relative scrollbar-hide bg-background pb-5 overflow-x-hidden overflow-y-scroll h-[100svh] flex flex-col ${isMobile ? 'gap-14' : 'gap-20'} items-center`}
 		>
 			{isLoading ? (
 				<SyncLoader
@@ -35,7 +58,7 @@ export default function Home() {
 				<>
 					{/* Navbar with logo */}
 					<div
-						className="flex mb-auto items-center md:px-10 lg:px-20 justify-between w-full"
+						className="flex mb-auto items-center px-6 md:px-10 lg:px-20 justify-between w-full"
 						style={{
 							paddingTop: isMobile ? '30px' : '40px',
 						}}
@@ -58,34 +81,18 @@ export default function Home() {
 
 					{/* container for Welcome text and demo video */}
 					<div
-						className={`flex my-auto grow pb-10 flex-col justify-center items-center ${isMobile ? 'gap-16' : 'gap-24'}`}
+						className={`flex my-auto grow pb-10 flex-col justify-center items-center ${isMobile ? 'gap-16 px-6' : 'gap-24'}`}
 					>
 						{/* Welcome text with CTA */}
 						<div className="flex gap-3 flex-col justify-center items-center">
-							<div
-								className={`text-center font-bold text-4xl ${theme == 'light' ? 'text-theme-orange' : ''}`}
-							>
+							<div className={`text-center font-bold text-4xl `}>
 								<h1
-									className="inline"
 									style={{
 										textShadow:
-											theme == 'light'
-												? '2px 2px 1px rgba(24, 24, 27, 0.7)'
-												: '2px 2px 1px var(--theme-orange)',
+											'2px 2px 1px var(--theme-orange)',
 									}}
 								>
-									Welcome to{' '}
-								</h1>
-								<h1
-									className="inline"
-									style={{
-										textShadow:
-											theme == 'light'
-												? '2px 2px 1px rgba(24, 24, 27, 0.7)'
-												: '2px 2px 1px var(--theme-orange)',
-									}}
-								>
-									LeetPatterns.ai
+									Welcome to LeetPatterns.ai
 								</h1>
 							</div>
 
@@ -114,7 +121,7 @@ export default function Home() {
 
 						{/* demo video */}
 						<motion.div
-							className={`${isMobile ? 'p-2 w-full' : 'p-5 w-10/12'} bg-theme-orange h-fit rounded-xl`}
+							className={`${isMobile ? 'p-2 w-full' : 'p-3 w-9/12'} bg-theme-orange h-fit rounded-xl`}
 							style={{
 								boxShadow:
 									'0px 0px 10px 4px var(--theme-hover-orange)',
@@ -136,7 +143,199 @@ export default function Home() {
 						</motion.div>
 					</div>
 
-					<ThemeSwitch className="fixed bottom-12 right-5" />
+					{/* Gradient Section */}
+					<div
+						className="w-full space-y-40 pt-20 pb-40 px-4 md:px-6 "
+						style={{
+							background: `linear-gradient(180deg,
+								var(--background) 0%,
+								color-mix(in srgb, var(--theme-orange) 20%, var(--background)) 20%,
+								color-mix(in srgb, var(--theme-orange) 25%, var(--background)) 30%,
+								color-mix(in srgb, var(--theme-orange) 20%, var(--background)) 35%,
+								var(--background) 55%)`,
+						}}
+					>
+						{/* Features Section */}
+						<div className="max-w-6xl mx-auto">
+							<h2
+								className={`text-4xl font-bold text-center mb-4 text-theme-hover-orange`}
+							>
+								Why Choose LeetPatterns.ai?
+							</h2>
+							<p className="text-center text-foreground mb-16 max-w-2xl mx-auto">
+								Master coding patterns with our AI-powered
+								platform designed to help you excel in technical
+								interviews
+							</p>
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-4 lg:gap-8">
+								{features.map((feature, index) => (
+									<motion.div
+										key={feature.title}
+										className="p-8 rounded-xl bg-background/80 backdrop-blur-sm border border-theme-orange/50 hover:border-theme-orange/40 hover:shadow-lg hover:shadow-theme-orange/30"
+										initial={{ opacity: 0, y: 50 }}
+										whileInView={{ opacity: 1, y: 0 }}
+										viewport={{ once: true, amount: 0.3 }}
+										transition={{
+											duration: 0.6,
+											ease: 'easeOut',
+										}}
+									>
+										{feature.title ===
+											'Pattern Recognition' && (
+											<div className="w-14 h-14 rounded-lg bg-blue-500/10 flex items-center justify-center mb-6">
+												<Boxes
+													size={35}
+													className="text-blue-500 mb-0"
+												/>
+											</div>
+										)}
+										{feature.title ===
+											'Interactive Learning' && (
+											<div className="w-14 h-14 rounded-lg bg-purple-500/10 flex items-center justify-center mb-6">
+												<BotMessageSquare
+													size={35}
+													className="text-purple-500 mb-0"
+												/>
+											</div>
+										)}
+										{feature.title ===
+											'Progress Tracking' && (
+											<div className="w-14 h-14 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-6">
+												<ChartNoAxesCombined
+													size={35}
+													className="text-emerald-500 mb-0"
+												/>
+											</div>
+										)}
+										<h3 className="text-xl font-semibold mb-4 text-theme-hover-orange">
+											{feature.title}
+										</h3>
+										<p className="text-muted-foreground leading-relaxed">
+											{feature.description}
+										</p>
+									</motion.div>
+								))}
+							</div>
+						</div>
+
+						{/* Pricing Section */}
+						<div className="w-full flex flex-col items-center justify-center">
+							<h2 className="text-4xl font-bold text-theme-hover-orange mb-4">
+								Simple Pricing
+							</h2>
+							<p className="text-foreground mb-10 text-center max-w-xl">
+								LeetPatterns.ai is{' '}
+								<span className="font-semibold text-theme-orange">
+									completely free
+								</span>{' '}
+								for all users. No hidden fees, no subscriptions,
+								no card info.
+							</p>
+							<motion.div
+								initial={{ opacity: 0, y: 50 }}
+								whileInView={{ opacity: 1, y: 0 }}
+								viewport={{ once: true, amount: 0.3 }}
+								transition={{
+									duration: 0.6,
+									ease: 'easeOut',
+								}}
+								className="relative flex flex-col md:flex-row bg-background border border-theme-orange/40 rounded-2xl p-6 md:p-8 gap-8 md:gap-12 shadow-lg items-center min-w-[320px] md:max-w-4xl w-full mx-auto"
+							>
+								{/* Left: Price and Info */}
+								<div className="flex-1 self-stretch flex flex-col items-start w-full md:w-auto justify-between">
+									<div className="space-y-0">
+										<p className="text-4xl font-extrabold text-theme-orange">
+											Free
+										</p>
+										<p className="text-base text-foreground">
+											Create an account for unlimited
+											access
+										</p>
+									</div>
+									{!isMobile && (
+										<div className="flex-1 flex items-center justify-center max-h-[200px] w-full">
+											<svg width="0" height="0">
+												<defs>
+													<linearGradient
+														id="piggy-gradient"
+														x1="0"
+														y1="0"
+														x2="1"
+														y2="1"
+													>
+														<stop
+															offset="0%"
+															stopColor="#34D399"
+														/>
+														<stop
+															offset="100%"
+															stopColor="#059669"
+														/>
+													</linearGradient>
+												</defs>
+											</svg>
+											<PiggyBank
+												strokeWidth={1}
+												className="w-full h-full"
+												stroke="url(#piggy-gradient)"
+											/>
+										</div>
+									)}
+								</div>
+								{/* Right: Features and CTA */}
+								<div className="flex-1 flex flex-col gap-6 self-stretch items-start w-full md:w-auto">
+									<ul className="space-y-3 text-base w-full">
+										<li className="flex items-start gap-3 leading-normal">
+											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+											<div className="flex-1">
+												Unlimited access to all Leet
+												patterns
+											</div>
+										</li>
+										<li className="flex items-start gap-3 leading-normal">
+											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+											<div className="flex-1">
+												AI-generated unique problems
+											</div>
+										</li>
+										<li className="flex items-start gap-3 leading-normal">
+											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+											<div className="flex-1">
+												Progress tracking & dashboard
+											</div>
+										</li>
+										<li className="flex items-start gap-3 leading-normal">
+											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+											<div className="flex-1">
+												Interactive learning tools
+											</div>
+										</li>
+										<li className="flex items-start gap-3 leading-normal">
+											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+											<div className="flex-1">
+												Leet Chatbot assistance
+											</div>
+										</li>
+									</ul>
+									<Link
+										href={
+											user == null
+												? '/signup'
+												: '/dashboard'
+										}
+										className="w-full"
+										role="button"
+									>
+										<button className="w-full bg-gradient-to-r from-orange-400 to-orange-600 text-white font-bold py-3 rounded-xl text-lg transition-all hover:opacity-80">
+											{user == null
+												? 'Create Free Account'
+												: 'Go To Dashboard'}
+										</button>
+									</Link>
+								</div>
+							</motion.div>
+						</div>
+					</div>
 
 					<Marquee className="fixed bg-background bottom-0">
 						{patterns.map((pattern) => (
