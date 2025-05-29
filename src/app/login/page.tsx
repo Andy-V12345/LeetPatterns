@@ -66,7 +66,7 @@ export default function LoginPage() {
 			className={`relative bg-background overflow-hidden h-[100svh] ${isMobile ? 'p-6' : 'p-8'} flex flex-col justify-center items-center`}
 		>
 			<div
-				className={`h-fit ${isMobile ? 'w-full' : 'bg-card-bg w-[450px] p-8 rounded-xl'} overflow-y-scroll flex flex-col gap-5`}
+				className={`scrollbar-hide h-fit ${isMobile ? 'w-full' : 'bg-card-bg w-[450px] p-8 rounded-xl'} overflow-y-scroll flex flex-col gap-5`}
 			>
 				<div className="flex flex-col gap-1">
 					<h1 className="font-bold text-2xl">Log in</h1>
