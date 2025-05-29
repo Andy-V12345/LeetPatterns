@@ -99,7 +99,7 @@ export default function ForgotPasswordPage() {
 			className={`bg-background overflow-hidden h-[100svh] ${isMobile ? 'relative p-6' : 'p-8'} flex flex-col justify-center items-center`}
 		>
 			<div
-				className={`h-fit ${isMobile ? 'w-full' : 'relative bg-card-bg w-[450px] p-8 rounded-xl'} overflow-y-scroll flex flex-col gap-5`}
+				className={`scrollbar-hide h-fit ${isMobile ? 'w-full' : 'relative bg-card-bg w-[450px] p-8 rounded-xl'} overflow-y-scroll flex flex-col gap-5`}
 			>
 				<div className="flex flex-col gap-1">
 					<h1 className="font-bold text-2xl">Forgot password</h1>
