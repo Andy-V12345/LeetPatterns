@@ -7,8 +7,6 @@ import Image from 'next/image'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useAuth } from '@/components/AuthContext'
 import SyncLoader from 'react-spinners/SyncLoader'
-import ThemeSwitch from '@/components/ThemeSwitch'
-import { useTheme } from '@/components/ThemeContext'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import {

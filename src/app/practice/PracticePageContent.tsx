@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'framer-motion'
 import SyncLoader from 'react-spinners/SyncLoader'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Sheet, SheetTrigger } from '@/components/ui/sheet'
-import { WandSparkles } from 'lucide-react'
+import { BotMessageSquare } from 'lucide-react'
+import ThemeSwitch from '@/components/ThemeSwitch'
 
 export default function PracticePageContent() {
 	const { user, isLoading } = useAuth()
@@ -124,17 +125,22 @@ export default function PracticePageContent() {
 							}}
 						>
 							<button
-								className="pl-3 pr-12 py-3 flex rounded-full bg-theme-orange"
+								className="flex rounded-full bg-gradient-to-r from-blue-500 to-purple-500 pl-3 md:pl-4 pr-12 py-2 md:py-3"
 								style={{
 									boxShadow:
-										'0px 0px 8px 2px var(--foreground)',
+										'0px 0px 8px 2px var(--theme-orange)',
 								}}
 							>
-								<WandSparkles size={20} />
+								<BotMessageSquare
+									color="white"
+									size={isMobile ? 24 : 34}
+								/>
 							</button>
 						</motion.div>
 					</SheetTrigger>
 				)}
+
+				<ThemeSwitch className="absolute bottom-0" />
 			</div>
 		</Sheet>
 	)

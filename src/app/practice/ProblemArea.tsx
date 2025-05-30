@@ -63,7 +63,8 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	}, [focusedPatterns, problemQ, patternStats])
 
 	const createNewProblem = useCallback(async () => {
-		setPrevSession([])
+		setPrevSession([]) // clears the chat history
+		setSelected(null)
 		if (!showRecap) {
 			if (questionCount > 0 && questionCount % 5 == 0) {
 				setShowRecap(true)
@@ -78,10 +79,12 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 					setQuestionCount((prev) => {
 						return prev + 1
 					})
+					preloadProblems()
 				} else {
 					setQuestionCount((prev) => {
 						return prev + 1
 					})
+					preloadProblems()
 					try {
 						nextProblem = await generateProblem(
 							focusedPatterns ?? ([] as Pattern[]),
@@ -95,8 +98,6 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 						setError('Connection lost')
 					}
 				}
-
-				preloadProblems()
 			}
 		} else if (showRecap) {
 			setCardState('loading')
@@ -111,10 +112,12 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				setQuestionCount((prev) => {
 					return prev + 1
 				})
+				preloadProblems()
 			} else {
 				setQuestionCount((prev) => {
 					return prev + 1
 				})
+				preloadProblems()
 				try {
 					nextProblem = await generateProblem(
 						focusedPatterns ?? ([] as Pattern[]),
@@ -128,8 +131,6 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 					setError('Connection lost')
 				}
 			}
-
-			preloadProblems()
 		}
 	}, [
 		focusedPatterns,
@@ -175,7 +176,6 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const handleRetry = () => {
 		setUiState('default')
 		setFirstLoad(true)
-		preloadProblems()
 		createNewProblem()
 	}
 
@@ -185,7 +185,6 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 			setFirstLoad(false)
 		} else if (!problem && !hasCreatedInitialProblem.current) {
 			hasCreatedInitialProblem.current = true
-			preloadProblems()
 			createNewProblem()
 		}
 	}, [problem])

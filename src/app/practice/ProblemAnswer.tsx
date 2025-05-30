@@ -4,6 +4,7 @@ import Link from 'next/link'
 import ReactMarkdown from 'react-markdown'
 import { Skeleton } from '../../components/ui/skeleton'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { ArrowRight } from 'lucide-react'
 
 interface ProblemAnswerProps {
 	answer: Answer | null | undefined
@@ -78,11 +79,11 @@ export default function ProblemAnswer({
 				) : (
 					<div className="flex flex-col gap-4 md:gap-6 h-full">
 						{/* Explanation text takes up available space */}
-						<div className="flex-1 overflow-y-auto overflow-x-hidden">
+						<div className="flex-1 scrollbar-hide overflow-y-auto overflow-x-hidden">
 							{answer != null && cardState != 'loading' ? (
 								<div className="prose prose-invert pr-5 max-h-full max-w-full markdown">
 									<span className="space-x-1">
-										<strong className="inline">
+										<strong className="inline text-theme-hover-orange">
 											Answer:{' '}
 										</strong>
 										<p className="inline">
@@ -120,7 +121,7 @@ export default function ProblemAnswer({
 								<Link
 									href={answer.leetcodeUrl}
 									target="_blank"
-									className="flex flex-col gap-0 hover:opacity-50 transition-all w-fit"
+									className="flex flex-col gap-0 hover:opacity-50 transition-opacity w-fit"
 								>
 									<p className="text-foreground-fg text-sm">{`Practice ${answer.correct}:`}</p>
 									<div className="flex gap-1 items-center">
@@ -132,9 +133,13 @@ export default function ProblemAnswer({
 								</Link>
 								<button
 									onClick={handleNextQuestion}
-									className="bg-theme-orange hover:bg-theme-hover-orange transition-all px-4 py-2 rounded-lg"
+									className="flex items-center gap-2 justify-center bg-gradient-to-r from-bright-theme-orange to-theme-orange hover:opacity-85 transition-all px-4 py-2 rounded-lg"
 								>
-									Next Question
+									<p className="font-medium">Next Question</p>
+									<ArrowRight
+										strokeWidth={3}
+										className="w-4 h-4"
+									/>
 								</button>
 							</div>
 						)}

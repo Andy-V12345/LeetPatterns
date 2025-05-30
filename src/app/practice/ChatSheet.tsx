@@ -145,7 +145,7 @@ export default function ChatSheet({
 	return (
 		<SheetContent>
 			<SheetHeader>
-				<SheetTitle className="text-theme-orange text-xl font-bold">
+				<SheetTitle className="text-xl font-bold inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">
 					Chat w/ Leet
 				</SheetTitle>
 				<SheetDescription className="text-foreground">
@@ -280,7 +280,7 @@ export default function ChatSheet({
 														isEmptyText
 													}
 													type="submit"
-													className={`flex ${isEmptyText ? 'opacity-75' : 'hover:opacity-75'} transition-all justify-center items-center rounded-full bg-theme-orange p-[5px]`}
+													className={`flex ${isEmptyText ? 'opacity-75' : 'hover:opacity-75'} transition-all justify-center items-center rounded-full bg-gradient-to-r from-blue-500 to-purple-500 p-[5px]`}
 												>
 													{uiState == 'loading' ? (
 														<PuffLoader
