@@ -83,7 +83,7 @@ export default function ProblemAnswer({
 							{answer != null && cardState != 'loading' ? (
 								<div className="prose prose-invert pr-5 max-h-full max-w-full markdown">
 									<span className="space-x-1">
-										<strong className="inline">
+										<strong className="inline text-theme-hover-orange">
 											Answer:{' '}
 										</strong>
 										<p className="inline">

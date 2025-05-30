@@ -145,7 +145,7 @@ export default function ChatSheet({
 	return (
 		<SheetContent>
 			<SheetHeader>
-				<SheetTitle className="text-theme-orange text-xl font-bold">
+				<SheetTitle className="text-xl font-bold inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-500">
 					Chat w/ Leet
 				</SheetTitle>
 				<SheetDescription className="text-foreground">
