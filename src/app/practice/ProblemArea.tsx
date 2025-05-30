@@ -63,7 +63,8 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	}, [focusedPatterns, problemQ, patternStats])
 
 	const createNewProblem = useCallback(async () => {
-		setPrevSession([])
+		setPrevSession([]) // clears the chat history
+		setSelected(null)
 		if (!showRecap) {
 			if (questionCount > 0 && questionCount % 5 == 0) {
 				setShowRecap(true)
