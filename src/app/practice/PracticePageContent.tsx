@@ -139,8 +139,6 @@ export default function PracticePageContent() {
 						</motion.div>
 					</SheetTrigger>
 				)}
-
-				<ThemeSwitch className="absolute bottom-0" />
 			</div>
 		</Sheet>
 	)
