@@ -6,7 +6,6 @@ import ProblemAnswer from './ProblemAnswer'
 import { generateProblem } from '@/utils/GeminiFunctions'
 import RecapCard from './RecapCard'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PatternStat } from '@/interfaces/PatternStat'
 import SyncLoader from 'react-spinners/SyncLoader'
 import { useAuth } from '../../components/AuthContext'
 import { calculateTotalAttempts } from '@/utils/UtilFunctions'
@@ -14,6 +13,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import FlippableCard from './FlippableCard'
 import ChatSheet from './ChatSheet'
 import { useGeminiChat } from '@/hooks/useGeminiChat'
+import Stat from '@/interfaces/Stat'
 
 interface ProblemAreaProps {
 	focusedPatterns: Pattern[] | undefined | null
@@ -32,7 +32,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	const [problem, setProblem] = useState<Problem | null>()
 	const [questionCount, setQuestionCount] = useState(0)
 	const [showRecap, setShowRecap] = useState(false)
-	const [patternStats, setPatternStats] = useState<PatternStat[]>([])
+	const [patternStats, setPatternStats] = useState<Stat<Pattern>[]>([])
 	const [problemQ, setProblemQ] = useState<Problem[]>([])
 	const [firstLoad, setFirstLoad] = useState(true)
 	const [selected, setSelected] = useState<string | null>(null)
@@ -146,7 +146,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 			const updatedStats = patternStats
 
 			const existingIndex = updatedStats.findIndex(
-				(stat) => stat.pattern === pattern
+				(stat) => stat.name === pattern
 			)
 
 			if (existingIndex !== -1) {
@@ -158,7 +158,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				}
 			} else {
 				updatedStats.push({
-					pattern,
+					name: pattern,
 					correct: isCorrect ? 1 : 0,
 					attempts: 1,
 				})

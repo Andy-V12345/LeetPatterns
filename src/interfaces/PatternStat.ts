@@ -1,7 +1,4 @@
-import { Pattern } from "@/utils/Types"
+// import { Pattern } from '@/utils/Types'
+// import Stat from './Stat'
 
-export interface PatternStat {
-    pattern: Pattern
-    correct: number
-    attempts: number
-} 
+// export default interface PatternStat extends Stat<Pattern> {}

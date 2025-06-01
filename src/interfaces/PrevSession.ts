@@ -1,8 +1,8 @@
 import { Pattern } from '@/utils/Types'
-import { PatternStat } from './PatternStat'
+import Stat from './Stat'
 
 export interface PrevSession {
-	patternStats: PatternStat[]
+	patternStats: Stat<Pattern>[]
 	weakPatterns: Pattern[]
 	focusedPatterns: Pattern[]
 }

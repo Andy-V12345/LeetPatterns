@@ -4,10 +4,10 @@ import { Chat, GoogleGenAI, Type } from '@google/genai'
 import { leetcode_practice_problems, patterns } from './Consts'
 import { generate_notes_sys_instr, generate_problem_sys_instr } from './Prompts'
 import Problem from '@/interfaces/Problem'
-import { getWeakPatterns, shuffle } from './UtilFunctions'
+import { getWeakest, shuffle } from './UtilFunctions'
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
-import { ChatMode, Pattern } from './Types'
-import { PatternStat } from '@/interfaces/PatternStat'
+import { ChatMode, Pattern, TemplateVariantTitle } from './Types'
+import Stat from '@/interfaces/Stat'
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
@@ -42,12 +42,17 @@ function selectPattern(
 	}
 }
 
+export async function generatePatternFromCodeProblem(
+	focusedTemplates: TemplateVariantTitle[],
+	templateStats: TemplateVariantTitle[]
+): Promise<void> {}
+
 export async function generateProblem(
 	focusedPatterns: Pattern[],
-	patternStats: PatternStat[]
+	patternStats: Stat<Pattern>[]
 ): Promise<Problem> {
 	// any pattern with a less than 40% accuracy is weak
-	const weakPatterns: Pattern[] = getWeakPatterns(patternStats)
+	const weakPatterns: Pattern[] = getWeakest(patternStats)
 
 	const pattern = selectPattern(focusedPatterns, weakPatterns)
 

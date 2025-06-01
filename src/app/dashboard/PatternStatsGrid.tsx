@@ -1,8 +1,6 @@
-import { LeetcodeIcon } from '@/app/practice/ProblemAnswer'
 import StatCircle from '@/components/StatCircle'
-import { PatternStat } from '@/interfaces/PatternStat'
 import { patternSummaries } from '@/utils/Consts'
-import { UIState } from '@/utils/Types'
+import { Pattern, UIState } from '@/utils/Types'
 import {
 	calculateTotalAttempts,
 	calculateTotalCorrect,
@@ -17,9 +15,10 @@ import {
 	TooltipProvider,
 	TooltipContent,
 } from '@/components/ui/tooltip'
+import Stat from '@/interfaces/Stat'
 
 interface PatternStatsGridProps {
-	patternStats: PatternStat[]
+	patternStats: Stat<Pattern>[]
 	uiState: UIState
 	streaks: { longestStreak: number; curStreak: number } | null
 }
@@ -79,7 +78,7 @@ export default function PatternStatsGrid({
 					{patternStats.map((stat) => {
 						const [flipped, setFlipped] = useState(false)
 						return (
-							<Tooltip key={stat.pattern}>
+							<Tooltip key={stat.name}>
 								<TooltipTrigger asChild>
 									<div
 										className="relative flex w-full h-56 hover:opacity-85 transition-all"
@@ -139,7 +138,7 @@ export default function PatternStatsGrid({
 																	{
 																		patternSummaries[
 																			stat
-																				.pattern
+																				.name
 																		]
 																			.description
 																	}
@@ -154,7 +153,7 @@ export default function PatternStatsGrid({
 																	{
 																		patternSummaries[
 																			stat
-																				.pattern
+																				.name
 																		]
 																			.howToIdentify
 																	}
@@ -164,7 +163,7 @@ export default function PatternStatsGrid({
 																href={
 																	patternSummaries[
 																		stat
-																			.pattern
+																			.name
 																	].learnMore
 																}
 																className="flex w-fit items-center gap-1"

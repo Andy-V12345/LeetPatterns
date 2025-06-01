@@ -1,13 +1,13 @@
-import { PatternStat } from '@/interfaces/PatternStat'
 import { patterns } from '@/utils/Consts'
 import { useCallback, useEffect, useState } from 'react'
 import { useAuth } from '@/components/AuthContext'
-import { UIState } from '@/utils/Types'
+import { Pattern, UIState } from '@/utils/Types'
 import { PrevSession } from '@/interfaces/PrevSession'
 import PreviousSessionDisplay from './PreviousSessionDisplay'
 import PatternStatsGrid from './PatternStatsGrid'
 import SyncLoader from 'react-spinners/SyncLoader'
 import { SidebarTrigger } from '@/components/ui/sidebar'
+import Stat from '@/interfaces/Stat'
 
 export default function DashboardPageContent() {
 	const { user, isLoading } = useAuth()
@@ -18,9 +18,9 @@ export default function DashboardPageContent() {
 		curStreak: number
 	} | null>(null)
 
-	const [patternStats, setPatternStats] = useState<PatternStat[]>(
+	const [patternStats, setPatternStats] = useState<Stat<Pattern>[]>(
 		patterns.map((pattern) => ({
-			pattern,
+			name: pattern,
 			correct: 0,
 			attempts: 0,
 		}))
@@ -44,7 +44,7 @@ export default function DashboardPageContent() {
 				const newPatternStats = patternStats
 				for (const stat of stats) {
 					const i = newPatternStats.findIndex(
-						(s) => s.pattern == stat.pattern
+						(s) => s.name == stat.name
 					)
 					newPatternStats[i].correct = stat.correct
 					newPatternStats[i].attempts = stat.attempts
