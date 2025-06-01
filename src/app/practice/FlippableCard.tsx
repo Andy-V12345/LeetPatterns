@@ -5,19 +5,20 @@ import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import ProblemAnswer from './ProblemAnswer'
 
-interface FlippableCardProps {
-	problem: Problem | null | undefined
+interface FlippableCardProps<T> {
+	problem: Problem<T> | null | undefined
 	cardState: ProblemCardState
 	setCardState: React.Dispatch<React.SetStateAction<ProblemCardState>>
 	showAnswer: boolean
 	setShowAnswer: React.Dispatch<React.SetStateAction<boolean>>
-	updatePatternStats: (pattern: Pattern, isCorrect: boolean) => void
+	updatePatternStats: (pattern: T, isCorrect: boolean) => void
 	createNewProblem: () => Promise<void>
 	selected: string | null
 	setSelected: React.Dispatch<React.SetStateAction<string | null>>
+	isPatternFromTemplate: boolean
 }
 
-export default function FlippableCard({
+export default function FlippableCard<T>({
 	problem,
 	cardState,
 	setCardState,
@@ -27,7 +28,8 @@ export default function FlippableCard({
 	createNewProblem,
 	selected,
 	setSelected,
-}: FlippableCardProps) {
+	isPatternFromTemplate,
+}: FlippableCardProps<T>) {
 	const [flipped, setFlipped] = useState(false)
 
 	useEffect(() => {
@@ -79,6 +81,7 @@ export default function FlippableCard({
 						updatePatternStats={updatePatternStats}
 						selected={selected}
 						setSelected={setSelected}
+						isPatternFromTemplate={isPatternFromTemplate}
 					/>
 				</motion.div>
 

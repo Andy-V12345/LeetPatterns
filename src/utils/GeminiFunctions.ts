@@ -16,7 +16,6 @@ import { getWeakest, shuffle } from './UtilFunctions'
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
 import { ChatMode, Pattern, TemplateVariantTitle } from './Types'
 import Stat from '@/interfaces/Stat'
-import PatternFromCodeProblem from '@/interfaces/PatternFromCodeProblem'
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
@@ -62,7 +61,7 @@ function selectPattern<T>(
 export async function generatePatternFromCodeProblem(
 	focusedTemplates: TemplateVariantTitle[],
 	templateStats: Stat<TemplateVariantTitle>[]
-): Promise<PatternFromCodeProblem> {
+): Promise<Problem<TemplateVariantTitle>> {
 	// any template with a less than 40% accuracy is weak
 	const weakTemplates: TemplateVariantTitle[] = getWeakest(templateStats)
 
@@ -120,20 +119,24 @@ export async function generatePatternFromCodeProblem(
 
 	const options: TemplateVariantTitle[] = shuffle(resObj.answerOptions)
 
-	const patternFromCodeProblem: PatternFromCodeProblem = {
-		codeSnippet: resObj.codeSnippet,
-		answerOptions: options,
-		correctAnswer: resObj.correctAnswer,
-		explanation: resObj.explanation,
+	const problem: Problem<TemplateVariantTitle> = {
+		prompt: resObj.codeSnippet,
+		options: options,
+		answer: {
+			correct: resObj.correctAnswer,
+			explanation: resObj.explanation,
+			leetcodeUrl: '',
+			leetcodeTitle: '',
+		},
 	}
 
-	return patternFromCodeProblem
+	return problem
 }
 
 export async function generateProblem(
 	focusedPatterns: Pattern[],
 	patternStats: Stat<Pattern>[]
-): Promise<Problem> {
+): Promise<Problem<Pattern>> {
 	// any pattern with a less than 40% accuracy is weak
 	const weakPatterns: Pattern[] = getWeakest(patternStats)
 
@@ -194,7 +197,7 @@ export async function generateProblem(
 
 	const leetcode_sample = getLeetcodeSample(resObj.correctPattern)
 
-	const problem: Problem = {
+	const problem: Problem<Pattern> = {
 		prompt: resObj.problem,
 		options: options as Pattern[],
 		answer: {

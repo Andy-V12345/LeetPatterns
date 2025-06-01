@@ -8,7 +8,6 @@ import SyncLoader from 'react-spinners/SyncLoader'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Sheet, SheetTrigger } from '@/components/ui/sheet'
 import { BotMessageSquare } from 'lucide-react'
-import ThemeSwitch from '@/components/ThemeSwitch'
 import { patternColors } from '@/utils/Consts'
 
 export default function PracticePageContent() {
@@ -114,7 +113,10 @@ export default function PracticePageContent() {
 							</div>
 
 							{/* Problem Area */}
-							<ProblemArea focusedPatterns={focusedPatterns} />
+							<ProblemArea
+								focusedPatterns={focusedPatterns}
+								isPatternFromTemplate={false}
+							/>
 						</motion.div>
 					)}
 				</AnimatePresence>

@@ -14,7 +14,6 @@ import Problem from '@/interfaces/Problem'
 import {
 	ChatMode,
 	GeminiMessage,
-	Pattern,
 	ProblemCardState,
 	UIState,
 } from '@/utils/Types'
@@ -25,7 +24,7 @@ import PuffLoader from 'react-spinners/PuffLoader'
 import { LocalUser } from '@/classes/LocalUser'
 import Link from 'next/link'
 
-interface ChatSheetProps {
+interface ChatSheetProps<T> {
 	messages: GeminiMessage[]
 	setMessages: React.Dispatch<React.SetStateAction<GeminiMessage[]>>
 	sendMessage: ({
@@ -37,19 +36,19 @@ interface ChatSheetProps {
 		options,
 	}: {
 		problem: string
-		correctPattern: Pattern
+		correctPattern: T
 		chatMode: ChatMode
 		message: string
 		token: string
-		options: Pattern[]
+		options: T[]
 	}) => Promise<void>
 	liveResponse: string
 	cardState: ProblemCardState
-	problem: Problem | null | undefined
+	problem: Problem<T> | null | undefined
 	showRecap: boolean
 }
 
-export default function ChatSheet({
+export default function ChatSheet<T>({
 	messages,
 	setMessages,
 	sendMessage,
@@ -57,7 +56,7 @@ export default function ChatSheet({
 	cardState,
 	problem,
 	showRecap,
-}: ChatSheetProps) {
+}: ChatSheetProps<T>) {
 	const [msgText, setMsgText] = useState('')
 	const [uiState, setUiState] = useState<UIState>('default')
 	const { user } = useAuth()

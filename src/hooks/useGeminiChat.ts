@@ -1,7 +1,7 @@
-import { Pattern, ChatMode, GeminiMessage } from '@/utils/Types'
+import { ChatMode, GeminiMessage } from '@/utils/Types'
 import { useState } from 'react'
 
-export function useGeminiChat() {
+export function useGeminiChat<T>() {
 	const [prevSession, setPrevSession] = useState<GeminiMessage[]>([])
 	const [liveResponse, setLiveResponse] = useState<string>('')
 
@@ -14,11 +14,11 @@ export function useGeminiChat() {
 		options,
 	}: {
 		problem: string
-		correctPattern: Pattern
+		correctPattern: T
 		chatMode: ChatMode
 		message: string
 		token: string
-		options: Pattern[]
+		options: T[]
 	}) => {
 		setLiveResponse('')
 

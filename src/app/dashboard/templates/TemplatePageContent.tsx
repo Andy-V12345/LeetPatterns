@@ -148,14 +148,16 @@ export default function TemplatePageContent() {
 
 						<motion.div
 							whileHover={{ y: isMobile ? -5 : -15 }}
-							// whileTap={{
-							// 	y: 0,
-							// 	transition: {
-							// 		type: 'spring',
-							// 		bounce: 0.5,
-							// 	},
-							// }} TODO: COMING SOON
-							// onClick={() =>setSelectedMode('pattern_from_template')} TODO: COMING SOON
+							whileTap={{
+								y: 0,
+								transition: {
+									type: 'spring',
+									bounce: 0.5,
+								},
+							}}
+							onClick={() =>
+								setSelectedMode('pattern_from_template')
+							}
 							style={{
 								gridColumn: isMobile ? 'span 3' : 'span 1',
 								boxShadow:
@@ -186,19 +188,6 @@ export default function TemplatePageContent() {
 								Look at an adapted template — can you recognize
 								the underlying pattern?
 							</p>
-
-							<div className="absolute flex justify-center items-center w-full h-full">
-								<div className="w-full h-full bg-card-bg opacity-70 rounded-lg" />
-								<p
-									className="absolute text-sm right-4 top-4 py-1 px-2 bg-theme-hover-orange rounded-md font-semibold text-foreground"
-									style={{
-										boxShadow:
-											'0 0 3px 2px var(--theme-orange)',
-									}}
-								>
-									Coming soon!
-								</p>
-							</div>
 						</motion.div>
 
 						<motion.div
