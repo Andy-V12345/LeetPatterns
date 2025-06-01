@@ -16,10 +16,11 @@ function generateRandomNum(max: number): number {
 }
 
 // helper function to select a pattern to generate a problem for
-function selectPattern(
-	focusedPatterns: Pattern[],
-	weakPatterns: Pattern[]
-): Pattern {
+function selectPattern<T>(
+	focusedPatterns: T[],
+	weakPatterns: T[],
+	patternsToChooseFrom: T[]
+): T {
 	const randomNum = generateRandomNum(100)
 
 	if (randomNum <= 44) {
@@ -28,17 +29,23 @@ function selectPattern(
 			return focusedPatterns[generateRandomNum(focusedPatterns.length)]
 		}
 
-		return patterns[generateRandomNum(patterns.length)]
+		return patternsToChooseFrom[
+			generateRandomNum(patternsToChooseFrom.length)
+		]
 	} else if (randomNum >= 45 && randomNum <= 74) {
 		// 30% chance of a weak pattern
 		if (weakPatterns.length > 0) {
 			return weakPatterns[generateRandomNum(weakPatterns.length)]
 		}
 
-		return patterns[generateRandomNum(patterns.length)]
+		return patternsToChooseFrom[
+			generateRandomNum(patternsToChooseFrom.length)
+		]
 	} else {
 		// 25% chance of a random pattern
-		return patterns[generateRandomNum(patterns.length)]
+		return patternsToChooseFrom[
+			generateRandomNum(patternsToChooseFrom.length)
+		]
 	}
 }
 
@@ -54,7 +61,7 @@ export async function generateProblem(
 	// any pattern with a less than 40% accuracy is weak
 	const weakPatterns: Pattern[] = getWeakest(patternStats)
 
-	const pattern = selectPattern(focusedPatterns, weakPatterns)
+	const pattern = selectPattern(focusedPatterns, weakPatterns, patterns)
 
 	const response = await ai.models.generateContent({
 		model: 'gemini-2.0-flash',
