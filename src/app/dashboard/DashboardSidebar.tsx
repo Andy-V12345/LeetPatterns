@@ -105,6 +105,9 @@ export default function DashboardSidebar() {
 									<span className="font-semibold text-foreground">
 										Templates
 									</span>
+									<span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-gradient-to-r from-leet-blue to-leet-purple text-white">
+										New
+									</span>
 								</Link>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
