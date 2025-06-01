@@ -1,12 +1,8 @@
 'use server'
 
 import { Chat, GoogleGenAI, Type } from '@google/genai'
-import {
-	generate_notes_sys_instr,
-	generate_problem_sys_instr,
-	leetcode_practice_problems,
-	patterns,
-} from './Consts'
+import { leetcode_practice_problems, patterns } from './Consts'
+import { generate_notes_sys_instr, generate_problem_sys_instr } from './Prompts'
 import Problem from '@/interfaces/Problem'
 import { getWeakPatterns, shuffle } from './UtilFunctions'
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
