@@ -1,5 +1,35 @@
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
-import { CodeTemplate, Pattern, PatternSummary } from './Types'
+import {
+	CodeTemplate,
+	Pattern,
+	PatternSummary,
+	TemplateVariantTitle,
+} from './Types'
+
+export const templateVariantTitles: TemplateVariantTitle[] = [
+	'DFS on Tree',
+	'DFS on Graphs',
+	'BFS on Tree',
+	'BFS on Graphs',
+	'BFS on a Matrix',
+	'Sliding Window (Fixed Size)',
+	'Sliding Window Flexible - Longest',
+	'Sliding Window Flexible - Shortest',
+	'Backtracking 1 (Combinations)',
+	'Backtracking 2 (Permutations)',
+	'Binary Search (Standard)',
+	'Mono Stack (Next Greater Element)',
+	'Trie - Insert & Search',
+	'Topological Sort (DFS-based)',
+	'Topological Sort (Kahn’s Algorithm)',
+	'Union-Find (with Path Compression)',
+	'Basic Prefix Sum Array',
+	'Range Sum Using Prefix Array',
+	'Bottom-Up (Tabulation)',
+	'Top-Down (Memoization)',
+	'Start-End Pointer on Sorted Array',
+	'Slow-Fast Pointer',
+]
 
 export const patterns: Pattern[] = [
 	'BFS',

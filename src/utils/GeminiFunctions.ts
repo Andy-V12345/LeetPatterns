@@ -1,13 +1,22 @@
 'use server'
 
 import { Chat, GoogleGenAI, Type } from '@google/genai'
-import { leetcode_practice_problems, patterns } from './Consts'
-import { generate_notes_sys_instr, generate_problem_sys_instr } from './Prompts'
+import {
+	leetcode_practice_problems,
+	patterns,
+	templateVariantTitles,
+} from './Consts'
+import {
+	generate_notes_sys_instr,
+	generate_pattern_from_code_sys_instr,
+	generate_problem_sys_instr,
+} from './Prompts'
 import Problem from '@/interfaces/Problem'
 import { getWeakest, shuffle } from './UtilFunctions'
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
 import { ChatMode, Pattern, TemplateVariantTitle } from './Types'
 import Stat from '@/interfaces/Stat'
+import PatternFromCodeProblem from '@/interfaces/PatternFromCodeProblem'
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
@@ -49,10 +58,77 @@ function selectPattern<T>(
 	}
 }
 
+// generate a new pattern-from-code problem
 export async function generatePatternFromCodeProblem(
 	focusedTemplates: TemplateVariantTitle[],
-	templateStats: TemplateVariantTitle[]
-): Promise<void> {}
+	templateStats: Stat<TemplateVariantTitle>[]
+): Promise<PatternFromCodeProblem> {
+	// any template with a less than 40% accuracy is weak
+	const weakTemplates: TemplateVariantTitle[] = getWeakest(templateStats)
+
+	const template = selectPattern(
+		focusedTemplates,
+		weakTemplates,
+		templateVariantTitles
+	)
+
+	const response = await ai.models.generateContent({
+		model: 'gemini-2.0-flash',
+		contents: `Generate a new pattern-from-code question that uses the ${template} template.`,
+		config: {
+			responseMimeType: 'application/json',
+			responseSchema: {
+				type: Type.OBJECT,
+				properties: {
+					codeSnippet: {
+						type: Type.STRING,
+						description:
+							'A Python-style pseudocode snippet (20–40 lines), no markdown.',
+					},
+					answerOptions: {
+						type: Type.ARRAY,
+						description: 'An array of 4 template variant names.',
+						items: {
+							type: Type.STRING,
+						},
+						minItems: '4',
+						maxItems: '4',
+					},
+					correctAnswer: {
+						type: Type.STRING,
+						description: 'Must match one value from answerOptions.',
+					},
+					explanation: {
+						type: Type.STRING,
+						description:
+							'Markdown explanation of the correct pattern.',
+					},
+				},
+				required: [
+					'codeSnippet',
+					'answerOptions',
+					'correctAnswer',
+					'explanation',
+				],
+			},
+			systemInstruction: generate_pattern_from_code_sys_instr,
+		},
+	})
+
+	const resText = response.text
+	const resObj = JSON.parse(resText as string)
+
+	const options: TemplateVariantTitle[] = shuffle(resObj.answerOptions)
+
+	const patternFromCodeProblem: PatternFromCodeProblem = {
+		codeSnippet: resObj.codeSnippet,
+		answerOptions: options,
+		correctAnswer: resObj.correctAnswer,
+		explanation: resObj.explanation,
+	}
+
+	return patternFromCodeProblem
+}
 
 export async function generateProblem(
 	focusedPatterns: Pattern[],
