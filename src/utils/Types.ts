@@ -17,6 +17,30 @@ export type Pattern =
 	| 'Union-Find'
 	| 'Tries'
 
+export type TemplateVariantTitle =
+	| 'DFS on Tree'
+	| 'DFS on Graphs'
+	| 'BFS on Tree'
+	| 'BFS on Graphs'
+	| 'BFS on a Matrix'
+	| 'Sliding Window (Fixed Size)'
+	| 'Sliding Window Flexible - Longest'
+	| 'Sliding Window Flexible - Shortest'
+	| 'Backtracking 1 (Combinations)'
+	| 'Backtracking 2 (Permutations)'
+	| 'Binary Search (Standard)'
+	| 'Mono Stack (Next Greater Element)'
+	| 'Trie - Insert & Search'
+	| 'Topological Sort (DFS-based)'
+	| 'Topological Sort (Kahn’s Algorithm)'
+	| 'Union-Find (with Path Compression)'
+	| 'Basic Prefix Sum Array'
+	| 'Range Sum Using Prefix Array'
+	| 'Bottom-Up (Tabulation)'
+	| 'Top-Down (Memoization)'
+	| 'Start-End Pointer on Sorted Array'
+	| 'Slow-Fast Pointer'
+
 export type ColorTheme = 'light' | 'dark'
 
 export type DashboardTypes = 'dashboard' | 'profile' | 'notes' | 'templates'
@@ -36,8 +60,8 @@ export type CodeTemplate = {
 }
 
 export type TemplateVariant = {
-	template: string
-	title: string
+	template: string // the template code
+	title: TemplateVariantTitle
 }
 
 export type TemplateMode =

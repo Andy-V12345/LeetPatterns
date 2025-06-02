@@ -206,7 +206,7 @@ export default function PreviousSessionDisplay({
 										{prevSession.patternStats.map(
 											(stat, i) => (
 												<StatCircle
-													key={`${stat.pattern}+${i}`}
+													key={`${stat.name}+${i}`}
 													stat={stat}
 													size="size-32"
 													strokeWidth={5}

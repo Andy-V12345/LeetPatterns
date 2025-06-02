@@ -2,16 +2,20 @@
 
 import { Chat, GoogleGenAI, Type } from '@google/genai'
 import {
-	generate_notes_sys_instr,
-	generate_problem_sys_instr,
 	leetcode_practice_problems,
 	patterns,
+	templateVariantTitles,
 } from './Consts'
+import {
+	generate_notes_sys_instr,
+	generate_pattern_from_code_sys_instr,
+	generate_problem_sys_instr,
+} from './Prompts'
 import Problem from '@/interfaces/Problem'
-import { getWeakPatterns, shuffle } from './UtilFunctions'
+import { getWeakest, shuffle } from './UtilFunctions'
 import { LeetcodeSample } from '@/interfaces/LeetcodeSample'
-import { ChatMode, Pattern } from './Types'
-import { PatternStat } from '@/interfaces/PatternStat'
+import { ChatMode, Pattern, TemplateVariantTitle } from './Types'
+import Stat from '@/interfaces/Stat'
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
@@ -20,10 +24,11 @@ function generateRandomNum(max: number): number {
 }
 
 // helper function to select a pattern to generate a problem for
-function selectPattern(
-	focusedPatterns: Pattern[],
-	weakPatterns: Pattern[]
-): Pattern {
+function selectPattern<T>(
+	focusedPatterns: T[],
+	weakPatterns: T[],
+	patternsToChooseFrom: T[]
+): T {
 	const randomNum = generateRandomNum(100)
 
 	if (randomNum <= 44) {
@@ -32,28 +37,110 @@ function selectPattern(
 			return focusedPatterns[generateRandomNum(focusedPatterns.length)]
 		}
 
-		return patterns[generateRandomNum(patterns.length)]
+		return patternsToChooseFrom[
+			generateRandomNum(patternsToChooseFrom.length)
+		]
 	} else if (randomNum >= 45 && randomNum <= 74) {
 		// 30% chance of a weak pattern
 		if (weakPatterns.length > 0) {
 			return weakPatterns[generateRandomNum(weakPatterns.length)]
 		}
 
-		return patterns[generateRandomNum(patterns.length)]
+		return patternsToChooseFrom[
+			generateRandomNum(patternsToChooseFrom.length)
+		]
 	} else {
 		// 25% chance of a random pattern
-		return patterns[generateRandomNum(patterns.length)]
+		return patternsToChooseFrom[
+			generateRandomNum(patternsToChooseFrom.length)
+		]
 	}
+}
+
+// generate a new pattern-from-code problem
+export async function generatePatternFromCodeProblem(
+	focusedTemplates: TemplateVariantTitle[],
+	templateStats: Stat<TemplateVariantTitle>[]
+): Promise<Problem<TemplateVariantTitle>> {
+	// any template with a less than 40% accuracy is weak
+	const weakTemplates: TemplateVariantTitle[] = getWeakest(templateStats)
+
+	const template = selectPattern(
+		focusedTemplates,
+		weakTemplates,
+		templateVariantTitles
+	)
+
+	const response = await ai.models.generateContent({
+		model: 'gemini-2.0-flash',
+		contents: `Generate a new pattern-from-code question that uses the ${template} template.`,
+		config: {
+			responseMimeType: 'application/json',
+			responseSchema: {
+				type: Type.OBJECT,
+				properties: {
+					codeSnippet: {
+						type: Type.STRING,
+						description:
+							'A Python-style pseudocode snippet (20–40 lines), no markdown.',
+					},
+					answerOptions: {
+						type: Type.ARRAY,
+						description: 'An array of 4 template variant names.',
+						items: {
+							type: Type.STRING,
+						},
+						minItems: '4',
+						maxItems: '4',
+					},
+					correctAnswer: {
+						type: Type.STRING,
+						description: 'Must match one value from answerOptions.',
+					},
+					explanation: {
+						type: Type.STRING,
+						description:
+							'Markdown explanation of the correct pattern.',
+					},
+				},
+				required: [
+					'codeSnippet',
+					'answerOptions',
+					'correctAnswer',
+					'explanation',
+				],
+			},
+			systemInstruction: generate_pattern_from_code_sys_instr,
+		},
+	})
+
+	const resText = response.text
+	const resObj = JSON.parse(resText as string)
+
+	const options: TemplateVariantTitle[] = shuffle(resObj.answerOptions)
+
+	const problem: Problem<TemplateVariantTitle> = {
+		prompt: resObj.codeSnippet,
+		options: options,
+		answer: {
+			correct: resObj.correctAnswer,
+			explanation: resObj.explanation,
+			leetcodeUrl: '',
+			leetcodeTitle: '',
+		},
+	}
+
+	return problem
 }
 
 export async function generateProblem(
 	focusedPatterns: Pattern[],
-	patternStats: PatternStat[]
-): Promise<Problem> {
+	patternStats: Stat<Pattern>[]
+): Promise<Problem<Pattern>> {
 	// any pattern with a less than 40% accuracy is weak
-	const weakPatterns: Pattern[] = getWeakPatterns(patternStats)
+	const weakPatterns: Pattern[] = getWeakest(patternStats)
 
-	const pattern = selectPattern(focusedPatterns, weakPatterns)
+	const pattern = selectPattern(focusedPatterns, weakPatterns, patterns)
 
 	const response = await ai.models.generateContent({
 		model: 'gemini-2.0-flash',
@@ -110,7 +197,7 @@ export async function generateProblem(
 
 	const leetcode_sample = getLeetcodeSample(resObj.correctPattern)
 
-	const problem: Problem = {
+	const problem: Problem<Pattern> = {
 		prompt: resObj.problem,
 		options: options as Pattern[],
 		answer: {

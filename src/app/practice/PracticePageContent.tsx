@@ -8,7 +8,7 @@ import SyncLoader from 'react-spinners/SyncLoader'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Sheet, SheetTrigger } from '@/components/ui/sheet'
 import { BotMessageSquare } from 'lucide-react'
-import ThemeSwitch from '@/components/ThemeSwitch'
+import { patternColors } from '@/utils/Consts'
 
 export default function PracticePageContent() {
 	const { user, isLoading } = useAuth()
@@ -84,7 +84,16 @@ export default function PracticePageContent() {
 													(pattern) => (
 														<span
 															key={pattern}
-															className="border-theme-orange border-1 whitespace-nowrap px-3 py-1 rounded-full"
+															className="whitespace-nowrap px-3 py-1 rounded-full border"
+															style={{
+																borderColor:
+																	patternColors[
+																		pattern
+																	],
+																color: patternColors[
+																	pattern
+																],
+															}}
 														>
 															{pattern}
 														</span>
@@ -104,7 +113,10 @@ export default function PracticePageContent() {
 							</div>
 
 							{/* Problem Area */}
-							<ProblemArea focusedPatterns={focusedPatterns} />
+							<ProblemArea
+								focusedPatterns={focusedPatterns}
+								isPatternFromTemplate={false}
+							/>
 						</motion.div>
 					)}
 				</AnimatePresence>

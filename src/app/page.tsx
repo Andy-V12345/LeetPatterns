@@ -14,7 +14,6 @@ import {
 	Boxes,
 	ChartNoAxesCombined,
 	CheckCircle,
-	XCircle,
 	PiggyBank,
 } from 'lucide-react'
 

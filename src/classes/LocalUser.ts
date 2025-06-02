@@ -1,12 +1,12 @@
 import { AppUser } from '@/interfaces/AppUser'
-import { PatternStat } from '@/interfaces/PatternStat'
 import { PrevSession } from '@/interfaces/PrevSession'
 import { ProfileInfo } from '@/interfaces/ProfileInfo'
 import { Pattern } from '@/utils/Types'
-import { getWeakPatterns } from '@/utils/UtilFunctions'
+import { getWeakest } from '@/utils/UtilFunctions'
 import { redirect } from 'next/navigation'
 import { areConsecutiveDays } from '@/utils/UtilFunctions'
 import { Note } from '@/interfaces/Note'
+import Stat from '@/interfaces/Stat'
 
 const NOTES_KEY = 'userNotes'
 
@@ -173,14 +173,18 @@ export class LocalUser implements AppUser {
 
 	async savePrevSession(
 		focusedPatterns: Pattern[],
-		patternStats: PatternStat[]
+		patternStats: Stat<Pattern>[]
 	): Promise<void> {
 		if (typeof window !== 'undefined') {
-			const weakPatterns = getWeakPatterns(patternStats)
-			const prevSession: PrevSession = {
+			const weakPatterns = getWeakest(patternStats)
+			const prevSession = {
 				focusedPatterns,
 				weakPatterns,
-				patternStats,
+				patternStats: patternStats.map((stat) => ({
+					pattern: stat.name,
+					correct: stat.correct,
+					attempts: stat.attempts,
+				})),
 			}
 			localStorage.setItem('prevSession', JSON.stringify(prevSession))
 		}
@@ -191,7 +195,18 @@ export class LocalUser implements AppUser {
 			const storedSession = localStorage.getItem('prevSession')
 			if (storedSession) {
 				try {
-					const prevSession: PrevSession = JSON.parse(storedSession)
+					const prevSessionUnconverted = JSON.parse(storedSession)
+					const prevSession: PrevSession = {
+						focusedPatterns: prevSessionUnconverted.focusedPatterns,
+						weakPatterns: prevSessionUnconverted.weakPatterns,
+						patternStats: prevSessionUnconverted.patternStats.map(
+							(stat: any) => ({
+								name: stat.pattern,
+								correct: stat.correct,
+								attempts: stat.attempts,
+							})
+						),
+					}
 
 					return prevSession
 				} catch (error) {
@@ -203,12 +218,16 @@ export class LocalUser implements AppUser {
 		return null
 	}
 
-	async getPatternStats(): Promise<PatternStat[] | null> {
+	async getPatternStats(): Promise<Stat<Pattern>[] | null> {
 		if (typeof window !== 'undefined') {
 			const stored = localStorage.getItem('localPatternStats')
-			const existingStats: PatternStat[] = stored
-				? JSON.parse(stored)
-				: []
+			const existingStatsUnconverted = stored ? JSON.parse(stored) : []
+
+			const existingStats = existingStatsUnconverted.map((stat: any) => ({
+				name: stat.pattern,
+				correct: stat.correct,
+				attempts: stat.attempts,
+			}))
 
 			return existingStats
 		}
@@ -222,12 +241,18 @@ export class LocalUser implements AppUser {
 	): Promise<void> {
 		if (typeof window !== 'undefined') {
 			const stored = localStorage.getItem('localPatternStats')
-			const existingStats: PatternStat[] = stored
-				? JSON.parse(stored)
-				: []
+			const existingStatsUnconverted = stored ? JSON.parse(stored) : []
+
+			const existingStats: Stat<Pattern>[] = existingStatsUnconverted.map(
+				(stat: any) => ({
+					name: stat.pattern,
+					correct: stat.correct,
+					attempts: stat.attempts,
+				})
+			)
 
 			const existingIndex = existingStats.findIndex(
-				(stat) => stat.pattern === pattern
+				(stat) => stat.name === pattern
 			)
 
 			if (existingIndex !== -1) {
@@ -239,15 +264,21 @@ export class LocalUser implements AppUser {
 				}
 			} else {
 				existingStats.push({
-					pattern,
+					name: pattern,
 					correct: isCorrect ? 1 : 0,
 					attempts: 1,
 				})
 			}
 
+			const updatedStats = existingStats.map((stat) => ({
+				pattern: stat.name,
+				correct: stat.correct,
+				attempts: stat.attempts,
+			}))
+
 			localStorage.setItem(
 				'localPatternStats',
-				JSON.stringify(existingStats)
+				JSON.stringify(updatedStats)
 			)
 		}
 	}
