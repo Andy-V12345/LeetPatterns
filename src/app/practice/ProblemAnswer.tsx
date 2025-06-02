@@ -6,11 +6,12 @@ import { Skeleton } from '../../components/ui/skeleton'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { ArrowRight } from 'lucide-react'
 
-interface ProblemAnswerProps {
-	answer: Answer | null | undefined
+interface ProblemAnswerProps<T> {
+	answer: Answer<T> | null | undefined
 	createNewProblem: () => Promise<void>
 	showAnswer: boolean
 	cardState: ProblemCardState
+	isPatternFromTemplate: boolean
 }
 
 export const LeetcodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
@@ -47,12 +48,13 @@ export const LeetcodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
 	</svg>
 )
 
-export default function ProblemAnswer({
+export default function ProblemAnswer<T>({
 	answer,
 	createNewProblem,
 	showAnswer,
 	cardState,
-}: ProblemAnswerProps) {
+	isPatternFromTemplate,
+}: ProblemAnswerProps<T>) {
 	const handleNextQuestion = () => {
 		createNewProblem()
 	}
@@ -87,7 +89,7 @@ export default function ProblemAnswer({
 											Answer:{' '}
 										</strong>
 										<p className="inline">
-											{answer?.correct ?? ''}
+											{(answer.correct as string) ?? ''}
 										</p>
 									</span>
 									<ReactMarkdown>
@@ -118,19 +120,21 @@ export default function ProblemAnswer({
 						{/* Leetcode Problem Link and Next Question Button (does not grow) */}
 						{answer != null && cardState != 'loading' && (
 							<div className="flex flex-col gap-4">
-								<Link
-									href={answer.leetcodeUrl}
-									target="_blank"
-									className="flex flex-col gap-0 hover:opacity-50 transition-opacity w-fit"
-								>
-									<p className="text-foreground-fg text-sm">{`Practice ${answer.correct}:`}</p>
-									<div className="flex gap-1 items-center">
-										<LeetcodeIcon />
-										<p className="text-sm font-semibold">
-											{answer.leetcodeTitle}
-										</p>
-									</div>
-								</Link>
+								{!isPatternFromTemplate && (
+									<Link
+										href={answer.leetcodeUrl}
+										target="_blank"
+										className="flex flex-col gap-0 hover:opacity-50 transition-opacity w-fit"
+									>
+										<p className="text-foreground-fg text-sm">{`Practice ${answer.correct}:`}</p>
+										<div className="flex gap-1 items-center">
+											<LeetcodeIcon />
+											<p className="text-sm font-semibold">
+												{answer.leetcodeTitle}
+											</p>
+										</div>
+									</Link>
+								)}
 								<button
 									onClick={handleNextQuestion}
 									className="flex items-center gap-2 justify-center bg-gradient-to-r from-bright-theme-orange to-theme-orange hover:opacity-85 transition-all px-4 py-2 rounded-lg"

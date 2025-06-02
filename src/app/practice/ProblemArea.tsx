@@ -355,6 +355,9 @@ export default function ProblemArea<T>({
 											cardState={cardState}
 											answer={problem?.answer ?? null}
 											createNewProblem={createNewProblem}
+											isPatternFromTemplate={
+												isPatternFromTemplate
+											}
 										/>
 									</>
 								)}

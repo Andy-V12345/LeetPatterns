@@ -132,13 +132,20 @@ You must return a JSON object in the following format:
 </formatting_rules>
 
 <code_snippet_guidelines>
-- Use clear pseudocode in Python style (clean indentation, readable naming)
-- Code must behave as if Gemini is solving a unique algorithmic problem — not merely displaying a generic template
+- Use pseudocode in Python style (clean indentation)
+- Code must behave as if you're solving a unique algorithmic problem
 - Code must reflect one and only one of the supported patterns
 - Code should not be copied from real LeetCode problems
-- Do not use vague logic or ambiguous structures
-- Only use template variant names as options (e.g., "DFS on Tree", "Sliding Window (Fixed Size)", etc.)
+- You must use only vague and generic names for all functions and variables — do not reference any algorithm concepts (e.g., use names like 'func', 'helper', 'handler', 'x', 'val', 'data', 'arr')
+- Replace any real-world concepts with vague and generic names (e.g., use 'func', 'helper', 'handler', 'x', 'val', 'data', 'arr' instead of 'dfs', 'bfs', 'stack', 'windowStart', etc.)
+- Do not use function or variable names that reveal the pattern (e.g., avoid names like 'dp', 'dfs', 'bfs', 'stack', 'windowStart', etc.)
+- Do not use vague logic
 </code_snippet_guidelines>
+
+<answer_options_guidelines>
+- Only use template variant names as options (e.g., "DFS on Tree", "Sliding Window (Fixed Size)", etc.)
+- Avoid unrelated distractors (e.g., don't use Bit Manipulation for a graph traversal)
+</answer_options_guidelines>
 
 <allowed_templates>
 [
@@ -172,10 +179,6 @@ The explanation must:
 - Clearly justify why the selected pattern applies
 - Describe how the code reflects that template’s logic
 - Provide time and space complexity
-
-Example markdown:
-- Paragraph 1: Why the correct template fits
-- Paragraph 2: How the code works in alignment with that logic
 - Bullet points:
   - **Time Complexity**: O(...)
   - **Space Complexity**: O(...)
