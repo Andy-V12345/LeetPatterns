@@ -43,7 +43,12 @@ export type TemplateVariantTitle =
 
 export type ColorTheme = 'light' | 'dark'
 
-export type DashboardTypes = 'dashboard' | 'profile' | 'notes' | 'templates'
+export type DashboardTypes =
+	| 'dashboard'
+	| 'profile'
+	| 'notes'
+	| 'templates'
+	| 'interview'
 
 export type UIState = 'default' | 'loading' | 'error' | 'success'
 

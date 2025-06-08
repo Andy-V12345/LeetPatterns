@@ -9,12 +9,17 @@ import { useAuth } from '@/components/AuthContext'
 import SyncLoader from 'react-spinners/SyncLoader'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
+import { addToInterviewWaitlist } from '@/utils/FirebaseFunctions'
 import {
 	BotMessageSquare,
 	Boxes,
 	ChartNoAxesCombined,
 	CheckCircle,
 	PiggyBank,
+	Video,
+	UserCircle,
+	Mic,
+	ClipboardCheck,
 } from 'lucide-react'
 
 const LinkedInIcon = () => (
@@ -86,6 +91,11 @@ export default function Home() {
 	const isMobile = useIsMobile()
 	const { user, isLoading } = useAuth()
 	const [videoLoaded, setVideoLoaded] = useState(false)
+	const [email, setEmail] = useState('')
+	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [submitStatus, setSubmitStatus] = useState<
+		'idle' | 'success' | 'error'
+	>('idle')
 
 	const features = [
 		{
@@ -104,6 +114,25 @@ export default function Home() {
 				'Track your learning journey with detailed progress metrics and personalized recommendations.',
 		},
 	]
+
+	const handleWaitlistSubmit = async (e: React.FormEvent) => {
+		e.preventDefault()
+		if (!email) return
+
+		setIsSubmitting(true)
+		setSubmitStatus('idle')
+
+		const success = await addToInterviewWaitlist(email)
+
+		if (success) {
+			setSubmitStatus('success')
+			setEmail('')
+		} else {
+			setSubmitStatus('error')
+		}
+
+		setIsSubmitting(false)
+	}
 
 	return (
 		<div
@@ -211,10 +240,10 @@ export default function Home() {
 						style={{
 							background: `linear-gradient(180deg,
 								var(--background) 0%,
-								color-mix(in srgb, var(--theme-orange) 20%, var(--background)) 20%,
-								color-mix(in srgb, var(--theme-orange) 25%, var(--background)) 30%,
-								color-mix(in srgb, var(--theme-orange) 20%, var(--background)) 35%,
-								var(--background) 55%)`,
+								color-mix(in srgb, var(--leet-purple) 20%, var(--background)) 20%,
+								color-mix(in srgb, var(--leet-purple) 25%, var(--background)) 30%,
+								color-mix(in srgb, var(--leet-purple) 20%, var(--background)) 40%,
+								var(--background) 65%)`,
 						}}
 					>
 						{/* Features Section */}
@@ -233,7 +262,7 @@ export default function Home() {
 								{features.map((feature, index) => (
 									<motion.div
 										key={feature.title}
-										className="p-8 rounded-xl bg-background/80 backdrop-blur-sm border border-theme-orange/50 hover:border-theme-orange/40 hover:shadow-lg hover:shadow-theme-orange/30"
+										className="p-8 rounded-xl bg-background/80 backdrop-blur-sm border border-theme-orange/50"
 										initial={{ opacity: 0, y: 50 }}
 										whileInView={{ opacity: 1, y: 0 }}
 										viewport={{ once: true, amount: 0.3 }}
@@ -244,7 +273,7 @@ export default function Home() {
 									>
 										{feature.title ===
 											'Pattern Recognition' && (
-											<div className="w-14 h-14 rounded-lg bg-blue-500/10 flex items-center justify-center mb-6">
+											<div className="w-14 h-14 rounded-lg bg-leet-blue/10 flex items-center justify-center mb-6">
 												<Boxes
 													size={35}
 													className="text-blue-500 mb-0"
@@ -253,7 +282,7 @@ export default function Home() {
 										)}
 										{feature.title ===
 											'Interactive Learning' && (
-											<div className="w-14 h-14 rounded-lg bg-purple-500/10 flex items-center justify-center mb-6">
+											<div className="w-14 h-14 rounded-lg bg-leet-purple/10 flex items-center justify-center mb-6">
 												<BotMessageSquare
 													size={35}
 													className="text-purple-500 mb-0"
@@ -262,7 +291,7 @@ export default function Home() {
 										)}
 										{feature.title ===
 											'Progress Tracking' && (
-											<div className="w-14 h-14 rounded-lg bg-emerald-500/10 flex items-center justify-center mb-6">
+											<div className="w-14 h-14 rounded-lg bg-leet-blue/10 flex items-center justify-center mb-6">
 												<ChartNoAxesCombined
 													size={35}
 													className="text-emerald-500 mb-0"
@@ -280,12 +309,150 @@ export default function Home() {
 							</div>
 						</div>
 
+						{/* Interview Features Section */}
+						<div className="max-w-6xl mx-auto">
+							<h2
+								className={`text-4xl font-bold text-center mb-4 text-theme-hover-orange`}
+							>
+								Coming Soon: Leet Interview
+							</h2>
+							<p className="text-center text-foreground mb-16 max-w-2xl mx-auto">
+								Master your interview skills with Leet
+							</p>
+
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+								{[
+									{
+										title: 'AI-Powered Mock Interviews',
+										description:
+											'Practice with our advanced AI interviewer that adapts to your responses and provides real-time feedback',
+										icon: Video,
+										iconColor: '#3B82F6',
+										bgColor: 'rgba(59, 130, 246, 0.1)',
+									},
+									{
+										title: 'Customizable Interviewer Personality',
+										description:
+											'Choose from different interviewer personalities - from an Amazon SDE to a startup founder',
+										icon: UserCircle,
+										iconColor: '#8B5CF6',
+										bgColor: 'rgba(139, 92, 246, 0.1)',
+									},
+									{
+										title: 'Voice-Based Practice',
+										description:
+											'Practice speaking through your thought process out loud, just like in a real interview, with real-time voice recognition and feedback',
+										icon: Mic,
+										iconColor: '#EC4899',
+										bgColor: 'rgba(236, 72, 153, 0.1)',
+									},
+									{
+										title: 'Comprehensive Interview Analysis',
+										description:
+											'Get detailed feedback on your entire interview performance, including code quality, test case coverage, communication skills, and interaction with the interviewer',
+										icon: ClipboardCheck,
+										iconColor: '#10B981',
+										bgColor: 'rgba(16, 185, 129, 0.1)',
+									},
+								].map((feature, index) => (
+									<motion.div
+										key={feature.title}
+										className="p-8 rounded-xl bg-background/80 backdrop-blur-sm"
+										style={{
+											border: '1px solid rgba(96, 165, 250, 0.4)',
+											transition: 'all 0.2s ease-in-out',
+										}}
+										initial={{ opacity: 0, y: 50 }}
+										whileInView={{ opacity: 1, y: 0 }}
+										viewport={{ once: true, amount: 0.3 }}
+										transition={{
+											duration: 0.6,
+											ease: 'easeOut',
+											delay: index * 0.1,
+										}}
+									>
+										<div
+											className="w-14 h-14 rounded-lg flex items-center justify-center mb-6"
+											style={{
+												backgroundColor:
+													feature.bgColor,
+											}}
+										>
+											<feature.icon
+												size={35}
+												style={{
+													color: feature.iconColor,
+												}}
+												className="mb-0"
+											/>
+										</div>
+										<h3 className="text-xl font-semibold mb-4 bg-gradient-to-r from-leet-blue to-leet-purple bg-clip-text text-transparent w-fit">
+											{feature.title}
+										</h3>
+										<p className="text-muted-foreground leading-relaxed">
+											{feature.description}
+										</p>
+									</motion.div>
+								))}
+							</div>
+						</div>
+
+						{/* Waitlist Form */}
+						<div className="flex flex-col items-center justify-center gap-10 w-full max-w-4xl mx-auto text-center">
+							<div className="space-y-4">
+								<h3 className="text-4xl font-bold bg-gradient-to-r from-leet-blue to-leet-purple bg-clip-text text-transparent">
+									Join the Waitlist
+								</h3>
+								<p className="text-foreground">
+									Be the first to know when Leet Interview
+									launches
+								</p>
+							</div>
+							<form
+								onSubmit={handleWaitlistSubmit}
+								className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full"
+							>
+								<div className="relative flex-1 max-w-md w-full">
+									<input
+										type="email"
+										placeholder="Enter your email"
+										value={email}
+										onChange={(e) =>
+											setEmail(e.target.value)
+										}
+										className="w-full px-4 py-3 rounded-xl bg-background/80 backdrop-blur-sm border border-blue-400 focus:border-theme-orange focus:outline-none focus:ring-2 focus:ring-theme-orange/20 [&:-webkit-autofill]:!bg-background/80"
+										required
+									/>
+									{submitStatus === 'success' && (
+										<p className="text-correct-green text-sm mt-2">
+											Successfully joined the waitlist!
+										</p>
+									)}
+									{submitStatus === 'error' && (
+										<p className="text-wrong-red text-sm mt-2">
+											Failed to join waitlist. Please try
+											again.
+										</p>
+									)}
+								</div>
+								<button
+									type="submit"
+									disabled={isSubmitting || !email.trim()}
+									className="px-6 py-3 rounded-xl bg-gradient-to-r from-leet-blue to-leet-purple text-white font-semibold transition-opacity whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-50"
+								>
+									{isSubmitting
+										? 'Joining...'
+										: 'Join Waitlist'}
+								</button>
+							</form>
+						</div>
+
 						{/* Pricing Section */}
 						<div className="w-full flex flex-col items-center justify-center">
 							<h2 className="text-4xl font-bold text-theme-hover-orange mb-4">
 								Simple Pricing
 							</h2>
-							<p className="text-foreground mb-10 text-center max-w-xl">
+							<p className="text-foreground mb-16 text-center max-w-xl">
 								LeetPatterns.ai is{' '}
 								<span className="font-semibold text-theme-orange">
 									completely free

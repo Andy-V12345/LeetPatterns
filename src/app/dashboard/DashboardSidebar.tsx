@@ -11,7 +11,14 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { House, User, NotebookPen, Code, MessageSquareText } from 'lucide-react'
+import {
+	House,
+	User,
+	NotebookPen,
+	Code,
+	MessageSquareText,
+	Video,
+} from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { DashboardTypes, UIState } from '@/utils/Types'
 import { useAuth } from '@/components/AuthContext'
@@ -27,6 +34,7 @@ export default function DashboardSidebar() {
 		if (pathname.includes('/dashboard/profile')) return 'profile'
 		if (pathname.includes('/dashboard/notes')) return 'notes'
 		if (pathname.includes('/dashboard/templates')) return 'templates'
+		if (pathname.includes('/dashboard/interview')) return 'interview'
 		return 'dashboard'
 	})
 	const [uiState, setUiState] = useState<UIState>('default')
@@ -40,6 +48,8 @@ export default function DashboardSidebar() {
 			setSelection('notes')
 		} else if (pathname.includes('/dashboard/templates')) {
 			setSelection('templates')
+		} else if (pathname.includes('/dashboard/interview')) {
+			setSelection('interview')
 		} else {
 			setSelection('dashboard')
 		}

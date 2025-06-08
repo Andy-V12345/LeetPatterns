@@ -1,4 +1,11 @@
-import { deleteField, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import {
+	deleteField,
+	doc,
+	getDoc,
+	setDoc,
+	updateDoc,
+	arrayUnion,
+} from 'firebase/firestore'
 import { increment } from 'firebase/firestore'
 import { db } from './FirebaseConfig'
 import { FirebaseUser } from '@/classes/FirebaseUser'
@@ -14,6 +21,7 @@ const PATTERN_STATS_COLLECTION = 'patternStats'
 const PREV_SESSION_COLLECTION = 'prevSessions'
 const STREAKS_COLLECTION = 'streaks'
 const NOTES_COLLECTION = 'notes'
+const MISC_COLLECTION = 'misc'
 
 /**
  * Gets the focused patterns of a user
@@ -285,4 +293,27 @@ export async function deleteNoteFirestore(uid: string, note: Note) {
 	await updateDoc(docRef, {
 		[`${note.pattern}`]: deleteField(),
 	})
+}
+
+export async function addToInterviewWaitlist(email: string): Promise<boolean> {
+	try {
+		const docRef = doc(db, MISC_COLLECTION, 'interview_waitlist')
+		const docSnap = await getDoc(docRef)
+
+		if (!docSnap.exists()) {
+			// Create the document with an empty emails array if it doesn't exist
+			await setDoc(docRef, {
+				emails: [email],
+			})
+		} else {
+			// Update existing document
+			await updateDoc(docRef, {
+				emails: arrayUnion(email),
+			})
+		}
+		return true
+	} catch (error) {
+		console.error('Error adding to waitlist:', error)
+		return false
+	}
 }
