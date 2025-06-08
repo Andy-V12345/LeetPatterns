@@ -1,9 +1,10 @@
-import { PatternStat } from '@/interfaces/PatternStat'
 import StatCircle from '../../components/StatCircle'
 import { useIsMobile } from '@/hooks/use-mobile'
+import Stat from '@/interfaces/Stat'
+import { Pattern } from '@/utils/Types'
 
 interface RecapCardProps {
-	patternStats: PatternStat[]
+	patternStats: Stat<Pattern>[]
 	createNewProblem: () => void
 }
 
@@ -31,7 +32,7 @@ export default function RecapCard({
 				>
 					{patternStats.map((stat, i) => (
 						<StatCircle
-							key={stat.pattern + i}
+							key={stat.name + i}
 							stat={stat}
 							size={'size-30'}
 							strokeWidth={6}

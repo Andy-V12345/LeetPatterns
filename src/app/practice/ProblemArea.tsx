@@ -1,20 +1,31 @@
 import Problem from '@/interfaces/Problem'
 import ProblemCard from './ProblemCard'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Pattern, ProblemCardState } from '@/utils/Types'
+import {
+	Pattern,
+	ProblemCardState,
+	TemplateVariantTitle,
+	UIState,
+} from '@/utils/Types'
 import ProblemAnswer from './ProblemAnswer'
-import { generateProblem } from '@/utils/GeminiFunctions'
+import {
+	generatePatternFromCodeProblem,
+	generateProblem,
+} from '@/utils/GeminiFunctions'
 import RecapCard from './RecapCard'
 import { motion, AnimatePresence } from 'framer-motion'
-import { PatternStat } from '@/interfaces/PatternStat'
 import SyncLoader from 'react-spinners/SyncLoader'
 import { useAuth } from '../../components/AuthContext'
 import { calculateTotalAttempts } from '@/utils/UtilFunctions'
 import { useIsMobile } from '@/hooks/use-mobile'
 import FlippableCard from './FlippableCard'
+import ChatSheet from './ChatSheet'
+import { useGeminiChat } from '@/hooks/useGeminiChat'
+import Stat from '@/interfaces/Stat'
 
-interface ProblemAreaProps {
-	focusedPatterns: Pattern[] | undefined | null
+interface ProblemAreaProps<T> {
+	focusedPatterns: T[] | undefined | null
+	isPatternFromTemplate: boolean
 }
 
 const cardTransition = {
@@ -23,59 +34,104 @@ const cardTransition = {
 	visualDuration: 0.4,
 }
 
-export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
+export default function ProblemArea<T>({
+	focusedPatterns,
+	isPatternFromTemplate,
+}: ProblemAreaProps<T>) {
 	const hasCreatedInitialProblem = useRef(false)
 	const [cardState, setCardState] = useState<ProblemCardState>('default')
 	const [showAnswer, setShowAnswer] = useState(false)
-	const [problem, setProblem] = useState<Problem | null>()
+	const [problem, setProblem] = useState<Problem<T> | null>()
 	const [questionCount, setQuestionCount] = useState(0)
 	const [showRecap, setShowRecap] = useState(false)
-	const [patternStats, setPatternStats] = useState<PatternStat[]>([])
-	const [problemQ, setProblemQ] = useState<Problem[]>([])
+	const [patternStats, setPatternStats] = useState<Stat<T>[]>([])
+	const [problemQ, setProblemQ] = useState<Problem<T>[]>([])
 	const [firstLoad, setFirstLoad] = useState(true)
 	const [selected, setSelected] = useState<string | null>(null)
+	const [uiState, setUiState] = useState<UIState>('default')
+	const [error, setError] = useState('')
 
 	const { user } = useAuth()
+	const { prevSession, setPrevSession, sendMessage, liveResponse } =
+		useGeminiChat<T>()
 
 	const isMobile = useIsMobile()
 
 	const preloadProblems = useCallback(async () => {
-		if (focusedPatterns && problemQ.length < 2) {
-			const next = await generateProblem(focusedPatterns, patternStats)
-			setProblemQ((prev) => [...prev, next])
+		if (problemQ.length < 2) {
+			try {
+				if (isPatternFromTemplate) {
+					const next = await generatePatternFromCodeProblem(
+						focusedPatterns as TemplateVariantTitle[],
+						patternStats as Stat<TemplateVariantTitle>[]
+					)
+
+					setProblemQ((prev) => [...prev, next as Problem<T>])
+				} else {
+					const next = await generateProblem(
+						focusedPatterns as Pattern[],
+						patternStats as Stat<Pattern>[]
+					)
+
+					setProblemQ((prev) => [...prev, next as Problem<T>])
+				}
+			} catch (error) {
+				console.error('Error in preloadProblems():', error)
+				setCardState('default')
+				setUiState('error')
+				setError('Connection lost')
+			}
 		}
 	}, [focusedPatterns, problemQ, patternStats])
 
 	const createNewProblem = useCallback(async () => {
-		if (focusedPatterns != null && !showRecap) {
-			if (questionCount > 0 && questionCount % 5 == 0) {
+		setPrevSession([]) // clears the chat history
+		setSelected(null)
+		if (!showRecap) {
+			if (
+				!isPatternFromTemplate &&
+				questionCount > 0 &&
+				questionCount % 5 == 0
+			) {
 				setShowRecap(true)
 			} else {
 				setCardState('loading')
 				let nextProblem = problemQ[0]
-
 				setShowAnswer(false)
+
 				if (nextProblem) {
 					setProblem(nextProblem)
 					setProblemQ((prev) => prev.slice(1))
 					setQuestionCount((prev) => {
 						return prev + 1
 					})
+					preloadProblems()
 				} else {
 					setQuestionCount((prev) => {
 						return prev + 1
 					})
-					nextProblem = await generateProblem(
-						focusedPatterns as Pattern[],
-						patternStats
-					)
-					setProblem(nextProblem)
+					preloadProblems()
+					try {
+						if (isPatternFromTemplate) {
+							nextProblem = (await generatePatternFromCodeProblem(
+								focusedPatterns as TemplateVariantTitle[],
+								patternStats as Stat<TemplateVariantTitle>[]
+							)) as Problem<T>
+						} else {
+							nextProblem = (await generateProblem(
+								focusedPatterns as Pattern[],
+								patternStats as Stat<Pattern>[]
+							)) as Problem<T>
+						}
+						setProblem(nextProblem)
+					} catch (error) {
+						console.error('Error in createNewProblem():', error)
+						setCardState('default')
+						setUiState('error')
+						setError('Connection lost')
+					}
 				}
-
-				preloadProblems()
 			}
-		} else if (focusedPatterns == null) {
-			console.error('focusedPatterns undefined')
 		} else if (showRecap) {
 			setCardState('loading')
 			setShowRecap(false)
@@ -89,18 +145,32 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				setQuestionCount((prev) => {
 					return prev + 1
 				})
+				preloadProblems()
 			} else {
 				setQuestionCount((prev) => {
 					return prev + 1
 				})
-				nextProblem = await generateProblem(
-					focusedPatterns as Pattern[],
-					patternStats
-				)
-				setProblem(nextProblem)
+				preloadProblems()
+				try {
+					if (isPatternFromTemplate) {
+						nextProblem = (await generatePatternFromCodeProblem(
+							focusedPatterns as TemplateVariantTitle[],
+							patternStats as Stat<TemplateVariantTitle>[]
+						)) as Problem<T>
+					} else {
+						nextProblem = (await generateProblem(
+							focusedPatterns as Pattern[],
+							patternStats as Stat<Pattern>[]
+						)) as Problem<T>
+					}
+					setProblem(nextProblem)
+				} catch (error) {
+					console.error('Error in createNewProblem():', error)
+					setCardState('default')
+					setUiState('error')
+					setError('Connection lost')
+				}
 			}
-
-			preloadProblems()
 		}
 	}, [
 		focusedPatterns,
@@ -112,11 +182,11 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 	])
 
 	const updatePatternStats = useCallback(
-		async (pattern: Pattern, isCorrect: boolean) => {
+		async (pattern: T, isCorrect: boolean) => {
 			const updatedStats = patternStats
 
 			const existingIndex = updatedStats.findIndex(
-				(stat) => stat.pattern === pattern
+				(stat) => stat.name === pattern
 			)
 
 			if (existingIndex !== -1) {
@@ -128,14 +198,14 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				}
 			} else {
 				updatedStats.push({
-					pattern,
+					name: pattern,
 					correct: isCorrect ? 1 : 0,
 					attempts: 1,
 				})
 			}
 
-			if (user) {
-				await user!.updatePatternStats(pattern, isCorrect)
+			if (!isPatternFromTemplate && user) {
+				await user!.updatePatternStats(pattern as Pattern, isCorrect)
 			}
 
 			setPatternStats(updatedStats)
@@ -143,23 +213,30 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 		[user]
 	)
 
+	const handleRetry = () => {
+		setUiState('default')
+		setFirstLoad(true)
+		createNewProblem()
+	}
+
 	useEffect(() => {
-		if (
-			focusedPatterns != null &&
-			!problem &&
-			!hasCreatedInitialProblem.current
-		) {
+		if (problem) {
+			setCardState('default')
+			setFirstLoad(false)
+		} else if (!problem && !hasCreatedInitialProblem.current) {
 			hasCreatedInitialProblem.current = true
-			preloadProblems()
 			createNewProblem()
 		}
-	}, [focusedPatterns, problem])
+	}, [problem])
 
 	const saveSession = useCallback(async () => {
-		if (user && focusedPatterns) {
-			await user.savePrevSession(focusedPatterns, patternStats)
+		if (!isPatternFromTemplate && user) {
+			await user.savePrevSession(
+				focusedPatterns as Pattern[],
+				patternStats as Stat<Pattern>[]
+			)
 		}
-	}, [focusedPatterns, user, patternStats])
+	}, [focusedPatterns, user, patternStats, isPatternFromTemplate])
 
 	useEffect(() => {
 		return () => {
@@ -171,20 +248,13 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 		}
 	}, [user, focusedPatterns, patternStats])
 
-	useEffect(() => {
-		if (problem) {
-			setCardState('default')
-			setFirstLoad(false)
-		}
-	}, [problem])
-
 	return (
 		<div
 			className={`self-stretch h-full relative ${isMobile ? 'overflow-y-scroll' : ''}`}
 		>
 			<AnimatePresence mode="wait">
 				{/* Initial Loading */}
-				{firstLoad && (
+				{firstLoad && uiState == 'default' && (
 					<motion.div
 						key="load-div"
 						className="flex flex-col justify-center items-center gap-5 h-full relative"
@@ -204,8 +274,35 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 					</motion.div>
 				)}
 
+				{uiState == 'error' && (
+					<motion.div
+						key="error-div"
+						className="flex flex-col justify-center items-center gap-5 h-full relative"
+						initial={{ opacity: 1 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.2 }}
+					>
+						<div className="flex flex-col justify-center gap-2">
+							<p className="font-medium text-base text-wrong-red">
+								{error}
+							</p>
+
+							<button
+								onClick={handleRetry}
+								className="px-3 py-2 text-sm text-wrong-red rounded-lg hover:opacity-75 transition-all"
+								style={{
+									backgroundColor: 'rgba(255, 0, 84, 0.2)',
+								}}
+							>
+								Retry
+							</button>
+						</div>
+					</motion.div>
+				)}
+
 				{/* Problem Card */}
-				{!firstLoad && !showRecap && (
+				{!firstLoad && uiState != 'error' && !showRecap && (
 					<motion.div
 						key={`problem-${questionCount}`}
 						initial={{ x: '100%', opacity: 0 }}
@@ -215,7 +312,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 							opacity: 0,
 						}}
 						transition={cardTransition}
-						className={`flex self-stretch w-full ${isMobile ? `flex-col p-2 h-full` : 'h-4/5 max-h-[600px]'} gap-5 relative`}
+						className={`flex self-stretch w-full ${isMobile ? `flex-col p-2 h-full` : 'h-10/12 max-h-[600px]'} gap-5 relative`}
 						style={{
 							perspective: '1000px',
 						}}
@@ -231,6 +328,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 								createNewProblem={createNewProblem}
 								selected={selected}
 								setSelected={setSelected}
+								isPatternFromTemplate={isPatternFromTemplate}
 							/>
 						) : (
 							<>
@@ -248,12 +346,18 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 											}
 											selected={selected}
 											setSelected={setSelected}
+											isPatternFromTemplate={
+												isPatternFromTemplate
+											}
 										/>
 										<ProblemAnswer
 											showAnswer={showAnswer}
 											cardState={cardState}
 											answer={problem?.answer ?? null}
 											createNewProblem={createNewProblem}
+											isPatternFromTemplate={
+												isPatternFromTemplate
+											}
 										/>
 									</>
 								)}
@@ -263,7 +367,7 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 				)}
 
 				{/* Recap Card */}
-				{showRecap && (
+				{!isPatternFromTemplate && showRecap && (
 					<motion.div
 						key="recap"
 						initial={{ x: '100%', opacity: 0 }}
@@ -273,12 +377,22 @@ export default function ProblemArea({ focusedPatterns }: ProblemAreaProps) {
 						className="w-full h-full"
 					>
 						<RecapCard
-							patternStats={patternStats}
+							patternStats={patternStats as Stat<Pattern>[]}
 							createNewProblem={createNewProblem}
 						/>
 					</motion.div>
 				)}
 			</AnimatePresence>
+
+			<ChatSheet
+				messages={prevSession}
+				setMessages={setPrevSession}
+				liveResponse={liveResponse}
+				sendMessage={sendMessage}
+				cardState={cardState}
+				showRecap={showRecap}
+				problem={problem as Problem<T>}
+			/>
 		</div>
 	)
 }

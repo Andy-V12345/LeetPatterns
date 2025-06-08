@@ -1,17 +1,19 @@
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { deleteField, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { increment } from 'firebase/firestore'
 import { db } from './FirebaseConfig'
 import { FirebaseUser } from '@/classes/FirebaseUser'
-import { PatternStat } from '@/interfaces/PatternStat'
 import { Pattern } from './Types'
 import { PrevSession } from '@/interfaces/PrevSession'
-import { areConsecutiveDays, getWeakPatterns } from './UtilFunctions'
+import { areConsecutiveDays, getWeakest } from './UtilFunctions'
+import { Note } from '@/interfaces/Note'
+import Stat from '@/interfaces/Stat'
 
 const FOCUSED_PATTERNS_COLLECTION = 'focusedPatterns'
 const USER_INFO_COLLECTION = 'users'
 const PATTERN_STATS_COLLECTION = 'patternStats'
 const PREV_SESSION_COLLECTION = 'prevSessions'
 const STREAKS_COLLECTION = 'streaks'
+const NOTES_COLLECTION = 'notes'
 
 /**
  * Gets the focused patterns of a user
@@ -97,7 +99,7 @@ export async function updatePatternStatsFirestore(
 
 export async function getPatternStatsFirestore(
 	uid: string
-): Promise<PatternStat[]> {
+): Promise<Stat<Pattern>[]> {
 	const docRef = doc(db, PATTERN_STATS_COLLECTION, uid)
 	const docSnap = await getDoc(docRef)
 
@@ -106,13 +108,13 @@ export async function getPatternStatsFirestore(
 	}
 
 	const data = docSnap.data()
-	const patternStats: PatternStat[] = Object.entries(data).map(
+	const patternStats: Stat<Pattern>[] = Object.entries(data).map(
 		([pattern, stats]) =>
 			({
-				pattern,
+				name: pattern,
 				correct: stats.correct ?? 0,
 				attempts: stats.attempts ?? 0,
-			}) as PatternStat
+			}) as Stat<Pattern>
 	)
 
 	return patternStats
@@ -127,7 +129,11 @@ export async function getPrevSessionFirestore(
 	if (docSnap.exists()) {
 		const data = docSnap.data()
 		const prevSession: PrevSession = {
-			patternStats: data.patternStats,
+			patternStats: data.patternStats.map((stat: any) => ({
+				name: stat.pattern,
+				correct: stat.correct,
+				attempts: stat.attempts,
+			})),
 			weakPatterns: data.weakPatterns,
 			focusedPatterns: data.focusedPatterns,
 		}
@@ -141,14 +147,18 @@ export async function getPrevSessionFirestore(
 export async function setPrevSession(
 	uid: string,
 	focusedPatterns: Pattern[],
-	patternStats: PatternStat[]
+	patternStats: Stat<Pattern>[]
 ) {
 	const docRef = doc(db, PREV_SESSION_COLLECTION, uid)
 	await setDoc(
 		docRef,
 		{
-			weakPatterns: getWeakPatterns(patternStats),
-			patternStats: patternStats,
+			weakPatterns: getWeakest(patternStats),
+			patternStats: patternStats.map((stat) => ({
+				pattern: stat.name,
+				correct: stat.correct,
+				attempts: stat.attempts,
+			})),
 			focusedPatterns: focusedPatterns,
 		},
 		{
@@ -219,4 +229,60 @@ export async function getStreakFirestore(uid: string): Promise<{
 		longestStreak: 0,
 		curStreak: 0,
 	}
+}
+
+export async function saveNoteFirestore(uid: string, note: Note) {
+	const docRef = doc(db, NOTES_COLLECTION, uid)
+
+	await setDoc(
+		docRef,
+		{
+			[`${note.pattern}`]: {
+				pattern: note.pattern,
+				text: note.text,
+			},
+		},
+		{
+			merge: true,
+		}
+	)
+}
+
+export async function getNotesFirestore(uid: string): Promise<Note[]> {
+	const docRef = doc(db, NOTES_COLLECTION, uid)
+	const docSnap = await getDoc(docRef)
+
+	if (!docSnap.exists()) {
+		return []
+	}
+
+	const data = docSnap.data() as { [key: string]: Note }
+	const notes: Note[] = []
+
+	// Iterate through each key in the document's data.
+	for (const key in data) {
+		if (data.hasOwnProperty(key)) {
+			notes.push(data[key])
+		}
+	}
+
+	// Sort alphabetically by pattern name.
+	notes.sort((a, b) => a.pattern.localeCompare(b.pattern))
+
+	return notes
+}
+
+export async function deleteNoteFirestore(uid: string, note: Note) {
+	const docRef = doc(db, NOTES_COLLECTION, uid)
+
+	// Check if the document exists before updating
+	const docSnap = await getDoc(docRef)
+	if (!docSnap.exists()) {
+		return
+	}
+
+	// Delete the note by setting its field value to a delete sentinel.
+	await updateDoc(docRef, {
+		[`${note.pattern}`]: deleteField(),
+	})
 }

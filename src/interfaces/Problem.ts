@@ -1,8 +1,7 @@
-import { Pattern } from "@/utils/Types";
-import { Answer } from "./Answer";
+import { Answer } from './Answer'
 
-export default interface Problem {
-    prompt: string,
-    options: Pattern[],
-    answer: Answer
+export default interface Problem<T> {
+	prompt: string
+	options: T[]
+	answer: Answer<T>
 }

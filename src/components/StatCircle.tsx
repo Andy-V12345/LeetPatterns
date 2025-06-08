@@ -1,10 +1,11 @@
-import { PatternStat } from '@/interfaces/PatternStat'
 import { AnimatedCircularProgressBar } from './magicui/animated-circular-progress-bar'
 import { useEffect, useState } from 'react'
 import { patternColors } from '@/utils/Consts'
+import Stat from '@/interfaces/Stat'
+import { Pattern } from '@/utils/Types'
 
 interface StatCircleProps {
-	stat: PatternStat
+	stat: Stat<Pattern>
 	size: string
 	strokeWidth: number
 	textSize: number
@@ -34,7 +35,7 @@ export default function StatCircle({
 				value={value}
 				correct={stat.correct}
 				attempts={stat.attempts}
-				gaugePrimaryColor={patternColors[stat.pattern]}
+				gaugePrimaryColor={patternColors[stat.name]}
 				gaugeSecondaryColor="var(--card-fg)"
 				strokeWidth={strokeWidth}
 				size={size}
@@ -46,7 +47,7 @@ export default function StatCircle({
 					fontSize: textSize,
 				}}
 			>
-				{stat.pattern}
+				{stat.name}
 			</p>
 		</div>
 	)

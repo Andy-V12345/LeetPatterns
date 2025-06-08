@@ -1,13 +1,17 @@
 import { AppUser } from '@/interfaces/AppUser'
-import { PatternStat } from '@/interfaces/PatternStat'
+import { Note } from '@/interfaces/Note'
 import { PrevSession } from '@/interfaces/PrevSession'
 import { ProfileInfo } from '@/interfaces/ProfileInfo'
+import Stat from '@/interfaces/Stat'
 import {
+	deleteNoteFirestore,
 	getFocusedPatternsFirestore,
+	getNotesFirestore,
 	getPatternStatsFirestore,
 	getPrevSessionFirestore,
 	getStreakFirestore,
 	saveFocusedPatternsFirestore,
+	saveNoteFirestore,
 	setPrevSession,
 	setStreakFirestore,
 	updatePatternStatsFirestore,
@@ -26,6 +30,25 @@ export class FirebaseUser implements AppUser {
 		this.uid = uid
 		this.firstName = firstName
 		this.lastName = lastName
+	}
+
+	async getTokenId(): Promise<string> {
+		if (this.firebaseUser) {
+			return await this.firebaseUser.getIdToken()
+		}
+		return ''
+	}
+
+	async deleteNote(note: Note): Promise<void> {
+		await deleteNoteFirestore(this.uid, note)
+	}
+
+	async saveNote(note: Note): Promise<void> {
+		await saveNoteFirestore(this.uid, note)
+	}
+
+	async getNotes(): Promise<Note[]> {
+		return await getNotesFirestore(this.uid)
 	}
 
 	async updateStreak(): Promise<void> {
@@ -55,7 +78,7 @@ export class FirebaseUser implements AppUser {
 
 	async savePrevSession(
 		focusedPatterns: Pattern[],
-		patternStats: PatternStat[]
+		patternStats: Stat<Pattern>[]
 	): Promise<void> {
 		await setPrevSession(this.uid, focusedPatterns, patternStats)
 	}
@@ -64,7 +87,7 @@ export class FirebaseUser implements AppUser {
 		return await getPrevSessionFirestore(this.uid)
 	}
 
-	async getPatternStats(): Promise<PatternStat[] | null> {
+	async getPatternStats(): Promise<Stat<Pattern>[] | null> {
 		return await getPatternStatsFirestore(this.uid)
 	}
 

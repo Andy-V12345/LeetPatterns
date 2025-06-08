@@ -1,5 +1,6 @@
-import { PatternStat } from '@/interfaces/PatternStat'
-import { ColorTheme, Pattern } from './Types'
+import { ColorTheme, Pattern, TemplateVariant } from './Types'
+import { codeTemplates } from './Consts'
+import Stat from '@/interfaces/Stat'
 
 export function shuffle<T>(array: T[]): T[] {
 	const result = [...array] // optional: copy if you don't want to mutate
@@ -30,14 +31,16 @@ export function areConsecutiveDays(date1: Date, date2: Date): number {
 	}
 }
 
-export function getWeakPatterns(patternStats: PatternStat[]): Pattern[] {
-	const weakPatterns: Pattern[] = patternStats
-		.filter(
-			(stat) => stat.attempts >= 2 && stat.correct / stat.attempts < 0.4
-		)
-		.map((stat) => stat.pattern)
+export function getWeakest<T>(stats: Stat<T>[]): T[] {
+	const weakest: T[] = []
 
-	return weakPatterns
+	for (const stat of stats) {
+		if (stat.attempts > 1 && stat.correct / stat.attempts < 0.5) {
+			weakest.push(stat.name)
+		}
+	}
+
+	return weakest
 }
 
 export function checkIsGuest(): boolean {
@@ -59,11 +62,11 @@ export function setIsGuest(isGuest: boolean) {
 	}
 }
 
-export function calculateTotalCorrect(patternStats: PatternStat[]): number {
+export function calculateTotalCorrect<T>(patternStats: Stat<T>[]): number {
 	return patternStats.reduce((total, stat) => total + stat.correct, 0)
 }
 
-export function calculateTotalAttempts(patternStats: PatternStat[]): number {
+export function calculateTotalAttempts<T>(patternStats: Stat<T>[]): number {
 	return patternStats.reduce((total, stat) => total + stat.attempts, 0)
 }
 
@@ -83,4 +86,19 @@ export function getColorTheme(): ColorTheme {
 	}
 
 	return 'dark'
+}
+
+export function getTemplateVariants(): TemplateVariant[] {
+	const variants: TemplateVariant[] = []
+
+	for (const [_, data] of Object.entries(codeTemplates)) {
+		for (const variant of data.variants) {
+			variants.push({
+				template: variant.template,
+				title: variant.title,
+			})
+		}
+	}
+
+	return variants
 }

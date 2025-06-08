@@ -11,29 +11,35 @@ import {
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import Link from 'next/link'
-import { House, User } from 'lucide-react'
+import { House, User, NotebookPen, Code, MessageSquareText } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { DashboardTypes, UIState } from '@/utils/Types'
 import { useAuth } from '@/components/AuthContext'
 import BeatLoader from 'react-spinners/BeatLoader'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
-import { Switch } from '@/components/ui/switch'
-import { useTheme } from '@/components/ThemeContext'
-import { setColorTheme } from '@/utils/UtilFunctions'
 import ThemeSwitch from '@/components/ThemeSwitch'
+import { useIsChrome } from '@/hooks/useIsChrome'
 
 export default function DashboardSidebar() {
 	const pathname = usePathname()
-	const [selection, setSelection] = useState<DashboardTypes>(
-		pathname.includes('/dashboard/profile') ? 'profile' : 'dashboard'
-	)
+	const [selection, setSelection] = useState<DashboardTypes>(() => {
+		if (pathname.includes('/dashboard/profile')) return 'profile'
+		if (pathname.includes('/dashboard/notes')) return 'notes'
+		if (pathname.includes('/dashboard/templates')) return 'templates'
+		return 'dashboard'
+	})
 	const [uiState, setUiState] = useState<UIState>('default')
 	const { logout } = useAuth()
+	const isChrome = useIsChrome()
 
 	useEffect(() => {
 		if (pathname.includes('/dashboard/profile')) {
 			setSelection('profile')
+		} else if (pathname.includes('/dashboard/notes')) {
+			setSelection('notes')
+		} else if (pathname.includes('/dashboard/templates')) {
+			setSelection('templates')
 		} else {
 			setSelection('dashboard')
 		}
@@ -50,7 +56,7 @@ export default function DashboardSidebar() {
 			<SidebarHeader>
 				<Link href="/" className="flex items-center gap-3">
 					<Image
-						src={'/leetpatterns_icon.png'}
+						src={'/leetpatterns_icon.svg'}
 						alt={'logo'}
 						width={'15'}
 						height={'15'}
@@ -87,6 +93,45 @@ export default function DashboardSidebar() {
 						<SidebarMenuItem>
 							<SidebarMenuButton
 								asChild
+								isActive={selection == 'templates'}
+								className="py-5 px-3"
+								onClick={() => setSelection('templates')}
+							>
+								<Link
+									href="/dashboard/templates"
+									className="flex items-center gap-3"
+								>
+									<Code className="text-foreground" />
+									<span className="font-semibold text-foreground">
+										Templates
+									</span>
+									<span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-gradient-to-r from-leet-blue to-leet-purple text-white">
+										New
+									</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								asChild
+								isActive={selection == 'notes'}
+								className="py-5 px-3"
+								onClick={() => setSelection('notes')}
+							>
+								<Link
+									href="/dashboard/notes"
+									className="flex items-center gap-3"
+								>
+									<NotebookPen className="text-foreground" />
+									<span className="font-semibold text-foreground">
+										Notes
+									</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton
+								asChild
 								isActive={selection == 'profile'}
 								className="py-5 px-3"
 								onClick={() => setSelection('profile')}
@@ -102,20 +147,36 @@ export default function DashboardSidebar() {
 								</Link>
 							</SidebarMenuButton>
 						</SidebarMenuItem>
+						<SidebarMenuItem>
+							<SidebarMenuButton asChild className="py-5 px-3">
+								<Link
+									target="_blank"
+									className="flex items-center gap-3 text-theme-hover-orange"
+									href="https://mail.google.com/mail/?view=cm&fs=1&to=leetpatterns.ai@gmail.com&su=LeetPatterns%20Feedback&body=Hi%20LeetPatterns%20Team,%0D%0A%0D%0AI%20wanted%20to%20share%20some%20feedback:"
+								>
+									<MessageSquareText />
+									<span className="font-semibold">
+										Send feedback
+									</span>
+								</Link>
+							</SidebarMenuButton>
+						</SidebarMenuItem>
 					</SidebarMenu>
 				</SidebarGroupContent>
 			</SidebarContent>
 			<SidebarFooter className="p-3">
 				<SidebarMenu>
-					<SidebarMenuItem>
-						<div className="flex mb-1 justify-between gap-3 text-foreground items-center">
-							<span className="font-semibold text-sm text-foreground">
-								Color theme:
-							</span>
+					{!isChrome && (
+						<SidebarMenuItem>
+							<div className="flex mb-1 justify-between gap-3 text-foreground items-center">
+								<span className="font-semibold text-sm text-foreground">
+									Color theme:
+								</span>
 
-							<ThemeSwitch className="ml-auto" />
-						</div>
-					</SidebarMenuItem>
+								<ThemeSwitch className="ml-auto" />
+							</div>
+						</SidebarMenuItem>
+					)}
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							onClick={handleLogOut}
