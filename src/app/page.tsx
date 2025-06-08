@@ -420,7 +420,7 @@ export default function Home() {
 										onChange={(e) =>
 											setEmail(e.target.value)
 										}
-										className="w-full px-4 py-3 rounded-xl bg-background/80 backdrop-blur-sm border border-blue-400 focus:border-theme-orange focus:outline-none focus:ring-2 focus:ring-theme-orange/20 [&:-webkit-autofill]:bg-background/80 [&:-webkit-autofill]:!bg-background/80"
+										className="w-full px-4 py-3 rounded-xl bg-background/80 backdrop-blur-sm border border-blue-400 focus:border-theme-orange focus:outline-none focus:ring-2 focus:ring-theme-orange/20 [&:-webkit-autofill]:!bg-background/80"
 										required
 									/>
 									{submitStatus === 'success' && (
