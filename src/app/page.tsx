@@ -176,11 +176,16 @@ export default function Home() {
 					>
 						{/* Welcome text with CTA */}
 						<div className="flex gap-3 flex-col justify-center items-center">
-							<div className={`text-center font-bold text-4xl `}>
+							<div>
+								<h3 className="text-center bg-gradient-to-r from-theme-orange to-[#e52e71] bg-clip-text text-transparent font-bold text-2xl lg:text-3xl mb-2">
+									No more memorizing LeetCode,
+								</h3>
+
 								<h1
+									className="text-center font-bold text-4xl lg:text-5xl"
 									style={{
 										textShadow:
-											'2px 2px 1px var(--theme-orange)',
+											'2px 2px 1px var(--theme-hover-orange)',
 									}}
 								>
 									Welcome to LeetPatterns.ai
@@ -188,21 +193,20 @@ export default function Home() {
 							</div>
 
 							<p
-								className={`sm:max-w-full md:max-w-3/5 text-center ${isMobile ? 'text-sm' : 'text-base'}`}
+								className={`sm:max-w-full md:max-w-3/5 text-gray-400 text-center text-sm md:text-base lg:text-lg`}
 							>
-								Want to land your dream software engineering
-								role? Learn how to identify common LeetCode
-								patterns to ace your next interview!
+								Learn how to identify common coding patterns to
+								ace your next interview and land your dream SWE
+								job!
 							</p>
 
 							<Link
 								href={user == null ? '/signup' : '/dashboard'}
-								className="button-82-pushable mt-5"
+								className="relative mt-4 group px-8 py-4 bg-gradient-to-r from-theme-orange to-bright-theme-orange rounded-xl overflow-hidden transition-all duration-300 hover:scale-105"
 								role="button"
 							>
-								<span className="button-82-shadow"></span>
-								<span className="button-82-edge"></span>
-								<span className="button-82-front text-lg text-white font-bold">
+								<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+								<span className="relative text-lg font-bold text-white">
 									{user == null
 										? `Get Started - It's All Free`
 										: 'Go To Your Dashboard'}
@@ -212,10 +216,13 @@ export default function Home() {
 
 						{/* demo video */}
 						<motion.div
-							className={`${isMobile ? 'p-2 w-full' : 'p-3 w-9/12'} bg-theme-orange h-fit rounded-xl`}
+							className={`${isMobile ? 'w-full' : 'w-9/12'} h-fit rounded-xl`}
 							style={{
-								boxShadow:
-									'0px 0px 10px 4px var(--theme-hover-orange)',
+								boxShadow: `
+									0 10px 30px -5px rgba(255, 165, 0, 0.25),
+									0 0 20px -5px rgba(255, 165, 0, 0.2),
+									0 0 0 1px rgba(255, 165, 0, 0.15)
+								`,
 							}}
 							initial={{ opacity: 0, y: 100 }}
 							animate={videoLoaded ? { opacity: 1, y: 0 } : {}}
