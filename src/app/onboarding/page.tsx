@@ -60,18 +60,23 @@ export default function OnboardingPage() {
 				<button
 					disabled={uiState == 'loading'}
 					onClick={handleContinue}
-					className={`self-end font-medium bg-theme-orange ${uiState == 'loading' ? '' : 'hover:bg-theme-hover-orange'} transition-colors px-5 py-3 text-base rounded-4xl`}
+					className={`relative self-end font-semibold bg-gradient-to-r from-theme-orange to-bright-theme-orange transition-colors px-5 py-3 text-base rounded-4xl overflow-hidden group`}
 				>
-					{uiState == 'loading' ? (
-						<BeatLoader
-							className="mx-auto"
-							loading={uiState == 'loading'}
-							color="var(--foreground)"
-							size={6}
-						/>
-					) : (
-						<p>Continue</p>
-					)}
+					<div
+						className={`absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300`}
+					/>
+					<span className="relative z-10 flex items-center justify-center">
+						{uiState == 'loading' ? (
+							<BeatLoader
+								className="mx-auto"
+								loading={uiState == 'loading'}
+								color="var(--foreground)"
+								size={6}
+							/>
+						) : (
+							'Continue'
+						)}
+					</span>
 				</button>
 			</div>
 		</div>

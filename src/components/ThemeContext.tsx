@@ -22,13 +22,13 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 	const [theme, setTheme] = useState<ColorTheme>('dark')
 	const isChrome = useIsChrome()
 
-	useEffect(() => {
-		if (isChrome) {
-			setTheme('dark')
-		} else {
-			setTheme(getColorTheme())
-		}
-	}, [])
+	// useEffect(() => {
+	// 	if (isChrome) {
+	// 		setTheme('dark')
+	// 	} else {
+	// 		setTheme(getColorTheme())
+	// 	}
+	// }, [])
 
 	return (
 		<ThemeContext.Provider value={{ theme, setTheme }}>
