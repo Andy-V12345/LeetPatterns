@@ -9,7 +9,6 @@ import { useState } from 'react'
 import { UIState } from '@/utils/Types'
 import BeatLoader from 'react-spinners/BeatLoader'
 import { useIsMobile } from '@/hooks/use-mobile'
-import ThemeSwitch from '@/components/ThemeSwitch'
 
 export default function LoginPage() {
 	const { continueAsGuest, login, signInWithGoogle } = useAuth()
@@ -174,8 +173,6 @@ export default function LoginPage() {
 					<i>Continue as guest</i>
 				</button>
 			</div>
-
-			<ThemeSwitch className="absolute bottom-5 right-5" />
 		</div>
 	)
 }

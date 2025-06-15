@@ -2,7 +2,6 @@
 
 import { useAuth } from '@/components/AuthContext'
 import GoogleIcon from '@/components/GoogleSvg'
-import ThemeSwitch from '@/components/ThemeSwitch'
 import { Input } from '@/components/ui/input'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { UIState } from '@/utils/Types'
@@ -221,8 +220,6 @@ export default function SignupPage() {
 					<i>Continue as guest</i>
 				</button>
 			</div>
-
-			{/* <ThemeSwitch className="absolute bottom-5 right-5" /> */}
 		</div>
 	)
 }

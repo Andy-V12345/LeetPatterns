@@ -224,7 +224,7 @@ export default function PreviousSessionDisplay({
 									Start a session
 								</h3>
 
-								{prevSession.weakPatterns.length == 0 && (
+								{prevSession.weakPatterns.length > 0 && (
 									<button
 										disabled={weakLoading}
 										onClick={handleWorkOnWeakPatterns}
