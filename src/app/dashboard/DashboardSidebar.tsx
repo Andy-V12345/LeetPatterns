@@ -176,7 +176,7 @@ export default function DashboardSidebar() {
 			</SidebarContent>
 			<SidebarFooter className="p-3">
 				<SidebarMenu>
-					{!isChrome && (
+					{/* {!isChrome && (
 						<SidebarMenuItem>
 							<div className="flex mb-1 justify-between gap-3 text-foreground items-center">
 								<span className="font-semibold text-sm text-foreground">
@@ -186,7 +186,7 @@ export default function DashboardSidebar() {
 								<ThemeSwitch className="ml-auto" />
 							</div>
 						</SidebarMenuItem>
-					)}
+					)} */}
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							onClick={handleLogOut}

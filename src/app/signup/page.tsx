@@ -222,7 +222,7 @@ export default function SignupPage() {
 				</button>
 			</div>
 
-			<ThemeSwitch className="absolute bottom-5 right-5" />
+			{/* <ThemeSwitch className="absolute bottom-5 right-5" /> */}
 		</div>
 	)
 }
