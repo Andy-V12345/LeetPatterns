@@ -10,17 +10,9 @@ import SyncLoader from 'react-spinners/SyncLoader'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { addToInterviewWaitlist } from '@/utils/FirebaseFunctions'
-import {
-	BotMessageSquare,
-	Boxes,
-	ChartNoAxesCombined,
-	CheckCircle,
-	PiggyBank,
-	Video,
-	UserCircle,
-	Mic,
-	ClipboardCheck,
-} from 'lucide-react'
+import { CheckCircle, PiggyBank } from 'lucide-react'
+import { FeatureCard } from '@/components/FeatureCard'
+import { InterviewFeatureCard } from '@/components/InterviewFeatureCard'
 
 const LinkedInIcon = () => (
 	<svg
@@ -97,24 +89,6 @@ export default function Home() {
 		'idle' | 'success' | 'error'
 	>('idle')
 
-	const features = [
-		{
-			title: 'Pattern Recognition',
-			description:
-				'Practice with unique, AI-generated problems so you can develop real pattern recognition skills—without relying on memorization.',
-		},
-		{
-			title: 'Interactive Learning',
-			description:
-				'Chat with Leet, your AI assistant, to get personalized hints, explanations, and real-time support as you work through each problem.',
-		},
-		{
-			title: 'Progress Tracking',
-			description:
-				'Track your learning journey with detailed progress metrics and personalized recommendations.',
-		},
-	]
-
 	const handleWaitlistSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (!email) return
@@ -177,7 +151,7 @@ export default function Home() {
 						{/* Welcome text with CTA */}
 						<div className="flex gap-3 flex-col justify-center items-center">
 							<div>
-								<h3 className="text-center bg-gradient-to-r from-theme-orange to-[#e52e71] bg-clip-text text-transparent font-bold text-2xl lg:text-3xl mb-2">
+								<h3 className="mb-5 text-center bg-gradient-to-r from-theme-orange to-[#e52e71] bg-clip-text text-transparent font-bold text-2xl lg:text-3xl">
 									No more memorizing LeetCode,
 								</h3>
 
@@ -202,7 +176,7 @@ export default function Home() {
 
 							<Link
 								href={user == null ? '/signup' : '/dashboard'}
-								className="relative mt-4 group px-8 py-4 bg-gradient-to-r from-theme-orange to-bright-theme-orange rounded-xl overflow-hidden transition-all duration-300 hover:scale-105"
+								className="relative mt-5 group px-8 py-4 bg-gradient-to-r from-theme-orange to-bright-theme-orange rounded-xl overflow-hidden transition-all duration-300 hover:scale-105"
 								role="button"
 							>
 								<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
@@ -254,152 +228,46 @@ export default function Home() {
 						}}
 					>
 						{/* Features Section */}
-						<div className="max-w-6xl mx-auto">
+						<div className="max-w-6xl mx-auto flex gap-20 flex-col items-center">
 							<h2
-								className={`text-4xl font-bold text-center mb-4 text-theme-hover-orange`}
+								className={`text-4xl font-bold text-center bg-gradient-to-r from-theme-orange to-[#e52e71] bg-clip-text text-transparent w-fit leading-[1.5]`}
 							>
-								Why Choose LeetPatterns.ai?
+								All the good stuff
 							</h2>
-							<p className="text-center text-foreground mb-16 max-w-2xl mx-auto">
-								Master coding patterns with our AI-powered
-								platform designed to help you excel in technical
-								interviews
-							</p>
 							<div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-4 lg:gap-8">
-								{features.map((feature, index) => (
-									<motion.div
-										key={feature.title}
-										className="p-8 rounded-xl bg-background/80 backdrop-blur-sm border border-theme-orange/50"
-										initial={{ opacity: 0, y: 50 }}
-										whileInView={{ opacity: 1, y: 0 }}
-										viewport={{ once: true, amount: 0.3 }}
-										transition={{
-											duration: 0.6,
-											ease: 'easeOut',
-										}}
-									>
-										{feature.title ===
-											'Pattern Recognition' && (
-											<div className="w-14 h-14 rounded-lg bg-leet-blue/10 flex items-center justify-center mb-6">
-												<Boxes
-													size={35}
-													className="text-blue-500 mb-0"
-												/>
-											</div>
-										)}
-										{feature.title ===
-											'Interactive Learning' && (
-											<div className="w-14 h-14 rounded-lg bg-leet-purple/10 flex items-center justify-center mb-6">
-												<BotMessageSquare
-													size={35}
-													className="text-purple-500 mb-0"
-												/>
-											</div>
-										)}
-										{feature.title ===
-											'Progress Tracking' && (
-											<div className="w-14 h-14 rounded-lg bg-leet-blue/10 flex items-center justify-center mb-6">
-												<ChartNoAxesCombined
-													size={35}
-													className="text-emerald-500 mb-0"
-												/>
-											</div>
-										)}
-										<h3 className="text-xl font-semibold mb-4 text-theme-hover-orange">
-											{feature.title}
-										</h3>
-										<p className="text-muted-foreground leading-relaxed">
-											{feature.description}
-										</p>
-									</motion.div>
-								))}
+								<FeatureCard title="Recogition, not memorization" />
+								<FeatureCard title="Your own AI assistant" />
+								<FeatureCard title="Progress tracking" />
 							</div>
 						</div>
 
 						{/* Interview Features Section */}
 						<div className="max-w-6xl mx-auto">
-							<h2
-								className={`text-4xl font-bold text-center mb-4 text-theme-hover-orange`}
-							>
-								Coming Soon: Leet Interview
-							</h2>
-							<p className="text-center text-foreground mb-16 max-w-2xl mx-auto">
-								Master your interview skills with Leet
-							</p>
+							<div className="flex flex-col items-center">
+								<h2
+									className={`text-4xl font-bold text-center mb-4 bg-clip-text bg-gradient-to-r from-leet-blue to-leet-purple text-transparent w-fit leading-[1.5]`}
+								>
+									Coming soon: Leet Interview
+								</h2>
+								<p className="text-center text-foreground text-base md:text-lg max-w-2xl mx-auto">
+									Ready to see how you'd do in a real
+									interview? Go head-to-head with Leet and get
+									instant feedback, not just a "thanks for
+									applying."
+								</p>
+							</div>
 
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+							<div className="mt-20 grid grid-cols-1 md:grid-cols-2 gap-8">
 								{[
-									{
-										title: 'AI-Powered Mock Interviews',
-										description:
-											'Practice with our advanced AI interviewer that adapts to your responses and provides real-time feedback',
-										icon: Video,
-										iconColor: '#3B82F6',
-										bgColor: 'rgba(59, 130, 246, 0.1)',
-									},
-									{
-										title: 'Customizable Interviewer Personality',
-										description:
-											'Choose from different interviewer personalities - from an Amazon SDE to a startup founder',
-										icon: UserCircle,
-										iconColor: '#8B5CF6',
-										bgColor: 'rgba(139, 92, 246, 0.1)',
-									},
-									{
-										title: 'Voice-Based Practice',
-										description:
-											'Practice speaking through your thought process out loud, just like in a real interview, with real-time voice recognition and feedback',
-										icon: Mic,
-										iconColor: '#EC4899',
-										bgColor: 'rgba(236, 72, 153, 0.1)',
-									},
-									{
-										title: 'Comprehensive Interview Analysis',
-										description:
-											'Get detailed feedback on your entire interview performance, including code quality, test case coverage, communication skills, and interaction with the interviewer',
-										icon: ClipboardCheck,
-										iconColor: '#10B981',
-										bgColor: 'rgba(16, 185, 129, 0.1)',
-									},
-								].map((feature, index) => (
-									<motion.div
-										key={feature.title}
-										className="p-8 rounded-xl bg-background/80 backdrop-blur-sm"
-										style={{
-											border: '1px solid rgba(96, 165, 250, 0.4)',
-											transition: 'all 0.2s ease-in-out',
-										}}
-										initial={{ opacity: 0, y: 50 }}
-										whileInView={{ opacity: 1, y: 0 }}
-										viewport={{ once: true, amount: 0.3 }}
-										transition={{
-											duration: 0.6,
-											ease: 'easeOut',
-											delay: index * 0.1,
-										}}
-									>
-										<div
-											className="w-14 h-14 rounded-lg flex items-center justify-center mb-6"
-											style={{
-												backgroundColor:
-													feature.bgColor,
-											}}
-										>
-											<feature.icon
-												size={35}
-												style={{
-													color: feature.iconColor,
-												}}
-												className="mb-0"
-											/>
-										</div>
-										<h3 className="text-xl font-semibold mb-4 bg-gradient-to-r from-leet-blue to-leet-purple bg-clip-text text-transparent w-fit">
-											{feature.title}
-										</h3>
-										<p className="text-muted-foreground leading-relaxed">
-											{feature.description}
-										</p>
-									</motion.div>
+									'AI mock interviews',
+									'Customizable personalities',
+									'Voice-based practice',
+									'Comprehensive analysis',
+								].map((title) => (
+									<InterviewFeatureCard
+										key={title}
+										title={title}
+									/>
 								))}
 							</div>
 						</div>
@@ -408,18 +276,20 @@ export default function Home() {
 						<div className="flex flex-col items-center justify-center gap-10 w-full max-w-4xl mx-auto text-center">
 							<div className="space-y-4">
 								<h3 className="text-4xl font-bold bg-gradient-to-r from-leet-blue to-leet-purple bg-clip-text text-transparent">
-									Join the Waitlist
+									Join the waitlist
 								</h3>
-								<p className="text-foreground">
+								<p className="text-foreground text-base md:text-lg">
 									Be the first to know when Leet Interview
 									launches
 								</p>
 							</div>
 							<form
 								onSubmit={handleWaitlistSubmit}
-								className="flex flex-col sm:flex-row gap-6 justify-center items-center w-full"
+								className="flex flex-col gap-6 justify-center items-center w-full"
 							>
-								<div className="relative flex-1 max-w-md w-full">
+								<div
+									className={`flex w-full justify-center items-center ${isMobile ? 'flex-col gap-5' : 'flex-row gap-5'}`}
+								>
 									<input
 										type="email"
 										placeholder="Enter your email"
@@ -427,39 +297,67 @@ export default function Home() {
 										onChange={(e) =>
 											setEmail(e.target.value)
 										}
-										className="w-full px-4 py-3 rounded-xl bg-background/80 backdrop-blur-sm border border-blue-400 focus:border-theme-orange focus:outline-none focus:ring-2 focus:ring-theme-orange/20 [&:-webkit-autofill]:!bg-background/80"
+										className="w-full px-4 py-3 rounded-xl bg-background/80 backdrop-blur-sm border border-blue-400 focus:outline-none focus:ring-2 [&:-webkit-autofill]:!bg-background/80"
 										required
 									/>
-									{submitStatus === 'success' && (
-										<p className="text-correct-green text-sm mt-2">
-											Successfully joined the waitlist!
-										</p>
-									)}
-									{submitStatus === 'error' && (
-										<p className="text-wrong-red text-sm mt-2">
-											Failed to join waitlist. Please try
-											again.
-										</p>
-									)}
+									<button
+										type="submit"
+										disabled={
+											isSubmitting ||
+											email.trim().length == 0
+										}
+										className={`disabled:opacity-70 flex justify-center items-center relative group px-6 py-3 bg-gradient-to-r from-leet-blue to-leet-purple rounded-xl overflow-hidden transition-all duration-300 ${isMobile ? 'w-full' : ''}`}
+									>
+										<div
+											className={`absolute inset-0 ${
+												isSubmitting
+													? 'bg-white/20'
+													: 'bg-white/50'
+											} ${
+												isSubmitting ||
+												email.trim().length == 0
+													? ''
+													: 'translate-y-full group-hover:translate-y-0 transition-transform duration-300'
+											}`}
+										/>
+										<span className="relative font-semibold text-white">
+											{isSubmitting
+												? 'Joining...'
+												: 'Join'}
+										</span>
+									</button>
 								</div>
-								<button
-									type="submit"
-									disabled={isSubmitting || !email.trim()}
-									className="px-6 py-3 rounded-xl bg-gradient-to-r from-leet-blue to-leet-purple text-white font-semibold transition-opacity whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed hover:opacity-50"
-								>
-									{isSubmitting
-										? 'Joining...'
-										: 'Join Waitlist'}
-								</button>
+
+								{submitStatus === 'success' && (
+									<motion.p
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										transition={{ duration: 0.3 }}
+										className="text-correct-green text-sm mt-2 w-full"
+									>
+										Successfully joined the waitlist!
+									</motion.p>
+								)}
+								{submitStatus === 'error' && (
+									<motion.p
+										initial={{ opacity: 0 }}
+										animate={{ opacity: 1 }}
+										transition={{ duration: 0.3 }}
+										className="text-wrong-red text-sm mt-2 w-full"
+									>
+										Failed to join waitlist. Please try
+										again.
+									</motion.p>
+								)}
 							</form>
 						</div>
 
 						{/* Pricing Section */}
 						<div className="w-full flex flex-col items-center justify-center">
-							<h2 className="text-4xl font-bold text-theme-hover-orange mb-4">
-								Simple Pricing
+							<h2 className="text-4xl font-bold mb-4 bg-clip-text bg-gradient-to-r from-theme-orange to-[#e52e71] text-transparent w-fit leading-[1.5]">
+								Simple pricing
 							</h2>
-							<p className="text-foreground mb-16 text-center max-w-xl">
+							<p className="text-foreground mb-20 text-center text-base md:text-lg max-w-xl">
 								LeetPatterns.ai is{' '}
 								<span className="font-semibold text-theme-orange">
 									completely free
@@ -467,120 +365,80 @@ export default function Home() {
 								for all users. No hidden fees, no subscriptions,
 								no card info.
 							</p>
+
 							<motion.div
 								initial={{ opacity: 0, y: 50 }}
 								whileInView={{ opacity: 1, y: 0 }}
 								viewport={{ once: true, amount: 0.3 }}
-								transition={{
-									duration: 0.6,
-									ease: 'easeOut',
+								transition={{ duration: 0.6, ease: 'easeOut' }}
+								className="relative flex flex-col bg-background/60 backdrop-blur-xl rounded-2xl p-8 gap-6 mx-auto"
+								style={{
+									boxShadow: `
+										0 10px 30px -5px rgba(255, 165, 0, 0.25),
+										0 0 20px -5px rgba(255, 165, 0, 0.2),
+										0 0 0 1px rgba(255, 165, 0, 0.15)
+									`,
 								}}
-								className="relative flex flex-col md:flex-row bg-background border border-theme-orange/40 rounded-2xl p-6 md:p-8 gap-8 md:gap-12 shadow-lg items-center min-w-[320px] md:max-w-4xl w-full mx-auto"
 							>
-								{/* Left: Price and Info */}
-								<div className="flex-1 self-stretch flex flex-col items-start w-full md:w-auto justify-between">
-									<div className="space-y-0">
-										<p className="text-4xl font-extrabold text-theme-orange">
-											Free
-										</p>
-										<p className="text-base text-foreground">
-											Create an account for unlimited
-											access
-										</p>
-									</div>
-									{!isMobile && (
-										<div className="flex-1 flex items-center justify-center max-h-[200px] w-full">
-											<svg width="0" height="0">
-												<defs>
-													<linearGradient
-														id="piggy-gradient"
-														x1="0"
-														y1="0"
-														x2="1"
-														y2="1"
-													>
-														<stop
-															offset="0%"
-															stopColor="#34D399"
-														/>
-														<stop
-															offset="100%"
-															stopColor="#059669"
-														/>
-													</linearGradient>
-												</defs>
-											</svg>
-											<PiggyBank
-												strokeWidth={1}
-												className="w-full h-full"
-												stroke="url(#piggy-gradient)"
-											/>
-										</div>
-									)}
+								<div>
+									<p className="text-4xl font-extrabold bg-gradient-to-r w-fit from-green-400 to-emerald-600 bg-clip-text text-transparent">
+										Free
+									</p>
+									<p className="text-base text-gray-400 md:text-lg">
+										Create an account for unlimited access
+									</p>
 								</div>
-								{/* Right: Features and CTA */}
-								<div className="flex-1 flex flex-col gap-6 self-stretch items-start w-full md:w-auto">
-									<ul className="space-y-3 text-base w-full">
-										<li className="flex items-start gap-3 leading-normal">
-											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
-											<div className="flex-1">
-												Unlimited access to all Leet
-												patterns
-											</div>
-										</li>
-										<li className="flex items-start gap-3 leading-normal">
-											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
-											<div className="flex-1">
-												AI-generated unique problems
-											</div>
-										</li>
-										<li className="flex items-start gap-3 leading-normal">
-											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
-											<div className="flex-1">
-												Progress tracking & dashboard
-											</div>
-										</li>
-										<li className="flex items-start gap-3 leading-normal">
-											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
-											<div className="flex-1">
-												Interactive learning tools
-											</div>
-										</li>
-										<li className="flex items-start gap-3 leading-normal">
-											<CheckCircle className="text-green-500 w-6 h-6 self-start" />
-											<div className="flex-1">
-												Leet Chatbot assistance
-											</div>
-										</li>
-									</ul>
-									<Link
-										href={
-											user == null
-												? '/signup'
-												: '/dashboard'
-										}
-										className="w-full"
-										role="button"
-									>
-										<button className="w-full bg-gradient-to-r from-orange-400 to-orange-600 text-white font-bold py-3 rounded-xl text-lg transition-all hover:opacity-80">
-											{user == null
-												? 'Create Free Account'
-												: 'Go To Dashboard'}
-										</button>
-									</Link>
-								</div>
+
+								<ul className="space-y-3 text-lg w-full">
+									<li className="flex items-start gap-3 leading-normal">
+										<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+										<p className="flex-1">
+											AI-generated unique problems
+										</p>
+									</li>
+									<li className="flex items-start gap-3 leading-normal">
+										<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+										<p className="flex-1">
+											Progress tracking & dashboard
+										</p>
+									</li>
+									<li className="flex items-start gap-3 leading-normal">
+										<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+										<p className="flex-1">
+											Interactive learning tools
+										</p>
+									</li>
+									<li className="flex items-start gap-3 leading-normal">
+										<CheckCircle className="text-green-500 w-6 h-6 self-start" />
+										<p className="flex-1">
+											Leet assistance
+										</p>
+									</li>
+								</ul>
+
+								<Link
+									href={
+										user == null ? '/signup' : '/dashboard'
+									}
+									className="relative mt-10 group px-8 py-4 bg-gradient-to-r from-theme-orange to-bright-theme-orange rounded-xl overflow-hidden transition-all duration-300 w-full text-center"
+									role="button"
+								>
+									<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+									<span className="relative text-lg font-bold text-white">
+										{user == null
+											? `Create Free Account`
+											: 'Go To Your Dashboard'}
+									</span>
+								</Link>
 							</motion.div>
 						</div>
 
 						{/* Contact Us Section */}
 						<div className="w-full flex flex-col items-center justify-center">
-							<h2 className="text-4xl font-bold text-theme-hover-orange mb-4">
-								Contact Us
+							<h2 className="text-4xl mb-10 font-bold bg-clip-text bg-gradient-to-r from-theme-orange to-[#e52e71] text-transparent w-fit leading-[1.5]">
+								Contact us
 							</h2>
-							<p className="text-foreground mb-10 text-center max-w-xl">
-								Have questions or feedback? We'd love to hear
-								from you!
-							</p>
+
 							<motion.div
 								initial={{ opacity: 0, y: 50 }}
 								whileInView={{ opacity: 1, y: 0 }}
