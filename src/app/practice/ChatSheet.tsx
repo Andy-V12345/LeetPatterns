@@ -192,12 +192,12 @@ export default function ChatSheet<T>({
 												Leet
 											</p>
 											<Link
-												href={'/signup'}
-												className="button-82-pushable mx-auto"
+												href="/signup"
+												className="relative group px-6 py-3 bg-gradient-to-r from-theme-orange to-bright-theme-orange rounded-xl overflow-hidden transition-all duration-300 hover:scale-105"
+												role="button"
 											>
-												<span className="button-82-shadow"></span>
-												<span className="button-82-edge"></span>
-												<span className="button-82-front text-lg font-bold">
+												<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+												<span className="relative text-lg font-bold text-white">
 													Create one
 												</span>
 											</Link>
