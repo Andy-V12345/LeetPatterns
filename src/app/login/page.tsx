@@ -133,8 +133,11 @@ export default function LoginPage() {
 					<button
 						disabled={uiState == 'loading'}
 						type="submit"
-						className={`py-3 ${uiState != 'loading' ? 'hover:bg-theme-hover-orange' : ''} transition-all rounded-lg bg-theme-orange mt-5 font-semibold`}
+						className={`relative font-semibold group py-3 bg-gradient-to-r from-theme-orange to-bright-theme-orange rounded-lg overflow-hidden transition-all duration-300`}
 					>
+						<div
+							className={`absolute inset-0 ${uiState !== 'loading' && 'bg-white/20 group-hover:translate-y-0'} translate-y-full transition-transform duration-300`}
+						/>
 						{uiState == 'loading' ? (
 							<BeatLoader
 								loading={uiState == 'loading'}

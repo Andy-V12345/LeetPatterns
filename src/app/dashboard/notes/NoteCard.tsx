@@ -87,7 +87,7 @@ export default function NoteCard({
 					<Textarea
 						value={text}
 						onChange={handleTextChange}
-						className="resize-none text-lg rounded-none focus-visible:ring-0 border-transparent p-0 focus:border-0 h-full overflow-y-scroll"
+						className="resize-none text-lg rounded-none focus-visible:ring-0 border-transparent p-0 focus:border-0 h-full scrollbar-hide overflow-y-scroll"
 					/>
 				</div>
 

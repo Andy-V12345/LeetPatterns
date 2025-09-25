@@ -154,7 +154,7 @@ export default function ProblemCard<T>({
 			</div>
 
 			<div
-				className={`flex flex-col justify-between h-full max-h-full overflow-scroll px-4 pb-4 md:px-6 md:pb-6 ${isPatternFromTemplate && 'pt-4 md:pt-6'}`}
+				className={`flex flex-col justify-between h-full max-h-full scrollbar-hide overflow-scroll px-4 pb-4 md:px-6 md:pb-6 ${isPatternFromTemplate && 'pt-4 md:pt-6'}`}
 			>
 				<div className="flex flex-col gap-2 md:gap-4 h-full">
 					<div className="flex-1 scrollbar-hide overflow-y-auto overflow-x-hidden">

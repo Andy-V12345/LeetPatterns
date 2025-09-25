@@ -32,7 +32,7 @@ export default function OnboardingPage() {
 	return (
 		<div className="bg-background overflow-hidden h-[100vh] flex flex-col justify-center items-center px-5">
 			<div
-				className={`h-fit w-full sm:w-4/5 md:w-3/5 xl:w-2/5 overflow-y-scroll flex flex-col gap-20 rounded-xl ${isMobile ? '' : 'p-8 bg-card-bg'}`}
+				className={`h-fit w-full sm:w-4/5 md:w-3/5 xl:w-2/5 scrollbar-hide overflow-y-scroll flex flex-col gap-20 rounded-xl ${isMobile ? '' : 'p-8 bg-card-bg'}`}
 			>
 				<div className="flex flex-col gap-5">
 					<h1 className="font-bold text-2xl">
@@ -60,23 +60,22 @@ export default function OnboardingPage() {
 				<button
 					disabled={uiState == 'loading'}
 					onClick={handleContinue}
-					className={`relative self-end font-semibold bg-gradient-to-r from-theme-orange to-bright-theme-orange transition-colors px-5 py-3 text-base rounded-4xl overflow-hidden group`}
+					className={`relative font-semibold bg-gradient-to-r py-2 from-theme-orange to-bright-theme-orange transition-colors text-base rounded-4xl overflow-hidden group`}
 				>
 					<div
-						className={`absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300`}
+						className={`absolute inset-0 ${uiState !== 'loading' && 'bg-white/20 group-hover:translate-y-0'} translate-y-full transition-transform duration-300`}
 					/>
-					<span className="relative z-10 flex items-center justify-center">
-						{uiState == 'loading' ? (
-							<BeatLoader
-								className="mx-auto"
-								loading={uiState == 'loading'}
-								color="var(--foreground)"
-								size={6}
-							/>
-						) : (
-							'Continue'
-						)}
-					</span>
+
+					{uiState == 'loading' ? (
+						<BeatLoader
+							className="mx-auto"
+							loading={uiState == 'loading'}
+							color="var(--foreground)"
+							size={6}
+						/>
+					) : (
+						'Continue'
+					)}
 				</button>
 			</div>
 		</div>

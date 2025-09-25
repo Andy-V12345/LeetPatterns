@@ -42,7 +42,7 @@ export default function PracticePageContent() {
 
 	return (
 		<Sheet>
-			<div className="relative overflow-x-hidden overflow-y-scroll">
+			<div className="relative scrollbar-hide overflow-x-hidden overflow-y-scroll">
 				<AnimatePresence mode="wait">
 					{uiState == 'loading' ? (
 						<motion.div
@@ -75,7 +75,7 @@ export default function PracticePageContent() {
 								{/* Focused Patterns Bar */}
 								{focusedPatterns != null &&
 									focusedPatterns.length > 0 && (
-										<div className="flex flex-col w-full gap-2 overflow-x-scroll font-semibold text-lg self-start">
+										<div className="flex flex-col w-full gap-2 scrollbar-hide overflow-x-scroll font-semibold text-lg self-start">
 											<h3>Focused patterns: </h3>
 											<div
 												className={`flex w-full scrollbar-hide flex-nowrap overflow-x-scroll gap-2 text-sm text-foreground font-medium`}

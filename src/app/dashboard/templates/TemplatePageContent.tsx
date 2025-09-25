@@ -30,7 +30,7 @@ export default function TemplatePageContent() {
 
 	return (
 		<Drawer>
-			<div className="flex flex-col gap-7 bg-background p-[30px] h-[100svh] overflow-scroll">
+			<div className="flex flex-col gap-7 bg-background p-[30px] h-[100svh] scrollbar-hide overflow-scroll">
 				<div className="flex items-center gap-5">
 					<SidebarTrigger />
 
@@ -84,7 +84,7 @@ export default function TemplatePageContent() {
 
 			<DrawerContent>
 				<div
-					className="flex flex-col items-center gap-[25px] overflow-y-scroll"
+					className="flex flex-col items-center gap-[25px] scrollbar-hide overflow-y-scroll"
 					style={{
 						padding: '0 20px 20px 20px',
 					}}

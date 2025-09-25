@@ -71,14 +71,13 @@ export default function PreviousSessionDisplay({
 						<p className="">You haven't practiced yet!</p>
 
 						<Link
-							href={'/practice'}
-							className="button-82-pushable mx-auto"
+							href="/practice"
+							className="relative group px-6 py-3 bg-gradient-to-r from-theme-orange to-bright-theme-orange rounded-xl overflow-hidden transition-all duration-300 hover:scale-105"
 							role="button"
 						>
-							<span className="button-82-shadow"></span>
-							<span className="button-82-edge"></span>
-							<span className="button-82-front text-lg font-bold">
-								Start a Session
+							<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+							<span className="relative text-lg font-bold text-white">
+								Start a session
 							</span>
 						</Link>
 					</div>
@@ -202,7 +201,7 @@ export default function PreviousSessionDisplay({
 								)}
 
 								{prevSession.patternStats.length > 0 && (
-									<div className="flex flex-nowrap justify-center gap-7 my-auto overflow-x-auto">
+									<div className="flex flex-nowrap justify-center gap-7 my-auto scrollbar-hide overflow-x-auto">
 										{prevSession.patternStats.map(
 											(stat, i) => (
 												<StatCircle
@@ -220,7 +219,7 @@ export default function PreviousSessionDisplay({
 
 							{/* Button Options */}
 							<div className=" rounded-2xl bg-card-bg backdrop-blur-xl bg-clip-padding p-5 flex flex-col w-full col-span-full md:col-span-3 lg:col-span-2 gap-4 shadow-[0_4px_32px_0_rgba(255,165,0,0.10),0_1.5px_8px_0_rgba(229,46,113,0.08)]">
-								<h3 className="font-extrabold text-lg mb-2 bg-gradient-to-r from-theme-orange w-fit to-[#e52e71] bg-clip-text text-transparent flex items-center gap-2">
+								<h3 className="font-extrabold h-full text-lg mb-2 bg-gradient-to-r from-theme-orange w-fit to-[#e52e71] bg-clip-text text-transparent flex items-center gap-2">
 									Start a session
 								</h3>
 
@@ -228,33 +227,32 @@ export default function PreviousSessionDisplay({
 									<button
 										disabled={weakLoading}
 										onClick={handleWorkOnWeakPatterns}
-										className={`relative flex items-center justify-between w-full font-semibold text-sm rounded-xl text-left px-5 py-3 bg-gradient-to-r from-theme-orange to-bright-theme-orange overflow-hidden group hover:scale-105 transition-all duration-300`}
+										className={`relative flex h-full items-center justify-between w-full font-semibold text-sm rounded-xl text-left px-5 py-3 bg-gradient-to-r from-theme-orange to-bright-theme-orange overflow-hidden group ${!weakLoading && 'hover:scale-105'} transition-all duration-300`}
 									>
-										<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-										<span className="relative z-10 flex gap-3 justify-between items-center w-full">
-											{weakLoading ? (
-												<BeatLoader
-													className="mx-auto"
-													loading={weakLoading}
-													color="var(--foreground)"
-													size={6}
-												/>
-											) : (
-												<>
-													<span>
-														Work on your weak
-														patterns
-													</span>
-													<ChevronRight className="size-4" />
-												</>
-											)}
-										</span>
+										<div
+											className={`absolute inset-0 ${!weakLoading && 'bg-white/20 group-hover:translate-y-0'} translate-y-full transition-transform duration-300`}
+										/>
+										{weakLoading ? (
+											<BeatLoader
+												className="mx-auto"
+												loading={weakLoading}
+												color="var(--foreground)"
+												size={6}
+											/>
+										) : (
+											<>
+												<p>
+													Work on your weak patterns
+												</p>
+												<ChevronRight className="size-4" />
+											</>
+										)}
 									</button>
 								)}
 
 								<Link
 									href="/onboarding"
-									className="relative flex items-center justify-between w-full font-semibold text-sm rounded-xl px-5 py-3 bg-gradient-to-r from-leet-blue to-leet-purple overflow-hidden group transition-all duration-300 hover:scale-105"
+									className={`relative h-full flex items-center justify-between w-full font-semibold text-sm rounded-xl px-5 py-3 bg-gradient-to-r from-leet-blue to-leet-purple overflow-hidden group transition-all duration-300 hover:scale-105`}
 								>
 									<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
 									<span className="relative z-10 flex gap-3 justify-between items-center w-full">
@@ -266,26 +264,24 @@ export default function PreviousSessionDisplay({
 								<button
 									disabled={focusLoading}
 									onClick={handleWorkOnSameStuff}
-									className={`relative flex items-center justify-between w-full font-semibold text-sm rounded-xl text-left px-5 py-3 bg-gradient-to-r from-green-400 to-emerald-600 overflow-hidden group hover:scale-105 transition-all duration-300`}
+									className={`relative flex h-full items-center justify-between w-full font-semibold text-sm rounded-xl text-left px-5 py-3 bg-gradient-to-r from-green-400 to-emerald-600 overflow-hidden group transition-all duration-300 ${!focusLoading && 'hover:scale-105'}`}
 								>
-									<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-									<span className="relative z-10 flex gap-3 justify-between items-center w-full">
-										{focusLoading ? (
-											<BeatLoader
-												className="mx-auto"
-												loading={focusLoading}
-												color="var(--foreground)"
-												size={6}
-											/>
-										) : (
-											<>
-												<span>
-													Focus on the same stuff
-												</span>
-												<ChevronRight className="size-4" />
-											</>
-										)}
-									</span>
+									<div
+										className={`absolute inset-0 ${!focusLoading && 'bg-white/20 group-hover:translate-y-0'} translate-y-full transition-transform duration-300`}
+									/>
+									{focusLoading ? (
+										<BeatLoader
+											className="mx-auto"
+											loading={focusLoading}
+											color="var(--foreground)"
+											size={6}
+										/>
+									) : (
+										<>
+											<p>Focus on the same stuff</p>
+											<ChevronRight className="size-4" />
+										</>
+									)}
 								</button>
 							</div>
 						</div>

@@ -121,7 +121,7 @@ export default function PatternStatsGrid({
 														/>
 													</motion.div>
 													<motion.div
-														className="w-full h-full absolute bg-card-bg rounded-md p-5 overflow-y-scroll"
+														className="w-full h-full absolute bg-card-bg rounded-md p-5 scrollbar-hide overflow-y-scroll"
 														style={{
 															transform:
 																'rotateX(180deg)',

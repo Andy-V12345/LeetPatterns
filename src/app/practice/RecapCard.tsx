@@ -19,15 +19,15 @@ export default function RecapCard({
 			className={`flex flex-col w-full ${isMobile && 'h-full'} bg-card-bg rounded-md p-6 text-foreground gap-9`}
 		>
 			<div
-				className={`flex flex-col ${isMobile && 'flex-1/2'} overflow-scroll gap-9`}
+				className={`flex flex-col ${isMobile && 'flex-1/2'} scrollbar-hide overflow-scroll gap-9`}
 			>
 				<h2 className="text-2xl font-semibold">Current Session</h2>
 
 				<div
 					className={`flex flex-nowrap ${
 						isMobile
-							? 'flex-col overflow-y-auto'
-							: 'flex-row overflow-x-auto'
+							? 'flex-col scrollbar-hide overflow-y-auto'
+							: 'flex-row scrollbar-hide overflow-x-auto'
 					} gap-8 w-full justify-center`}
 				>
 					{patternStats.map((stat, i) => (

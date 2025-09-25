@@ -20,7 +20,7 @@ export default function PatternFromTemplatePageContent() {
 
 	return (
 		<Sheet>
-			<div className="relative overflow-x-hidden overflow-y-scroll">
+			<div className="relative scrollbar-hide overflow-x-hidden overflow-y-scroll">
 				<AnimatePresence mode="wait">
 					{uiState == 'loading' ? (
 						<motion.div

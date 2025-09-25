@@ -65,7 +65,7 @@ export default function NotesPage() {
 
 	return (
 		<Sheet>
-			<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] overflow-scroll">
+			<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] scrollbar-hide overflow-scroll">
 				<div className="flex items-center gap-5">
 					<SidebarTrigger className="" />
 
@@ -125,11 +125,10 @@ export default function NotesPage() {
 								<p className="">No notes created!</p>
 
 								<SheetTrigger asChild>
-									<button className="button-82-pushable mx-auto">
-										<span className="button-82-shadow"></span>
-										<span className="button-82-edge"></span>
-										<span className="button-82-front text-lg font-bold">
-											Create One
+									<button className="relative group px-5 py-3 bg-gradient-to-r from-theme-orange to-bright-theme-orange rounded-xl overflow-hidden transition-all duration-300 hover:scale-105">
+										<div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+										<span className="relative text-lg font-bold text-white">
+											Create one
 										</span>
 									</button>
 								</SheetTrigger>
