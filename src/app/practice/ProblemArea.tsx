@@ -250,7 +250,7 @@ export default function ProblemArea<T>({
 
 	return (
 		<div
-			className={`self-stretch h-full relative ${isMobile ? 'overflow-y-scroll' : ''}`}
+			className={`self-stretch h-full relative ${isMobile ? 'scrollbar-hide overflow-y-scroll' : ''}`}
 		>
 			<AnimatePresence mode="wait">
 				{/* Initial Loading */}

@@ -72,7 +72,7 @@ export default function ProblemAnswer<T>({
 			</div>
 
 			<div
-				className={`flex flex-col justify-between h-full max-h-full overflow-scroll p-4 md:p-6`}
+				className={`flex flex-col justify-between h-full max-h-full scrollbar-hide overflow-scroll p-4 md:p-6`}
 			>
 				{!showAnswer && cardState != 'loading' ? (
 					<i className="text-sm self-center my-auto text-center">

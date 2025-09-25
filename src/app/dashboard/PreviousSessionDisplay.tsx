@@ -201,7 +201,7 @@ export default function PreviousSessionDisplay({
 								)}
 
 								{prevSession.patternStats.length > 0 && (
-									<div className="flex flex-nowrap justify-center gap-7 my-auto overflow-x-auto">
+									<div className="flex flex-nowrap justify-center gap-7 my-auto scrollbar-hide overflow-x-auto">
 										{prevSession.patternStats.map(
 											(stat, i) => (
 												<StatCircle

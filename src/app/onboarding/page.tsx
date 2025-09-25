@@ -32,7 +32,7 @@ export default function OnboardingPage() {
 	return (
 		<div className="bg-background overflow-hidden h-[100vh] flex flex-col justify-center items-center px-5">
 			<div
-				className={`h-fit w-full sm:w-4/5 md:w-3/5 xl:w-2/5 overflow-y-scroll flex flex-col gap-20 rounded-xl ${isMobile ? '' : 'p-8 bg-card-bg'}`}
+				className={`h-fit w-full sm:w-4/5 md:w-3/5 xl:w-2/5 scrollbar-hide overflow-y-scroll flex flex-col gap-20 rounded-xl ${isMobile ? '' : 'p-8 bg-card-bg'}`}
 			>
 				<div className="flex flex-col gap-5">
 					<h1 className="font-bold text-2xl">

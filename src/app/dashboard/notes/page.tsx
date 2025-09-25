@@ -65,7 +65,7 @@ export default function NotesPage() {
 
 	return (
 		<Sheet>
-			<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] overflow-scroll">
+			<div className="flex flex-col gap-7 bg-background h-[100svh] p-[30px] scrollbar-hide overflow-scroll">
 				<div className="flex items-center gap-5">
 					<SidebarTrigger className="" />
 
